@@ -28,8 +28,9 @@ class Cours
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $heureFin = null;
 
-    #[ORM\ManyToMany(targetEntity: Jour::class, inversedBy: 'cours')]
-    private Collection $jour;
+    // Changez ManyToMany en ManyToOne pour la relation avec Jour
+    #[ORM\ManyToOne(inversedBy: 'cours')]
+    private ?Jour $jour = null;
 
     #[ORM\OneToMany(targetEntity: Inscription::class, mappedBy: 'cours')]
     private Collection $inscriptions;
@@ -37,9 +38,14 @@ class Cours
     #[ORM\ManyToOne(inversedBy: 'cours')]
     private ?TypeCours $typeCours = null;
 
+    #[ORM\ManyToOne(inversedBy: 'cours')]
+    private ?Professeur $professeur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'cours')]
+    private ?TypeInstrument $typeInstrument = null;
+
     public function __construct()
     {
-        $this->jour = new ArrayCollection();
         $this->inscriptions = new ArrayCollection();
     }
 
@@ -96,26 +102,14 @@ class Cours
         return $this;
     }
 
-    /**
-     * @return Collection<int, Jour>
-     */
-    public function getJour(): Collection
+    public function getJour(): ?Jour
     {
         return $this->jour;
     }
 
-    public function addJour(Jour $jour): static
+    public function setJour(?Jour $jour): static
     {
-        if (!$this->jour->contains($jour)) {
-            $this->jour->add($jour);
-        }
-
-        return $this;
-    }
-
-    public function removeJour(Jour $jour): static
-    {
-        $this->jour->removeElement($jour);
+        $this->jour = $jour;
 
         return $this;
     }
@@ -158,6 +152,30 @@ class Cours
     public function setTypeCours(?TypeCours $typeCours): static
     {
         $this->typeCours = $typeCours;
+
+        return $this;
+    }
+
+    public function getProfesseur(): ?Professeur
+    {
+        return $this->professeur;
+    }
+
+    public function setProfesseur(?Professeur $professeur): static
+    {
+        $this->professeur = $professeur;
+
+        return $this;
+    }
+
+    public function getTypeInstrument(): ?TypeInstrument
+    {
+        return $this->typeInstrument;
+    }
+
+    public function setTypeInstrument(?TypeInstrument $typeInstrument): static
+    {
+        $this->typeInstrument = $typeInstrument;
 
         return $this;
     }

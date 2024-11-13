@@ -3,9 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\JourRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: JourRepository::class)]
 class Jour
@@ -18,7 +18,8 @@ class Jour
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\ManyToMany(targetEntity: Cours::class, mappedBy: 'jour')]
+    // Supprimez la relation ManyToMany et remplacez par OneToMany (si besoin, mais pas de relation directe avec Cours maintenant)
+    #[ORM\OneToMany(targetEntity: Cours::class, mappedBy: 'jour')]
     private Collection $cours;
 
     public function __construct()
@@ -55,7 +56,7 @@ class Jour
     {
         if (!$this->cours->contains($cour)) {
             $this->cours->add($cour);
-            $cour->addJour($this);
+            $cour->setJour($this);
         }
 
         return $this;
@@ -64,7 +65,10 @@ class Jour
     public function removeCour(Cours $cour): static
     {
         if ($this->cours->removeElement($cour)) {
-            $cour->removeJour($this);
+            // Définir le côté propriétaire à null
+            if ($cour->getJour() === $this) {
+                $cour->setJour(null);
+            }
         }
 
         return $this;
