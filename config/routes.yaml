@@ -3,3 +3,31 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+app_cours:
+    path: /cours
+    controller: App\Controller\CoursController::index
+
+app_accueilcours:
+    path: /cours/accueil
+    controller: App\Controller\CoursController::accueil
+
+app_ajouter:
+    path: /cours/ajouter
+    controller: App\Controller\CoursController::ajouter
+
+app_consulter:
+    path: /cours/consulter/{id}
+    controller: App\Controller\CoursController::consulterCours
+
+app_lister:
+    path: /cours/lister
+    controller: App\Controller\CoursController::listerCours
+
+app_cours_supprimer:
+    path: /cours/supprimer/{id}
+    controller: App\Controller\CoursController::supprimerCours
+    
+app_coursModifier:
+    path: /cours/modifier/{id}
+    controller: App\Controller\CoursController::modifierCours

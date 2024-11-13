@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Consultation de l'Élève{% endblock %}
+
+{% block body %}
+    <h5>PAGE DE CONSULTATION D'UN ÉLÈVE</h5>
+    <p>
+    <table>
+        <tr>
+            <td>Id : </td>
+            <td>{{ cours.id }} </td>
+        </tr>
+        <tr>
+            <td>Libelle : </td>
+            <td>{{ cours.libelle }}</td>
+        </tr>
+        <tr>
+            <td>Date de naissance : </td>
+            <td>{{ cours.ageMini }}</td>
+        </tr>
+        <tr>
+            <td>Heure de debut : </td>
+            <td>{{ cours.heureDebut|date('H:i')}}</td>
+        </tr>
+        <tr>
+            <td>Heure de fin : </td>
+            <td>{{ cours.heureFin|date('H:i') }}</td>
+        </tr>
+        <tr>
+            <td>Type de cours : </td>
+            <td>{{ cours.typeCours.libelle }}</td>
+        </tr>
+        <tr>
+            <td>Jour : </td>
+            <td>{{ cours.jour.libelle }}</td>
+        </tr>
+        <tr>
+            <td>Professeur : </td>
+            <td>{{ cours.professeur.nom }}</td>
+        </tr>
+        <tr>
+        {% if cours.typeInstrument is not null %}
+                <td>Type instruments : </td>
+                <td>{{ cours.typeInstrument.libelle }}</td>
+        {% else %}
+                <td>Type instruments : </td>
+                <td>Non spécifié</td>
+        {% endif %}
+        </tr>
+        
+    </table>
+</p>
+{% endblock %}
