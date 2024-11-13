@@ -3,3 +3,36 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+
+# -----------------------------------------------------------------------------------------
+# Professeur
+# -----------------------------------------------------------------------------------------
+
+app_professeur:
+    path: /professeur
+    controller: App\Controller\ProfesseurController::index
+
+app_professeur_accueil:
+    path: /professeur/accueil
+    controller: App\Controller\ProfesseurController::accueil
+
+professeurAjouter:
+    path: /professeur/ajouter
+    controller: App\Controller\ProfesseurController::ajouterProfesseur
+
+professeurConsulter:
+    path: /professeur/consulter/{id}
+    controller: App\Controller\ProfesseurController::consulterProfesseur
+
+professeurLister:
+    path: /professeur/lister
+    controller: App\Controller\ProfesseurController::listerProfesseur
+
+professeurModifier:
+    path: /professeur/modifier/{id}
+    controller: App\Controller\ProfesseurController::modifierProfesseur
+
+professeurSupprimer:
+    path: /professeur/supprimer/{id}
+    controller: App\Controller\ProfesseurController::supprimerProfesseur
