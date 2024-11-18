@@ -36,7 +36,43 @@ professeurModifier:
 professeurSupprimer:
     path: /professeur/supprimer/{id}
     controller: App\Controller\ProfesseurController::supprimerProfesseur
-=======
+
+# -----------------------------------------------------------------------------------------
+# Instrument
+# -----------------------------------------------------------------------------------------
+
+app_instrument:
+    path: /instrument
+    controller: App\Controller\InstrumentController::index
+
+app_instrument_accueil:
+    path: /instrument/accueil
+    controller: App\Controller\InstrumentController::accueil
+
+instrumentAjouter:
+    path: /instrument/ajouter
+    controller: App\Controller\InstrumentController::ajouterInstrument
+
+instrumentConsulter:
+    path: /instrument/consulter/{id}
+    controller: App\Controller\InstrumentController::consulterInstrument
+
+instrumentLister:
+    path: /instrument/lister
+    controller: App\Controller\InstrumentController::listerInstrument
+
+instrumentModifier:
+    path: /instrument/modifier/{id}
+    controller: App\Controller\InstrumentController::modifierInstrument
+
+instrumentSupprimer:
+    path: /instrument/supprimer/{id}
+    controller: App\Controller\InstrumentController::supprimerInstrument
+
+# -----------------------------------------------------------------------------------------
+# Cours
+# -----------------------------------------------------------------------------------------
+
 app_cours:
     path: /cours
     controller: App\Controller\CoursController::index
