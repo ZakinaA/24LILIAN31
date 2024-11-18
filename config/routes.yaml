@@ -36,7 +36,7 @@ professeurModifier:
 professeurSupprimer:
     path: /professeur/supprimer/{id}
     controller: App\Controller\ProfesseurController::supprimerProfesseur
-=======
+
 app_cours:
     path: /cours
     controller: App\Controller\CoursController::index
