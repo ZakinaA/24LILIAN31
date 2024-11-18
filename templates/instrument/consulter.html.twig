@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+    </head>
+    <body>       
+		<h5>PAGE DE CONSULTATION D'UN ETUDIANT</h5>
+ <p>
+  <table >
+	<tr><td>Num série : </td><td>{{instrument.numSerie}}</td></tr>
+    <tr><td>Date achat : </td><td>{{ instrument.dateAchat|date('d/m/Y H:i') }}</td></tr>
+                
+    <tr><td>Prix achat : </td><td>{{instrument.prixAchat}}</td></tr>
+	<tr><td>Utilisation : </td><td>{{instrument.utilisation}}</td></tr>
+	<tr><td>Couleur : </td><td>{{instrument.couleur}}</td></tr>
+	<tr><td>Type instrument : </td><td>{{instrument.typeInstrument.libelle}}</td></tr>
+	<tr><td>Marque : </td><td>{{instrument.marque.libelle}}</td></tr>
+ </table>
+	
+	 
+    </body>
+</html>
