@@ -1,12 +1,41 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        
-    </head>
-    <body>       
-		<h5>PAGE DE CONSULTATION D'UN ETUDIANT</h5>
- <p>
-  <table >
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="../../image/logo.png" alt="ProDeal" class="logo">
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="#" class="active">Accueil</a></li>
+                    <li><a href="http://localhost/24lilian31/public/instrument/lister">Instrument</a></li>
+                    <li><a href="http://localhost/24lilian31/public/professeur/lister">Professeur</a></li>
+                    <li><a href="http://localhost/24lilian31/public/cours/lister">Cours</a></li>
+                    <li><a href="http://localhost/24lilian31/public/eleve/lister">Eleve</a></li>
+                    <li><a href="http://localhost/24lilian31/public/intervention/lister">Intervention</a></li>
+                </ul>
+            </nav>
+            <div class="organization">
+                <ul>
+                    <li><a href="#">Déconnexion</a></li>
+                </ul>
+            </div>
+        </aside>
+        <main class="main">
+            <header class="main-header">
+                <h1>Professeur</h1>
+                <div class="search">
+                    <input type="text" placeholder="Search here..." />
+                </div>
+            </header>
+            <table >
 	<tr><td>Nom : </td><td>{{professeur.nom}}</td>
 	<tr><td>Prénom : </td><td>{{professeur.prenom}}</td></tr></tr>
 	<tr><td>rue : </td><td>{{professeur.numrue}} {{professeur.rue}}</td></tr>
@@ -16,7 +45,7 @@
 	<tr><td>mail : </td><td>{{professeur.mail}}</td></tr>
 	
  </table>
-	
-	 
-    </body>
+        </main>
+    </div>
+</body>
 </html>
