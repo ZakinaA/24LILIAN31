@@ -1,0 +1,218 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #dcd9e5;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo {
+    margin-left: -30px;
+    width: 250px;
+    margin-right: 10px;
+}
+
+.brand h2 {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.team-info {
+    margin-top: 20px;
+    color: #333;
+    font-size: 14px;
+}
+
+.menu ul, .organization ul {
+    list-style: none;
+    margin-top: -350px;
+}
+
+.menu ul li a, .organization ul li a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.menu ul li a.active, .menu ul li a:hover {
+    background-color: #9f98bf;
+    color: white;
+}
+
+.badge {
+    background-color: #ff5c5c;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.badge.new {
+    background-color: #4e8ef7;
+}
+
+/* Main Content */
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search input {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.tabs {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tab {
+    background-color: #e0e4f3;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.tab.active {
+    background-color: #4e8ef7;
+    color: white;
+}
+
+.search-tab {
+    margin-left: auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Table */
+.document-table {
+    width: 100vh;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.document-table th, .document-table td {
+    text-align: left;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.document-table th {
+    background-color: #f0f0f0;
+    color: #333;
+    font-weight: bold;
+}
+
+.document-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.doc-icon {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-size: cover;
+    margin-right: 10px;
+}
+
+.doc-icon.pdf {
+    background-image: url('pdf-icon.png');
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    text-align: center;
+    color: white;
+}
+
+.status.active {
+    background-color: #4caf50;
+}
+
+.status.complete {
+    background-color: #4e8ef7;
+}
+
+
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 1000; /* Ensure modal is on top */
+    justify-content: center;
+    align-items: center;
+    overflow: auto; /* Allow scrolling if content overflows */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fff;
+    margin: 15px;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%; /* Adjust the width to suit your needs */
+    max-width: 800px; /* Maximum width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #000;
+}

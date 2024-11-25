@@ -99,6 +99,34 @@ accessoireSupprimer:
     controller: App\Controller\AccessoireController::supprimerAccessoire
 
 # -----------------------------------------------------------------------------------------
+# Modele
+# -----------------------------------------------------------------------------------------
+
+app_modele:
+    path: /modele
+    controller: App\Controller\ModeleController::index
+
+app_modele_accueil:
+    path: /modele/accueil
+    controller: App\Controller\ModeleController::accueil
+
+modeleAjouter:
+    path: /modele/ajouter
+    controller: App\Controller\ModeleController::ajouterModele
+
+modeleLister:
+    path: /modele/lister
+    controller: App\Controller\ModeleController::listerModele
+
+modeleModifier:
+    path: /modele/modifier/{id}
+    controller: App\Controller\ModeleController::modifierModele
+
+modeleSupprimer:
+    path: /modele/supprimer/{id}
+    controller: App\Controller\ModeleController::supprimerModele
+
+# -----------------------------------------------------------------------------------------
 # Cours
 # -----------------------------------------------------------------------------------------
 
