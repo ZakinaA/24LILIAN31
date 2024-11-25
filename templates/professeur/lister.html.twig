@@ -1,10 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-
+    <meta charset="UTF-8">
+    <title>{% block title %}Liste des Professeurs{% endblock %}</title>
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 0;
+            font-size: 14px;
+            color: #555;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .tab-button.active {
+            color: #000;
+            font-weight: bold;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .tab-button:hover {
+            color: #000;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Ensure the modal is above all other content */
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -32,28 +96,27 @@
 
         <main class="main">
             <header class="main-header">
-                <h1>Professeur</h1>
+                <h1>Professeurs</h1>
                 <div class="search">
                     <input type="text" placeholder="Search here..." />
                 </div>
             </header>
             <table class="document-table">
-                {% for e in pProfesseurs %}
-                    <thead>
+                <tbody>
+                    {% for e in pProfesseurs %}
                         <tr>
                             <td>
                                 <a href="#" class="professor-name" 
-                                    data-id="{{ e.id }}"
-                                    data-nom="{{ e.nom }}"
-                                    data-prenom="{{ e.prenom }}"
-                                    data-numrue="{{ e.numrue }}"
-                                    data-rue="{{ e.rue }}"
-                                    data-copos="{{ e.copos }}"
-                                    data-ville="{{ e.ville }}"
-                                    data-tel="{{ e.tel }}"
-                                    data-mail="{{ e.mail }}">
+                                   data-id="{{ e.id }}"
+                                   data-nom="{{ e.nom }}"
+                                   data-prenom="{{ e.prenom }}"
+                                   data-numrue="{{ e.numrue }}"
+                                   data-rue="{{ e.rue }}"
+                                   data-copos="{{ e.copos }}"
+                                   data-ville="{{ e.ville }}"
+                                   data-tel="{{ e.tel }}"
+                                   data-mail="{{ e.mail }}">
                                     {{ e.nom }}
-                                    </a>
                                 </a>
                             </td>
                             <td>{{ e.prenom }}</td>
@@ -63,73 +126,113 @@
                             <td>Aucun professeur n'a été trouvé.</td>
                         </tr>
                     {% endfor %}
-                    </thead>
+                </tbody>
             </table>
         </main>
     </div>
 
-    <!-- Modal for displaying professor details -->
     <div id="professorModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Professeur Details</h2>
-            <table>
-                <tr><td>Nom : </td><td id="modal-nom"></td></tr>
-                <tr><td>Prénom : </td><td id="modal-prenom"></td></tr>
-                <tr><td>rue : </td><td id="modal-numrue"></td></tr>
-                <tr><td>code postal : </td><td id="modal-copos"></td></tr>
-                <tr><td>ville : </td><td id="modal-ville"></td></tr>
-                <tr><td>tel : </td><td id="modal-tel"></td></tr>
-                <tr><td>mail : </td><td id="modal-mail"></td></tr>
-            </table>
+            <button class="close-btn">&times;</button>
+            <h2>Détails du Professeur</h2>
+            <div class="tabs">
+                <button class="tab-button active" data-target="professor">Professeur</button>
+                <button class="tab-button" data-target="cours">Cours</button>
+                <button class="tab-button" data-target="intervention">Intervention</button>
+            </div>
+
+            <div class="tab-content">
+                <div class="tab-panel" id="professor">
+                    <table>
+                        <tr><td>Nom : </td><td id="modal-nom"></td></tr>
+                        <tr><td>Prénom : </td><td id="modal-prenom"></td></tr>
+                        <tr><td>Numéro de rue : </td><td id="modal-numrue"></td></tr>
+                        <tr><td>Rue : </td><td id="modal-rue"></td></tr>
+                        <tr><td>Code postal : </td><td id="modal-copos"></td></tr>
+                        <tr><td>Ville : </td><td id="modal-ville"></td></tr>
+                        <tr><td>Téléphone : </td><td id="modal-tel"></td></tr>
+                        <tr><td>Email : </td><td id="modal-mail"></td></tr>
+                    </table>
+                </div>
+
+                <div class="tab-panel hidden" id="cours">
+                    <table>
+                        <tr><td>Cours : </td><td>test</td></tr>
+                    </table>
+                </div>
+
+                <div class="tab-panel hidden" id="intervention">
+                    <table>
+                        <tr><td>Intervention : </td><td>test</td></tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // JavaScript to handle modal popup
-            const modal = document.getElementById("professorModal");
-            const closeModal = document.querySelector(".close-btn");
+        const modal = document.getElementById("professorModal");
+        const closeModal = document.querySelector(".close-btn");
 
-            document.querySelectorAll(".professor-name").forEach(link => {
-                link.addEventListener("click", function(event) {
-                    event.preventDefault();
+        document.querySelectorAll(".professor-name").forEach(link => {
+            link.addEventListener("click", function(event) {
+                event.preventDefault();
 
-                    // Fetch all the data attributes from the clicked element
-                    const professorId = this.getAttribute("data-id");
-                    const professorNom = this.getAttribute("data-nom");
-                    const professorPrenom = this.getAttribute("data-prenom");
-                    const professorNumRue = this.getAttribute("data-numrue");
-                    const professorRue = this.getAttribute("data-rue");
-                    const professorCopos = this.getAttribute("data-copos");
-                    const professorVille = this.getAttribute("data-ville");
-                    const professorTel = this.getAttribute("data-tel");
-                    const professorMail = this.getAttribute("data-mail");
+                // Fetch all the data attributes from the clicked element
+                const professorId = this.getAttribute("data-id");
+                const professorNom = this.getAttribute("data-nom");
+                const professorPrenom = this.getAttribute("data-prenom");
+                const professorNumRue = this.getAttribute("data-numrue");
+                const professorRue = this.getAttribute("data-rue");
+                const professorCopos = this.getAttribute("data-copos");
+                const professorVille = this.getAttribute("data-ville");
+                const professorTel = this.getAttribute("data-tel");
+                const professorMail = this.getAttribute("data-mail");
 
-                    // Populate the modal with professor's details
-                    document.getElementById("modal-nom").innerText = professorNom;
-                    document.getElementById("modal-prenom").innerText = professorPrenom;
-                    document.getElementById("modal-numrue").innerText = professorNumRue + " " + professorRue;
-                    document.getElementById("modal-copos").innerText = professorCopos;
-                    document.getElementById("modal-ville").innerText = professorVille;
-                    document.getElementById("modal-tel").innerText = professorTel;
-                    document.getElementById("modal-mail").innerText = professorMail;
+                // Populate the modal with professor's details
+                document.getElementById("modal-nom").innerText = professorNom;
+                document.getElementById("modal-prenom").innerText = professorPrenom;
+                document.getElementById("modal-numrue").innerText = professorNumRue + " " + professorRue;
+                document.getElementById("modal-copos").innerText = professorCopos;
+                document.getElementById("modal-ville").innerText = professorVille;
+                document.getElementById("modal-tel").innerText = professorTel;
+                document.getElementById("modal-mail").innerText = professorMail;
 
-                    // Open the modal
-                    modal.style.display = "block";
+                // Open the modal
+                modal.style.display = "flex";
+            });
+        });
+
+        closeModal.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabButtons = document.querySelectorAll(".tab-button");
+            const tabPanels = document.querySelectorAll(".tab-panel");
+
+            tabButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    tabButtons.forEach(btn => btn.classList.remove("active"));
+                    tabPanels.forEach(panel => panel.classList.add("hidden"));
+
+                    button.classList.add("active");
+                    const target = button.getAttribute("data-target");
+                    document.getElementById(target).classList.remove("hidden");
                 });
             });
 
-            closeModal.addEventListener("click", function() {
-                modal.style.display = "none";
-            });
-
-            // Close modal if clicked outside
-            window.onclick = function(event) {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            };
-
+            // Set the first tab as active
+            tabButtons[0].classList.add("active");
+            tabPanels[0].classList.remove("hidden");
+        });
     </script>
 </body>
 </html>
