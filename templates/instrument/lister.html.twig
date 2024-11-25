@@ -1,27 +1,243 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-		
-		LISTE DES ETUDIANTS</br>
-		<table>
-		{% for e in pInstruments %}
-		<tr>
-			<td><a href="{{ path('instrumentConsulter', { 'id': e.id }) }}">{{ e.numSerie }}</a></td>
-			<td>{{ e.marque.libelle }}</a></td>
-	{% else %}
-		<tr>
-		<td>Aucun instrument n'a été trouvé.</td>
-		</tr>
-	{% endfor %}
-	
-</table>
-	<a href="{{ path('instrumentAjouter')}}"> Ajouter un instrument </a>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Liste des Instruments{% endblock %}</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 0;
+            font-size: 14px;
+            color: #555;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .tab-button.active {
+            color: #000;
+            font-weight: bold;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .tab-button:hover {
+            color: #000;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            padding: 16px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel:not(.hidden) {
+            display: block;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Ensure the modal is above all other content */
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="../image/logo.png" alt="ProDeal" class="logo">
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="#" class="active">Accueil</a></li>
+                    <li><a href="http://localhost/24lilian31/public/instrument/lister">Instrument</a></li>
+                    <li><a href="http://localhost/24lilian31/public/cours/lister">Cours</a></li>
+                    <li><a href="http://localhost/24lilian31/public/eleve/lister">Eleve</a></li>
+                    <li><a href="http://localhost/24lilian31/public/intervention/lister">Intervention</a></li>
+                </ul>
+            </nav>
+            <div class="organization">
+                <ul>
+                    <li><a href="#">Déconnexion</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="main-header">
+                <h1>Instruments</h1>
+                <div class="search">
+                    <input type="text" placeholder="Search here..." />
+                </div>
+            </header>
+
+            <table class="document-table">
+                <tbody>
+                    {% for instrument in pInstruments %}
+                        <tr>
+                            <td>
+                                <a href="#" class="instrument-name" 
+                                   data-id="{{ instrument.id }}"
+                                   data-numSerie="{{ instrument.numSerie }}"
+                                   data-dateAchat="{{ instrument.dateAchat|date('d/m/Y') }}"
+                                   data-prixAchat="{{ instrument.prixAchat }}"
+                                   data-utilisation="{{ instrument.utilisation }}"
+                                   data-couleur="{{ instrument.couleur }}"
+                                   data-typeInstrument="{{ instrument.typeInstrument.libelle }}">
+                                    {{ instrument.numSerie }}
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>Aucun instrument n'a été trouvé.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <div id="instrumentModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <h2>Détails de l'instrument</h2>
+            <div class="tabs">
+                <button class="tab-button active" data-target="instrument">Instrument</button>
+                <button class="tab-button" data-target="modele">Prêt</button>
+                <button class="tab-button" data-target="marque">Intervention</button>
+                <button class="tab-button" data-target="accessoire">Accessoire</button>
+            </div>
+
+            <div class="tab-content">
+                <div class="tab-panel" id="instrument">
+                    <table>
+                        <tr><td>Numéro de série :</td><td><span id="modal-numSerie"></span></td></tr>
+                        <tr><td>Date d'achat :</td><td><span id="modal-dateAchat"></span></td></tr>
+                        <tr><td>Prix d'achat :</td><td><span id="modal-prixAchat"></span></td></tr>
+                        <tr><td>Utilisation :</td><td><span id="modal-utilisation"></span></td></tr>
+                        <tr><td>Couleur :</td><td><span id="modal-couleur"></span></td></tr>
+                        <tr><td>Type instrument :</td><td><span id="modal-typeInstrument"></span></td></tr>
+                    </table>
+                </div>
+
+                <div class="tab-panel hidden" id="modele">
+                    <table>
+                        <tr><td>Prêt :</td><td>test</td></tr>
+                    </table>
+                </div>
+
+                <div class="tab-panel hidden" id="marque">
+                    <table>
+                        <tr><td>Intervention :</td><td>test</td></tr>
+                    </table>
+                </div>
+
+                <div class="tab-panel hidden" id="accessoire">
+                    <p>test.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("instrumentModal");
+        const closeModal = document.querySelector(".close-btn");
+
+        document.querySelectorAll(".instrument-name").forEach(link => {
+            link.addEventListener("click", function(event) {
+                event.preventDefault();
+
+                const instrumentId = this.getAttribute("data-id");
+                const numSerie = this.getAttribute("data-numSerie");
+                const dateAchat = this.getAttribute("data-dateAchat");
+                const prixAchat = this.getAttribute("data-prixAchat");
+                const utilisation = this.getAttribute("data-utilisation");
+                const couleur = this.getAttribute("data-couleur");
+                const typeInstrument = this.getAttribute("data-typeInstrument");
+
+                document.getElementById("modal-numSerie").innerText = numSerie;
+                document.getElementById("modal-dateAchat").innerText = dateAchat;
+                document.getElementById("modal-prixAchat").innerText = prixAchat;
+                document.getElementById("modal-utilisation").innerText = utilisation;
+                document.getElementById("modal-couleur").innerText = couleur;
+                document.getElementById("modal-typeInstrument").innerText = typeInstrument;
+
+                modal.style.display = "flex";
+            });
+        });
+
+        closeModal.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabButtons = document.querySelectorAll(".tab-button");
+            const tabPanels = document.querySelectorAll(".tab-panel");
+
+            tabButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    tabButtons.forEach(btn => btn.classList.remove("active"));
+                    tabPanels.forEach(panel => panel.classList.add("hidden"));
+
+                    button.classList.add("active");
+                    const target = button.getAttribute("data-target");
+                    document.getElementById(target).classList.remove("hidden");
+                });
+            });
+
+            // Set the first tab as active
+            tabButtons[0].classList.add("active");
+            tabPanels[0].classList.remove("hidden");
+        });
+    </script>
+</body>
 </html>
