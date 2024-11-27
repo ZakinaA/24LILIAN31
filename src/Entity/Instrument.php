@@ -46,10 +46,18 @@ class Instrument
     #[ORM\OneToMany(targetEntity: Accessoire::class, mappedBy: 'instrument')]
     private Collection $accessoires;
 
+    #[ORM\OneToMany(targetEntity: Intervention::class, mappedBy: 'instrument')]
+    private Collection $interventions;
+
+    #[ORM\OneToMany(targetEntity: Pret::class, mappedBy: 'instrument')]
+    private Collection $prets;
+
     public function __construct()
     {
         $this->modele = new ArrayCollection();
         $this->accessoires = new ArrayCollection();
+        $this->interventions = new ArrayCollection();
+        $this->prets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -201,6 +209,66 @@ class Instrument
             // set the owning side to null (unless already changed)
             if ($accessoire->getInstrument() === $this) {
                 $accessoire->setInstrument(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Intervention>
+     */
+    public function getInterventions(): Collection
+    {
+        return $this->interventions;
+    }
+
+    public function addIntervention(Intervention $intervention): static
+    {
+        if (!$this->interventions->contains($intervention)) {
+            $this->interventions->add($intervention);
+            $intervention->setInstrument($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIntervention(Intervention $intervention): static
+    {
+        if ($this->interventions->removeElement($intervention)) {
+            // set the owning side to null (unless already changed)
+            if ($intervention->getInstrument() === $this) {
+                $intervention->setInstrument(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pret>
+     */
+    public function getPrets(): Collection
+    {
+        return $this->prets;
+    }
+
+    public function addPret(Pret $pret): static
+    {
+        if (!$this->prets->contains($pret)) {
+            $this->prets->add($pret);
+            $pret->setInstrument($this);
+        }
+
+        return $this;
+    }
+
+    public function removePret(Pret $pret): static
+    {
+        if ($this->prets->removeElement($pret)) {
+            // set the owning side to null (unless already changed)
+            if ($pret->getInstrument() === $this) {
+                $pret->setInstrument(null);
             }
         }
 

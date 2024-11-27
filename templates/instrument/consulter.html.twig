@@ -1,22 +1,49 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        
-    </head>
-    <body>       
-		<h5>PAGE DE CONSULTATION D'UN ETUDIANT</h5>
- <p>
-  <table >
-	<tr><td>Num série : </td><td>{{instrument.numSerie}}</td></tr>
-    <tr><td>Date achat : </td><td>{{ instrument.dateAchat|date('d/m/Y H:i') }}</td></tr>
-                
-    <tr><td>Prix achat : </td><td>{{instrument.prixAchat}}</td></tr>
-	<tr><td>Utilisation : </td><td>{{instrument.utilisation}}</td></tr>
-	<tr><td>Couleur : </td><td>{{instrument.couleur}}</td></tr>
-	<tr><td>Type instrument : </td><td>{{instrument.typeInstrument.libelle}}</td></tr>
-	<tr><td>Marque : </td><td>{{instrument.marque.libelle}}</td></tr>
- </table>
-	
-	 
-    </body>
-</html>
+{% extends 'base.html.twig' %}
+
+{% block title %}Instrument - {{ instrument.numSerie }}{% endblock %}
+
+{% block body %}
+    <h1>Détails de l'instrument</h1>
+
+    <table>
+        <tr><td>Numéro de série :</td><td>{{ instrument.numSerie }}</td></tr>
+        <tr><td>Date d'achat :</td><td>{{ instrument.dateAchat|date('d/m/Y') }}</td></tr>
+        <tr><td>Prix d'achat :</td><td>{{ instrument.prixAchat }}</td></tr>
+        <tr><td>Utilisation :</td><td>{{ instrument.utilisation }}</td></tr>
+        <tr><td>Couleur :</td><td>{{ instrument.couleur }}</td></tr>
+        <tr><td>Type instrument :</td><td>{{ instrument.typeInstrument.libelle }}</td></tr>
+    </table>
+
+    <h2>Interventions</h2>
+    {% if interventions is not empty %}
+        <ul>
+            {% for intervention in interventions %}
+                <li>
+                    descriptif {{ intervention.descriptif }} - <br> 
+                    date debut {{ intervention.dateDebut|date('d/m/Y') }} - <br>
+                   prix : {{ intervention.prix }} €
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune intervention trouvée.</p>
+    {% endif %}
+
+    <h2>Prêts</h2>
+    {% if prets is not empty %}
+        <ul>
+            {% for pret in prets %}
+                <li>
+    Prêt effectué le {{ pret.dateDebut|date('d/m/Y') }} - <br>
+    date fin : {{ pret.dateFin|date('d/m/Y') }} - <br>
+    etat detaille debut : {{ pret.etatDetailleDebut}} - <br>
+    etat detaille retour : {{ pret.etatDetailleRetour}} - 
+
+</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun prêt trouvé.</p>
+    {% endif %}
+
+{% endblock %}
