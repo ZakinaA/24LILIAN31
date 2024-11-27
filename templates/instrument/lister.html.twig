@@ -125,7 +125,8 @@
                                    data-prixAchat="{{ instrument.prixAchat }}"
                                    data-utilisation="{{ instrument.utilisation }}"
                                    data-couleur="{{ instrument.couleur }}"
-                                   data-typeInstrument="{{ instrument.typeInstrument.libelle }}">
+                                   data-typeInstrument="{{ instrument.typeInstrument.libelle }}"
+                                   data-interventions="{{ instrument.interventions|json_encode }}">
                                     {{ instrument.numSerie }}
                                 </a>
                             </td>
@@ -170,19 +171,16 @@
                 </div>
 
                 <div class="tab-panel hidden" id="marque">
-                    <table>
-                        <tr><td>Intervention :</td><td>test</td></tr>
-                    </table>
-                </div>
-
-                <div class="tab-panel hidden" id="accessoire"> {% for instrument in pInstruments %}
-                    <p>{{instrument.accessoire.libelle}}</p>{% endfor %}
+                    <ul id="interventionsList">
+					
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Modal functionality
         const modal = document.getElementById("instrumentModal");
         const closeModal = document.querySelector(".close-btn");
 
@@ -197,7 +195,9 @@
                 const utilisation = this.getAttribute("data-utilisation");
                 const couleur = this.getAttribute("data-couleur");
                 const typeInstrument = this.getAttribute("data-typeInstrument");
+                const interventions = JSON.parse(this.getAttribute("data-interventions"));
 
+                // Update modal with instrument details
                 document.getElementById("modal-numSerie").innerText = numSerie;
                 document.getElementById("modal-dateAchat").innerText = dateAchat;
                 document.getElementById("modal-prixAchat").innerText = prixAchat;
@@ -205,10 +205,27 @@
                 document.getElementById("modal-couleur").innerText = couleur;
                 document.getElementById("modal-typeInstrument").innerText = typeInstrument;
 
+                // Handle interventions
+                const interventionsContainer = document.getElementById("interventionsList");
+                interventionsContainer.innerHTML = '';  // Clear previous interventions
+                if (interventions.length > 0) {
+                    interventions.forEach(function(intervention) {
+                        const li = document.createElement("li");
+                        li.innerText = `${intervention.descriptif} (${new Date(intervention.dateDebut).toLocaleDateString()}) - ${intervention.prix} €`;
+                        interventionsContainer.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement("li");
+                    li.innerText = "Aucune intervention disponible.";
+                    interventionsContainer.appendChild(li);
+                }
+
+                // Display modal
                 modal.style.display = "flex";
             });
         });
 
+        // Close modal
         closeModal.addEventListener("click", function() {
             modal.style.display = "none";
         });
@@ -219,6 +236,7 @@
             }
         };
 
+        // Tab functionality
         document.addEventListener("DOMContentLoaded", function () {
             const tabButtons = document.querySelectorAll(".tab-button");
             const tabPanels = document.querySelectorAll(".tab-panel");

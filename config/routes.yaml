@@ -157,3 +157,43 @@ app_cours_supprimer:
 app_coursModifier:
     path: /cours/modifier/{id}
     controller: App\Controller\CoursController::modifierCours
+
+# -----------------------------------------------------------------------------------------
+# Pret
+# -----------------------------------------------------------------------------------------
+
+app_pret:
+    path: /pret
+    controller: App\Controller\PretController::index
+
+app_accueilpret:
+    path: /pret/accueil
+    controller: App\Controller\PretController::accueil
+
+pre_consulter:
+    path: /pret/consulter/{id}
+    controller: App\Controller\PretController::consulterPret
+
+pre_lister:
+    path: /pret/lister
+    controller: App\Controller\PretController::listerPret
+
+# -----------------------------------------------------------------------------------------
+# Intervention
+# -----------------------------------------------------------------------------------------
+
+app_intervention:
+    path: /intervention
+    controller: App\Controller\InterventionController::index
+
+app_accueilintervention:
+    path: /intervention/accueil
+    controller: App\Controller\InterventionController::accueil
+
+con_consulter:
+    path: /intervention/consulter/{id}
+    controller: App\Controller\InterventionController::consulterIntervention
+
+con_lister:
+    path: /intervention/lister
+    controller: App\Controller\InterventionController::listerIntervention

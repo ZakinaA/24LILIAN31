@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\EleveRepository;
+use App\Repository\ResponsableRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EleveRepository::class)]
-class Eleve
+#[ORM\Entity(repositoryClass: ResponsableRepository::class)]
+class Responsable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -39,15 +39,12 @@ class Eleve
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
 
-    #[ORM\OneToMany(targetEntity: Pret::class, mappedBy: 'eleve')]
-    private Collection $prets;
-
-    #[ORM\ManyToOne(inversedBy: 'eleves')]
-    private ?Responsable $responsable = null;
+    #[ORM\OneToMany(targetEntity: Eleve::class, mappedBy: 'responsable')]
+    private Collection $eleves;
 
     public function __construct()
     {
-        $this->prets = new ArrayCollection();
+        $this->eleves = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -152,43 +149,31 @@ class Eleve
     }
 
     /**
-     * @return Collection<int, Pret>
+     * @return Collection<int, Eleve>
      */
-    public function getPrets(): Collection
+    public function getEleves(): Collection
     {
-        return $this->prets;
+        return $this->eleves;
     }
 
-    public function addPret(Pret $pret): static
+    public function addElefe(Eleve $elefe): static
     {
-        if (!$this->prets->contains($pret)) {
-            $this->prets->add($pret);
-            $pret->setEleve($this);
+        if (!$this->eleves->contains($elefe)) {
+            $this->eleves->add($elefe);
+            $elefe->setResponsable($this);
         }
 
         return $this;
     }
 
-    public function removePret(Pret $pret): static
+    public function removeElefe(Eleve $elefe): static
     {
-        if ($this->prets->removeElement($pret)) {
+        if ($this->eleves->removeElement($elefe)) {
             // set the owning side to null (unless already changed)
-            if ($pret->getEleve() === $this) {
-                $pret->setEleve(null);
+            if ($elefe->getResponsable() === $this) {
+                $elefe->setResponsable(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getResponsable(): ?Responsable
-    {
-        return $this->responsable;
-    }
-
-    public function setResponsable(?Responsable $responsable): static
-    {
-        $this->responsable = $responsable;
 
         return $this;
     }

@@ -1,22 +1,128 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="../image/logo.png" alt="ProDeal" class="logo">
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="#" class="active">Accueil</a></li>
+                    <li><a href="http://localhost/24lilian31/public/instrument/lister">Instrument</a></li>
+                    <li><a href="http://localhost/24lilian31/public/professeur/lister">Professeur</a></li>
+                    <li><a href="http://localhost/24lilian31/public/cours/lister">Cours</a></li>
+                    <li><a href="http://localhost/24lilian31/public/eleve/lister">Eleve</a></li>
+                    <li><a href="http://localhost/24lilian31/public/intervention/lister">Intervention</a></li>
+                </ul>
+            </nav>
+            <div class="organization">
+                <ul>
+                    <li><a href="#">Déconnexion</a></li>
+                </ul>
+            </div>
+        </aside>
 
-{% block title %}Liste des Cours{% endblock %}
+        <main class="main">
+            <header class="main-header">
+                <h1>Cours</h1>
+                <div class="search">
+                    <input type="text" placeholder="Search here..." />
+                </div>
+            </header>
+            <table class="document-table">
+                <thead>
+                    <tr>
+                        <th>Nom du Cours</th>
+                        <th>Libellé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in pCours %}
+                        <tr>
+                            <td>
+                                <a href="#" class="professor-name"
+                                    data-id="{{ e.id }}"
+                                    data-libelle="{{ e.libelle }}"
+                                    data-ageMini="{{ e.ageMini }}"
+                                    data-heureDebut="{{ e.heureDebut|date('H:i') }}"
+                                    data-heureFin="{{ e.heureFin|date('H:i') }}"
+                                >
+                                    {{ e.libelle }}
+                                </a>
+                            </td>
+                            <td>{{ e.libelle }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="2">Aucun cours n'a été trouvé.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
 
-{% block body %}
-    <h1>LISTE DES COURS</h1>
-    <table>
-        {% for e in pCours %}
-        <tr>
-            <td><a href="{{ path('app_consulter', { 'id': e.id }) }}">{{ e.libelle }}</a></td>
-         
-        </tr>
-        {% else %}
-        <tr>
-            <td>Aucun Cours n'a été trouvé.</td>
-        </tr>
-        {% endfor %}
-    </table>
-	<div class="bouton">
-		<a href="{{ path('app_ajouter') }}" class="btn btn-primary">Ajouter un Cours</a>
-	</div>
-{% endblock %}
+    <div id="professorModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Professeur Details</h2>
+            <table>
+                <tr><td>libelle : </td><td id="modal-libelle"></td></tr>
+                <tr><td>jour : </td><td id="modal-jour"></td></tr>
+                <tr><td>heure debut : </td><td id="modal-heureDebut"></td></tr>
+                <tr><td>heure fin : </td><td id="modal-heureFin"></td></tr>
+                <tr><td>type cours : </td><td id="modal-typeCours"></td></tr>
+                <tr><td>type instrument : </td><td id="modal-typeInstrument"></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("professorModal");
+        const closeModal = document.querySelector(".close-btn");
+
+        document.querySelectorAll(".professor-name").forEach(link => {
+            link.addEventListener("click", function(event) {
+                event.preventDefault(); // Empêche l'action par défaut du lien
+
+                // Récupérer les données stockées dans l'élément <a> cliqué
+                const professorLibelle = this.getAttribute("data-libelle");
+                const professorJour = this.getAttribute("data-jour");
+                const professorHeureDebut = this.getAttribute("data-heureDebut");
+                const professorHeureFin = this.getAttribute("data-heureFin");
+                const professorTypeCours = this.getAttribute("data-typeCours");
+                const professorTypeInstrument = this.getAttribute("data-typeInstrument");
+
+                // Remplir les champs du modal avec les données récupérées
+                document.getElementById("modal-libelle").innerText = professorLibelle;
+                document.getElementById("modal-jour").innerText = professorJour;
+                document.getElementById("modal-heureDebut").innerText = professorHeureDebut;
+                document.getElementById("modal-heureFin").innerText = professorHeureFin;
+                document.getElementById("modal-typeCours").innerText = professorTypeCours;
+                document.getElementById("modal-typeInstrument").innerText = professorTypeInstrument;
+
+                // Afficher le modal
+                modal.style.display = "block";
+            });
+        });
+
+        // Fermer le modal
+        closeModal.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+
+        // Fermer le modal en cliquant à l'extérieur de la fenêtre
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+    </script>
+</body>
+</html>

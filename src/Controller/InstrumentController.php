@@ -5,6 +5,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\Pret;
+use App\Entity\Intervention;
 use App\Entity\Instrument;
 use App\Entity\Maison;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -31,20 +33,31 @@ class InstrumentController extends AbstractController
         ]);
     }
 
-    public function consulterInstrument(ManagerRegistry $doctrine, int $id){
+    public function consulterInstrument(ManagerRegistry $doctrine, int $id)
+{
+    // Récupérer l'instrument avec ses interventions et prêts associés
+    $instrument = $doctrine->getRepository(Instrument::class)->find($id);
 
-		$instrument= $doctrine->getRepository(Instrument::class)->find($id);
+    if (!$instrument) {
+        throw $this->createNotFoundException(
+            'Aucun instrument trouvé avec le numéro ' . $id
+        );
+    }
 
-		if (!$instrument) {
-			throw $this->createNotFoundException(
-            'Aucun instrument trouvé avec le numéro '.$id
-			);
-		}
+    // Récupérer les interventions liées à cet instrument
+    $interventions = $doctrine->getRepository(Intervention::class)->findBy(['instrument' => $instrument]);
 
-		//return new Response('Instrument : '.$instrument->getNom());
-		return $this->render('instrument/consulter.html.twig', [
-            'instrument' => $instrument,]);
-	}
+    // Récupérer les prêts associés à cet instrument
+    $prets = $doctrine->getRepository(Pret::class)->findBy(['instrument' => $instrument]);
+
+    // Passer l'instrument, les interventions et les prêts à la vue
+    return $this->render('instrument/consulter.html.twig', [
+        'instrument' => $instrument,
+        'interventions' => $interventions,
+        'prets' => $prets,
+    ]);
+}
+
 
     public function listerInstrument(ManagerRegistry $doctrine){
 
