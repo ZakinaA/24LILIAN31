@@ -1,51 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+{% extends 'base.html.twig' %}
 
-    <link rel="stylesheet" href="../../css/style.css">
-</head>
-<body>
-    <div class="container">
-        <aside class="sidebar">
-            <div class="brand">
-                <img src="../../image/logo.png" alt="ProDeal" class="logo">
-            </div>
-            <nav class="menu">
-                <ul>
-                    <li><a href="#" class="active">Accueil</a></li>
-                    <li><a href="http://localhost/24lilian31/public/instrument/lister">Instrument</a></li>
-                    <li><a href="http://localhost/24lilian31/public/professeur/lister">Professeur</a></li>
-                    <li><a href="http://localhost/24lilian31/public/cours/lister">Cours</a></li>
-                    <li><a href="http://localhost/24lilian31/public/eleve/lister">Eleve</a></li>
-                    <li><a href="http://localhost/24lilian31/public/intervention/lister">Intervention</a></li>
-                </ul>
-            </nav>
-            <div class="organization">
-                <ul>
-                    <li><a href="#">Déconnexion</a></li>
-                </ul>
-            </div>
-        </aside>
-        <main class="main">
-            <header class="main-header">
-                <h1>Professeur</h1>
-                <div class="search">
-                    <input type="text" placeholder="Search here..." />
-                </div>
-            </header>
-            <table >
-	<tr><td>Nom : </td><td>{{professeur.nom}}</td>
-	<tr><td>Prénom : </td><td>{{professeur.prenom}}</td></tr></tr>
-	<tr><td>rue : </td><td>{{professeur.numrue}} {{professeur.rue}}</td></tr>
-	<tr><td>code postal : </td><td>{{professeur.copos}}</td></tr>
-	<tr><td>ville : </td><td>{{professeur.ville}}</td></tr>
-	<tr><td>tel : </td><td>{{professeur.tel}}</td></tr>
-	<tr><td>mail : </td><td>{{professeur.mail}}</td></tr>
-	
- </table>
-        </main>
+{% block title %}Emploi du temps de {{ professeur.nom }}{% endblock %}
+
+{% block body %}
+    <h1>Emploi du temps de {{ professeur.nom }}</h1>
+
+    <div class="planning">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Heures</th>
+                    {% for jour in jours %}
+                        <th>{{ jour }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for heure in heures %}
+                    <tr>
+                        <td><strong>{{ heure }}h</strong></td>
+                        {% for jour in jours %}
+                            <td>
+                                {% if planning[jour][heure] %}
+                                    {{ planning[jour][heure] }}
+                                {% else %}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</body>
-</html>
+
+{% endblock %}
