@@ -46,7 +46,7 @@
             background: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
-            z-index: 9999; /* Ensure the modal is above all other content */
+            z-index: 9999; 
         }
 
         .modal-content {
@@ -72,7 +72,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="brand">
                 <img src="../image/logo.png" alt="ProDeal" class="logo">
@@ -125,7 +124,8 @@
                         <tr>
                             <td>Aucun professeur n'a été trouvé.</td>
                         </tr>
-                    {% endfor %}
+                        {% endfor %}
+                    
                 </tbody>
             </table>
         </main>
@@ -157,7 +157,14 @@
 
                 <div class="tab-panel hidden" id="cours">
                     <table>
-                        <tr><td>Cours : </td><td>test</td></tr>
+                        <tr><td><strong>Cours :</strong></td>
+                    <td>
+                        {% for e in pProfesseurs %}
+                        <a href="{{ path('professeurConsulter', {'id': e.id}) }}">
+                            <button>Consulter emploi du temps</button>
+                            {% endfor %}
+                        </a>
+                    </td></tr>
                     </table>
                 </div>
 
@@ -178,7 +185,6 @@
             link.addEventListener("click", function(event) {
                 event.preventDefault();
 
-                // Fetch all the data attributes from the clicked element
                 const professorId = this.getAttribute("data-id");
                 const professorNom = this.getAttribute("data-nom");
                 const professorPrenom = this.getAttribute("data-prenom");
@@ -189,7 +195,6 @@
                 const professorTel = this.getAttribute("data-tel");
                 const professorMail = this.getAttribute("data-mail");
 
-                // Populate the modal with professor's details
                 document.getElementById("modal-nom").innerText = professorNom;
                 document.getElementById("modal-prenom").innerText = professorPrenom;
                 document.getElementById("modal-numrue").innerText = professorNumRue + " " + professorRue;
@@ -198,7 +203,6 @@
                 document.getElementById("modal-tel").innerText = professorTel;
                 document.getElementById("modal-mail").innerText = professorMail;
 
-                // Open the modal
                 modal.style.display = "flex";
             });
         });
@@ -207,7 +211,6 @@
             modal.style.display = "none";
         });
 
-        // Close modal if clicked outside
         window.onclick = function(event) {
             if (event.target === modal) {
                 modal.style.display = "none";
@@ -229,7 +232,6 @@
                 });
             });
 
-            // Set the first tab as active
             tabButtons[0].classList.add("active");
             tabPanels[0].classList.remove("hidden");
         });

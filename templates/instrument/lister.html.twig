@@ -175,8 +175,8 @@
                     </table>
                 </div>
 
-                <div class="tab-panel hidden" id="accessoire">
-                    <p>test.</p>
+                <div class="tab-panel hidden" id="accessoire"> {% for instrument in pInstruments %}
+                    <p>{{instrument.accessoire.libelle}}</p>{% endfor %}
                 </div>
             </div>
         </div>
