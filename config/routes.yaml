@@ -157,4 +157,3 @@ app_cours_supprimer:
 app_coursModifier:
     path: /cours/modifier/{id}
     controller: App\Controller\CoursController::modifierCours
-
