@@ -25,6 +25,9 @@ class Inscription
     #[ORM\OneToMany(targetEntity: Paiement::class, mappedBy: 'inscription')]
     private Collection $paiements;
 
+    #[ORM\ManyToOne(inversedBy: 'inscription')]
+    private ?Eleve $eleve = null;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -85,6 +88,18 @@ class Inscription
                 $paiement->setInscription(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEleve(): ?Eleve
+    {
+        return $this->eleve;
+    }
+
+    public function setEleve(?Eleve $eleve): static
+    {
+        $this->eleve = $eleve;
 
         return $this;
     }
