@@ -1,2 +1,30 @@
 {% extends 'base.html.twig' %}
 
+
+{% block content %}
+
+    <h1>Liste des élèves</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in eEleves %}
+                <tr>
+                    <td><a href="{{ path('eleveConsulter', { 'id': e.id }) }}">{{ e.nom }}</a></td>
+                    <td>{{ e.prenom }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2">Aucun élève n'a été trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('eleveAjouter') }}">Ajouter un élève</a>
+
+{% endblock %}

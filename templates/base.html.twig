@@ -5,10 +5,14 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {% block stylesheets %}
-            <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+            <link rel="stylesheet" href="../css/style.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+            
         {% endblock %}
         <style>
-        /* Tabs */
+        body{
+            background-color: #0A0D14;
+        }
         .tabs {
             display: flex;
             justify-content: space-around;
@@ -38,7 +42,6 @@
             color: #000;
         }
 
-        /* Tab Content */
         .tab-content {
             padding: 16px;
         }
@@ -62,7 +65,7 @@
             background: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
-            z-index: 9999; /* Ensure the modal is above all other content */
+            z-index: 9999; 
         }
 
         .modal-content {
@@ -84,34 +87,109 @@
             top: 10px;
             right: 10px;
         }
+
+        .sidebar {
+            margin-top:20px;
+            margin-left:20px;
+            position: fixed;
+            border-radius: 30px;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #181B22;
+            height: 95%;
+            padding-top: 20px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .sidebar .brand img {
+            display: block;
+            margin: 0 auto;
+            max-width: 80%; 
+            margin-bottom: 20px; 
+        }
+
+        /* Menu */
+        .menu ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0; 
+        }
+
+        .menu ul li a {
+            display: block;
+            padding: 12px 20px;
+            color: #D0D2D1;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .menu ul li a.active {
+            border-radius:13px;
+            background-color: #313237;
+            color: white;
+        }
+
+        .organization a {
+            margin-left: 20px;
+            position: absolute;
+            bottom: 20px;
+            color: #D0D2D1;
+            text-decoration: none;
+        }
+
+        .menu ul li a:hover {
+            background-color: #313237;
+            border-radius:13px;
+            color: white;
+        }
+        .listerEleve h1 {
+            color: red;
+            margin: 0;
+        }
+
+
+        .contenu-site {
+            margin-left:20%;
+            color:white;
+            margin-top:2%;
+        }
         </style>
-        {% block javascripts %}
-            {#{{ asset('js/app.js') }}#} <!-- Exemples pour lier le fichier JS -->
-        {% endblock %}
     </head>
     <body>
-        <aside class="sidebar">
-            <div class="brand">
-                <img src="../image/logo.png" alt="ProDeal" class="logo">
-            </div>
-            <nav class="menu">
-                <ul>
-                    <li><a href="#" class="active">Accueil</a></li>
-                    <li><a href="">Instrument</a></li>
-                    <li><a href="">Cours</a></li>
-                    <li><a href="">Eleve</a></li>
-                    <li><a href="">Intervention</a></li>
-                </ul>
-            </nav>
-            <div class="organization">
-                <ul>
-                    <li><a href="#">Déconnexion</a></li>
-                </ul>
-            </div>
-        </aside>
-        <main>
-            {% block content %}
-            {% endblock %}
-        </main>
-    </body>
+
+
+    <aside class="sidebar">
+    <nav class="menu">
+        <div class="brand">
+        <img src="{{ asset('image/logo.png') }}?v={{ random() }}" alt="Logo">
+    </div>
+        <ul>
+            <li><a href="#" class="active"><i class="fas fa-home"></i>&nbsp&nbsp Accueil</a></li>
+            <li><a href=""><i class="fas fa-keyboard"></i>&nbsp&nbsp Instrument</a></li>
+            <li><a href=""><i class="fas fa-book"></i>&nbsp&nbsp Cours</a></li>
+            <li><a href=""><i class="fas fa-user-plus"></i>&nbsp&nbsp Inscription</a></li>
+            <li><a href=""><i class="fas fa-child"></i>&nbsp&nbsp Eleve</a></li>
+            <li><a href=""><i class="fas fa-chalkboard-teacher"></i>&nbsp&nbsp Professeur</a></li>
+            <li><a href=""><i class="fas fa-wrench"></i>&nbsp&nbsp Intervention</a></li>
+        </ul>
+    <div class="organization">
+        <a href="#"><i class="fas fa-sign-out-alt"></i>&nbsp&nbsp Déconnexion</a>
+    </div>
+
+    </nav>
+    </aside>
+
+
+<div class="contenu-site">
+   
+{% block content %}
+{% endblock %}
+
+</div>
+
+</body>
 </html>
+
