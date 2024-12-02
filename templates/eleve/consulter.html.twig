@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page de Consultation d'un Étudiant</title>
+    </head>
+    <body>       
+        <h5>PAGE DE CONSULTATION D'UN ETUDIANT</h5>
+        <p>
+            <table>
+                <tr><td>Nom : </td><td>{{ eleve.nom }}</td></tr>
+                <tr><td>Prénom : </td><td>{{ eleve.prenom }}</td></tr>
+                <tr><td>Rue : </td><td>{{ eleve.numRue }} {{ eleve.rue }}</td></tr>
+                <tr><td>Code postal : </td><td>{{ eleve.copos }}</td></tr>
+                <tr><td>Ville : </td><td>{{ eleve.ville }}</td></tr>
+                <tr><td>Téléphone : </td><td>{{ eleve.tel }}</td></tr>
+                <tr><td>Email : </td><td>{{ eleve.mail }}</td></tr>
+            </table>
+        </p>
+        
+<h5>Cours de l'étudiant :</h5>
+        <ul>
+            {% for inscription in eleve.inscriptions %}
+                <li>
+                    <div class="course-info">
+                        <span>{{ inscription.cours.libelle }}</span> 
+                        <span>Inscrit depuis : {{ inscription.cours.inscriptions|length }} inscription(s)</span>
+                    </div>
+                    <div class="course-info">
+                        <span>Jour :</span> {{ inscription.cours.jour.libelle }} 
+                        
+                    </div>
+                </li>
+            {% else %}
+                <li>Aucun cours inscrit.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+    </body>
+</html>
