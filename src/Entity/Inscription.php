@@ -26,6 +26,7 @@ class Inscription
     private Collection $paiements;
 
     #[ORM\ManyToOne(inversedBy: 'eleves')]
+    #[ORM\ManyToOne(inversedBy: 'inscription')]
     private ?Eleve $eleve = null;
 
     public function __construct()

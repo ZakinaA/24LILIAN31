@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\EleveType;
 use App\Form\eleveModifierType;
+use Symfony\Component\Routing\Annotation\Route;
 
 class EleveController extends AbstractController
 {
@@ -117,4 +118,7 @@ class EleveController extends AbstractController
 
     return $this->redirectToRoute('eleveLister');
 }
+            'controller_name' => 'EleveController',
+        ]);
+    }
 }

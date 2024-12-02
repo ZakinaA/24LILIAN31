@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Accessoires{% endblock %}
+
+{% block body %}
+    <h1>Liste des Accessoires</h1>
+    <table>
+        {% for e in pAccessoires %}
+        <tr>
+            <td>{{ e.libelle }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td>Aucun accessoire n'a été trouvé.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="bouton">
+        <a href="{{ path('accessoireAjouter') }}" class="btn btn-primary">Ajouter un Accessoire</a>
+    </div>
+{% endblock %}

@@ -23,6 +23,9 @@ class Eleve
 
     #[ORM\Column(length: 255)]
     private ?string $numRue = null;
+=======
+    #[ORM\Column]
+    private ?int $numRue = null;
 
     #[ORM\Column(length: 255)]
     private ?string $rue = null;
@@ -47,6 +50,19 @@ class Eleve
     {
         // Initialiser la collection
         $this->inscriptions = new ArrayCollection();
+    #[ORM\OneToMany(targetEntity: Pret::class, mappedBy: 'eleve')]
+    private Collection $prets;
+
+    #[ORM\ManyToOne(inversedBy: 'eleves')]
+    private ?Responsable $responsable = null;
+
+    #[ORM\OneToMany(targetEntity: Inscription::class, mappedBy: 'eleve')]
+    private Collection $inscription;
+
+    public function __construct()
+    {
+        $this->prets = new ArrayCollection();
+        $this->inscription = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -77,6 +93,11 @@ class Eleve
     }
 
     public function getNumRue(): ?string
+
+        return $this;
+    }
+
+    public function getNumRue(): ?int
     {
         return $this->numRue;
     }
@@ -84,6 +105,10 @@ class Eleve
     public function setNumRue(string $numRue): static
     {
         $this->numRue = $numRue;
+    public function setNumRue(int $numRue): static
+    {
+        $this->numRue = $numRue;
+
         return $this;
     }
 
@@ -139,6 +164,49 @@ class Eleve
     public function setMail(string $mail): static
     {
         $this->mail = $mail;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pret>
+     */
+    public function getPrets(): Collection
+    {
+        return $this->prets;
+    }
+
+    public function addPret(Pret $pret): static
+    {
+        if (!$this->prets->contains($pret)) {
+            $this->prets->add($pret);
+            $pret->setEleve($this);
+        }
+
+        return $this;
+    }
+
+    public function removePret(Pret $pret): static
+    {
+        if ($this->prets->removeElement($pret)) {
+            // set the owning side to null (unless already changed)
+            if ($pret->getEleve() === $this) {
+                $pret->setEleve(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getResponsable(): ?Responsable
+    {
+        return $this->responsable;
+    }
+
+    public function setResponsable(?Responsable $responsable): static
+    {
+        $this->responsable = $responsable;
+
         return $this;
     }
 
@@ -148,12 +216,18 @@ class Eleve
     public function getInscriptions(): Collection
     {
         return $this->inscriptions;
+    public function getInscription(): Collection
+    {
+        return $this->inscription;
+
     }
 
     public function addInscription(Inscription $inscription): static
     {
         if (!$this->inscriptions->contains($inscription)) {
             $this->inscriptions->add($inscription);
+        if (!$this->inscription->contains($inscription)) {
+            $this->inscription->add($inscription);
             $inscription->setEleve($this);
         }
 
@@ -163,6 +237,8 @@ class Eleve
     public function removeInscription(Inscription $inscription): static
     {
         if ($this->inscriptions->removeElement($inscription)) {
+        if ($this->inscription->removeElement($inscription)) {
+
             // set the owning side to null (unless already changed)
             if ($inscription->getEleve() === $this) {
                 $inscription->setEleve(null);

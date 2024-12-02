@@ -41,6 +41,97 @@ professeurSupprimer:
 # -----------------------------------------------------------------------------------------
 # Cours
 # -----------------------------------------------------------------------------------------    
+# Instrument
+# -----------------------------------------------------------------------------------------
+
+app_instrument:
+    path: /instrument
+    controller: App\Controller\InstrumentController::index
+
+app_instrument_accueil:
+    path: /instrument/accueil
+    controller: App\Controller\InstrumentController::accueil
+
+instrumentAjouter:
+    path: /instrument/ajouter
+    controller: App\Controller\InstrumentController::ajouterInstrument
+
+instrumentConsulter:
+    path: /instrument/consulter/{id}
+    controller: App\Controller\InstrumentController::consulterInstrument
+
+instrumentLister:
+    path: /instrument/lister
+    controller: App\Controller\InstrumentController::listerInstrument
+
+instrumentModifier:
+    path: /instrument/modifier/{id}
+    controller: App\Controller\InstrumentController::modifierInstrument
+
+instrumentSupprimer:
+    path: /instrument/supprimer/{id}
+    controller: App\Controller\InstrumentController::supprimerInstrument
+
+
+# -----------------------------------------------------------------------------------------
+# Accessoire
+# -----------------------------------------------------------------------------------------
+
+app_accessoire:
+    path: /accessoire
+    controller: App\Controller\AccessoireController::index
+
+app_accessoire_accueil:
+    path: /accessoire/accueil
+    controller: App\Controller\AccessoireController::accueil
+
+accessoireAjouter:
+    path: /accessoire/ajouter
+    controller: App\Controller\AccessoireController::ajouterAccessoire
+
+accessoireLister:
+    path: /accessoire/lister
+    controller: App\Controller\AccessoireController::listerAccessoire
+
+accessoireModifier:
+    path: /accessoire/modifier/{id}
+    controller: App\Controller\AccessoireController::modifierAccessoire
+
+accessoireSupprimer:
+    path: /accessoire/supprimer/{id}
+    controller: App\Controller\AccessoireController::supprimerAccessoire
+
+# -----------------------------------------------------------------------------------------
+# Modele
+# -----------------------------------------------------------------------------------------
+
+app_modele:
+    path: /modele
+    controller: App\Controller\ModeleController::index
+
+app_modele_accueil:
+    path: /modele/accueil
+    controller: App\Controller\ModeleController::accueil
+
+modeleAjouter:
+    path: /modele/ajouter
+    controller: App\Controller\ModeleController::ajouterModele
+
+modeleLister:
+    path: /modele/lister
+    controller: App\Controller\ModeleController::listerModele
+
+modeleModifier:
+    path: /modele/modifier/{id}
+    controller: App\Controller\ModeleController::modifierModele
+
+modeleSupprimer:
+    path: /modele/supprimer/{id}
+    controller: App\Controller\ModeleController::supprimerModele
+
+# -----------------------------------------------------------------------------------------
+# Cours
+# -----------------------------------------------------------------------------------------
 
 app_cours:
     path: /cours
@@ -101,3 +192,44 @@ eleveModifier:
 eleveSupprimer:
     path: /eleve/supprimer/{id}
     controller: App\Controller\EleveController::supprimerEleve
+ 
+
+# -----------------------------------------------------------------------------------------
+# Pret
+# -----------------------------------------------------------------------------------------
+
+app_pret:
+    path: /pret
+    controller: App\Controller\PretController::index
+
+app_accueilpret:
+    path: /pret/accueil
+    controller: App\Controller\PretController::accueil
+
+pre_consulter:
+    path: /pret/consulter/{id}
+    controller: App\Controller\PretController::consulterPret
+
+pre_lister:
+    path: /pret/lister
+    controller: App\Controller\PretController::listerPret
+
+# -----------------------------------------------------------------------------------------
+# Intervention
+# -----------------------------------------------------------------------------------------
+
+app_intervention:
+    path: /intervention
+    controller: App\Controller\InterventionController::index
+
+app_accueilintervention:
+    path: /intervention/accueil
+    controller: App\Controller\InterventionController::accueil
+
+con_consulter:
+    path: /intervention/consulter/{id}
+    controller: App\Controller\InterventionController::consulterIntervention
+
+con_lister:
+    path: /intervention/lister
+    controller: App\Controller\InterventionController::listerIntervention
