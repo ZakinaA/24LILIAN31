@@ -25,8 +25,8 @@ class Inscription
     #[ORM\OneToMany(targetEntity: Paiement::class, mappedBy: 'inscription')]
     private Collection $paiements;
 
-    #[ORM\ManyToOne(inversedBy: 'eleves')]
-    #[ORM\ManyToOne(inversedBy: 'inscription')]
+    // Corrigez la relation ManyToOne ici
+    #[ORM\ManyToOne(inversedBy: 'inscriptions')] 
     private ?Eleve $eleve = null;
 
     public function __construct()
@@ -47,7 +47,6 @@ class Inscription
     public function setDateInscription(\DateTimeInterface $dateInscription): static
     {
         $this->dateInscription = $dateInscription;
-
         return $this;
     }
 
@@ -59,7 +58,6 @@ class Inscription
     public function setCours(?Cours $cours): static
     {
         $this->cours = $cours;
-
         return $this;
     }
 
