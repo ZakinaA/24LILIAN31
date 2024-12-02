@@ -3,11 +3,12 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
-
+    
 
 # -----------------------------------------------------------------------------------------
 # Professeur
 # -----------------------------------------------------------------------------------------
+
 
 app_professeur:
     path: /professeur
@@ -38,6 +39,8 @@ professeurSupprimer:
     controller: App\Controller\ProfesseurController::supprimerProfesseur
 
 # -----------------------------------------------------------------------------------------
+# Cours
+# -----------------------------------------------------------------------------------------    
 # Instrument
 # -----------------------------------------------------------------------------------------
 
@@ -157,6 +160,39 @@ app_cours_supprimer:
 app_coursModifier:
     path: /cours/modifier/{id}
     controller: App\Controller\CoursController::modifierCours
+
+# -----------------------------------------------------------------------------------------
+# Eleve
+# -----------------------------------------------------------------------------------------
+
+app_eleve:
+    path: /eleve
+    controller: App\Controller\EleveController::index
+
+app_eleve_accueil:
+    path: /eleve/accueil
+    controller: App\Controller\EleveController::accueil
+
+eleveAjouter:
+    path: /eleve/ajouter
+    controller: App\Controller\EleveController::ajouterEleve
+
+eleveConsulter:
+    path: /eleve/consulter/{id}
+    controller: App\Controller\EleveController::consulterEleve
+
+eleveLister:
+    path: /eleve/lister
+    controller: App\Controller\EleveController::listerEleve
+
+eleveModifier:
+    path: /eleve/modifier/{id}
+    controller: App\Controller\EleveController::modifierEleve
+
+eleveSupprimer:
+    path: /eleve/supprimer/{id}
+    controller: App\Controller\EleveController::supprimerEleve
+ 
 
 # -----------------------------------------------------------------------------------------
 # Pret

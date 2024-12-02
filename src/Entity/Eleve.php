@@ -21,6 +21,9 @@ class Eleve
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $numRue = null;
+=======
     #[ORM\Column]
     private ?int $numRue = null;
 
@@ -39,6 +42,14 @@ class Eleve
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
 
+    // Relation OneToMany avec Inscription
+    #[ORM\OneToMany(targetEntity: Inscription::class, mappedBy: 'eleve')]
+    private Collection $inscriptions;
+
+    public function __construct()
+    {
+        // Initialiser la collection
+        $this->inscriptions = new ArrayCollection();
     #[ORM\OneToMany(targetEntity: Pret::class, mappedBy: 'eleve')]
     private Collection $prets;
 
@@ -67,7 +78,6 @@ class Eleve
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -79,6 +89,10 @@ class Eleve
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
+        return $this;
+    }
+
+    public function getNumRue(): ?string
 
         return $this;
     }
@@ -88,6 +102,9 @@ class Eleve
         return $this->numRue;
     }
 
+    public function setNumRue(string $numRue): static
+    {
+        $this->numRue = $numRue;
     public function setNumRue(int $numRue): static
     {
         $this->numRue = $numRue;
@@ -103,7 +120,6 @@ class Eleve
     public function setRue(string $rue): static
     {
         $this->rue = $rue;
-
         return $this;
     }
 
@@ -115,7 +131,6 @@ class Eleve
     public function setCopos(int $copos): static
     {
         $this->copos = $copos;
-
         return $this;
     }
 
@@ -127,7 +142,6 @@ class Eleve
     public function setVille(string $ville): static
     {
         $this->ville = $ville;
-
         return $this;
     }
 
@@ -139,7 +153,6 @@ class Eleve
     public function setTel(int $tel): static
     {
         $this->tel = $tel;
-
         return $this;
     }
 
@@ -200,13 +213,19 @@ class Eleve
     /**
      * @return Collection<int, Inscription>
      */
+    public function getInscriptions(): Collection
+    {
+        return $this->inscriptions;
     public function getInscription(): Collection
     {
         return $this->inscription;
+
     }
 
     public function addInscription(Inscription $inscription): static
     {
+        if (!$this->inscriptions->contains($inscription)) {
+            $this->inscriptions->add($inscription);
         if (!$this->inscription->contains($inscription)) {
             $this->inscription->add($inscription);
             $inscription->setEleve($this);
@@ -217,7 +236,9 @@ class Eleve
 
     public function removeInscription(Inscription $inscription): static
     {
+        if ($this->inscriptions->removeElement($inscription)) {
         if ($this->inscription->removeElement($inscription)) {
+
             // set the owning side to null (unless already changed)
             if ($inscription->getEleve() === $this) {
                 $inscription->setEleve(null);
