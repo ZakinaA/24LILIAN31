@@ -1,5 +1,17 @@
 {% extends 'base.html.twig' %}
-
+{% block content %}
+<style>
+    a {
+        text-decoration:none;
+    }
+    h1{
+        font-size: 40px;
+    }
+    .document-table a{
+     font-size: 25px;
+    }
+</style>
+<h1> Liste des instruments</h1>
     <table class="document-table">
         <tbody>
             {% for instrument in pInstruments %}
@@ -10,14 +22,18 @@
                         data-numSerie="{{ instrument.numSerie }}"
                         data-dateAchat="{{ instrument.dateAchat|date('d/m/Y') }}"
                         data-prixAchat="{{ instrument.prixAchat }}"
-                                   data-utilisation="{{ instrument.utilisation }}"
-                                   data-couleur="{{ instrument.couleur }}"
-                                   data-typeInstrument="{{ instrument.typeInstrument.libelle }}"
-                                   data-interventions="{{ instrument.interventions|json_encode }}">
-                                    {{ instrument.numSerie }}
-                                </a>
-                            </td>
-                        </tr>
+                        data-utilisation="{{ instrument.utilisation }}"
+                        data-couleur="{{ instrument.couleur }}"
+                        data-typeInstrument="{{ instrument.typeInstrument.libelle }}"
+                        data-interventions="{{ instrument.interventions|json_encode }}">
+                       <div class="liste-instrument">
+                        ○&nbsp&nbsp{{ instrument.numSerie }}&nbsp&nbsp&nbsp&nbsp{{ instrument.utilisation }}&nbsp&nbsp&nbsp&nbsp{{ instrument.couleur }}&nbsp&nbsp&nbsp&nbsp{{ instrument.typeInstrument.libelle }}
+                       </div>
+                        </a>
+                     </td>
+                     
+                
+                </tr>
                     {% else %}
                         <tr>
                             <td>Aucun instrument n'a été trouvé.</td>
@@ -34,9 +50,7 @@
             <h2>Détails de l'instrument</h2>
             <div class="tabs">
                 <button class="tab-button active" data-target="instrument">Instrument</button>
-                <button class="tab-button" data-target="modele">Prêt</button>
-                <button class="tab-button" data-target="marque">Intervention</button>
-                <button class="tab-button" data-target="accessoire">Accessoire</button>
+                <button class="tab-button" data-target="modele">Autres</button>
             </div>
 
             <div class="tab-content">
@@ -51,10 +65,13 @@
                     </table>
                 </div>
 
+                <div class="tab-panel hidden" id="accessoire"></div>
+
                 <div class="tab-panel hidden" id="modele">
                     <table>
-                        <tr><td>Prêt :</td><td>test</td></tr>
+                        <tr><td>Consulter les interventions, les prêts et les accessoires de l'instrument : </tr>
                     </table>
+                    <div class="bouton-consulter-instrument"><button>consulter</button></div>
                 </div>
 
                 <div class="tab-panel hidden" id="marque">
@@ -66,83 +83,4 @@
         </div>
     </div>
 
-    <script>
-        // Modal functionality
-        const modal = document.getElementById("instrumentModal");
-        const closeModal = document.querySelector(".close-btn");
-
-        document.querySelectorAll(".instrument-name").forEach(link => {
-            link.addEventListener("click", function(event) {
-                event.preventDefault();
-
-                const instrumentId = this.getAttribute("data-id");
-                const numSerie = this.getAttribute("data-numSerie");
-                const dateAchat = this.getAttribute("data-dateAchat");
-                const prixAchat = this.getAttribute("data-prixAchat");
-                const utilisation = this.getAttribute("data-utilisation");
-                const couleur = this.getAttribute("data-couleur");
-                const typeInstrument = this.getAttribute("data-typeInstrument");
-                const interventions = JSON.parse(this.getAttribute("data-interventions"));
-
-                // Update modal with instrument details
-                document.getElementById("modal-numSerie").innerText = numSerie;
-                document.getElementById("modal-dateAchat").innerText = dateAchat;
-                document.getElementById("modal-prixAchat").innerText = prixAchat;
-                document.getElementById("modal-utilisation").innerText = utilisation;
-                document.getElementById("modal-couleur").innerText = couleur;
-                document.getElementById("modal-typeInstrument").innerText = typeInstrument;
-
-                // Handle interventions
-                const interventionsContainer = document.getElementById("interventionsList");
-                interventionsContainer.innerHTML = '';  // Clear previous interventions
-                if (interventions.length > 0) {
-                    interventions.forEach(function(intervention) {
-                        const li = document.createElement("li");
-                        li.innerText = `${intervention.descriptif} (${new Date(intervention.dateDebut).toLocaleDateString()}) - ${intervention.prix} €`;
-                        interventionsContainer.appendChild(li);
-                    });
-                } else {
-                    const li = document.createElement("li");
-                    li.innerText = "Aucune intervention disponible.";
-                    interventionsContainer.appendChild(li);
-                }
-
-                // Display modal
-                modal.style.display = "flex";
-            });
-        });
-
-        // Close modal
-        closeModal.addEventListener("click", function() {
-            modal.style.display = "none";
-        });
-
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        };
-
-        // Tab functionality
-        document.addEventListener("DOMContentLoaded", function () {
-            const tabButtons = document.querySelectorAll(".tab-button");
-            const tabPanels = document.querySelectorAll(".tab-panel");
-
-            tabButtons.forEach(button => {
-                button.addEventListener("click", () => {
-                    tabButtons.forEach(btn => btn.classList.remove("active"));
-                    tabPanels.forEach(panel => panel.classList.add("hidden"));
-
-                    button.classList.add("active");
-                    const target = button.getAttribute("data-target");
-                    document.getElementById(target).classList.remove("hidden");
-                });
-            });
-
-            // Set the first tab as active
-            tabButtons[0].classList.add("active");
-            tabPanels[0].classList.remove("hidden");
-        });
-    </script>
-</body>
-</html>
+{% endblock %}
