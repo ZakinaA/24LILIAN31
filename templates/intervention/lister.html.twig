@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Liste des Interventions{% endblock %}</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 0;
+            font-size: 14px;
+            color: #555;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .tab-button.active {
+            color: #000;
+            font-weight: bold;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .tab-button:hover {
+            color: #000;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; 
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="../image/logo.png" alt="ProDeal" class="logo">
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="#" class="active">Accueil</a></li>
+                    <li><a href="http://localhost/24lilian31/public/instrument/lister">Instrument</a></li>
+                    <li><a href="http://localhost/24lilian31/public/professeur/lister">Professeur</a></li>
+                    <li><a href="http://localhost/24lilian31/public/cours/lister">Cours</a></li>
+                    <li><a href="http://localhost/24lilian31/public/eleve/lister">Élève</a></li>
+                    <li><a href="http://localhost/24lilian31/public/intervention/lister">Intervention</a></li>
+                </ul>
+            </nav>
+            <div class="organization">
+                <ul>
+                    <li><a href="#">Déconnexion</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="main-header">
+    <h1>Intervention</h1>
+    <div class="header-actions">
+        <a href="{{ path('intervention_ajouter') }}" class="btn btn-success">Ajouter une intervention</a>
+    </div>
+    <div class="search">
+        <input type="text" placeholder="Rechercher ici..." />
+    </div>
+</header>
+            <table class="document-table">
+    <thead>
+        <tr>
+            <th>Descriptif</th>
+            <th>Instrument</th>
+            <th>Date de début</th>
+            <th>Prix</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in iInterventions %}
+            <tr>
+                <td>
+                    <a href="#" class="intervention-name" 
+                       data-id="{{ i.id }}"
+                       data-dateDebut="{{ i.dateDebut|date('y:M:d') }}"
+                       data-dateFin="{{ i.dateFin|date('y:M:d') }}"
+                       data-descriptif="{{ i.descriptif }}"
+                       data-prix="{{ i.prix }}"
+                       data-quotite="{{ i.quotite }}">
+                        {{ i.descriptif }}
+                    </a>
+                </td>
+                <td>{{ i.instrument.typeInstrument.libelle }}</td>
+                <td>{{ i.dateDebut|date('y:M:d') }}</td>
+                <td>{{ i.prix }}</td>
+                <td>
+                    <!-- Lien pour modifier -->
+                    <a href="{{ path('intervention_modifier', {'id': i.id}) }}" class="btn btn-primary">
+                        Modifier
+                    </a>
+                    <!-- Formulaire pour supprimer -->
+                    <form action="{{ path('intervention_supprimer', {'id': i.id}) }}" method="post" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ i.id) }}">
+                        <button type="submit" class="btn btn-danger" 
+                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette intervention ?')">
+                            Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucune intervention n'a été trouvée.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+        </main>
+    </div>
+
+  <div id="interventionModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn">&times;</button>
+        <h2>Détails de l'intervention</h2>
+        <div class="tabs">
+            <button class="tab-button active" data-target="intervention">Intervention</button>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-panel" id="intervention">
+                <table>
+                    <tr>
+                        <td><strong>Date de début :</strong></td>
+                        <td id="modal-dateDebut"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Date de fin :</strong></td>
+                        <td id="modal-dateFin"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Descriptif :</strong></td>
+                        <td id="modal-descriptif"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Prix :</strong></td>
+                        <td id="modal-prix"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quotité :</strong></td>
+                        <td id="modal-quotite"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        const modal = document.getElementById("interventionModal");
+        const closeModal = document.querySelector(".close-btn");
+
+        document.querySelectorAll(".intervention-name").forEach(link => {
+    link.addEventListener("click", function(event) {
+        event.preventDefault();
+
+        // Récupération des valeurs depuis les attributs data-* du lien cliqué
+        const interventionId = this.getAttribute("data-id");
+        const dateDebut = new Date(this.getAttribute("data-dateDebut"));
+        const dateFin = new Date(this.getAttribute("data-dateFin"));
+        const descriptif = this.getAttribute("data-descriptif");
+        const prix = this.getAttribute("data-prix");
+        const quotite = this.getAttribute("data-quotite");
+
+        // Remplir les champs du modal avec les valeurs de l'intervention
+        document.getElementById("modal-dateDebut").innerText = dateDebut.toLocaleString(); // Formater la date de début
+        document.getElementById("modal-dateFin").innerText = dateFin.toLocaleString(); // Formater la date de fin
+        document.getElementById("modal-descriptif").innerText = descriptif;
+        document.getElementById("modal-prix").innerText = prix;
+        document.getElementById("modal-quotite").innerText = quotite;
+
+        // Afficher le modal
+        modal.style.display = "flex";
+    });
+});
+
+
+
+        closeModal.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabButtons = document.querySelectorAll(".tab-button");
+            const tabPanels = document.querySelectorAll(".tab-panel");
+
+            tabButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    tabButtons.forEach(btn => btn.classList.remove("active"));
+                    tabPanels.forEach(panel => panel.classList.add("hidden"));
+
+                    button.classList.add("active");
+                    const target = button.getAttribute("data-target");
+                    document.getElementById(target).classList.remove("hidden");
+                });
+            });
+
+            tabButtons[0].classList.add("active");
+            tabPanels[0].classList.remove("hidden");
+        });
+    </script>
+</body>
+</html>

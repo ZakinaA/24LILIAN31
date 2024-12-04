@@ -265,3 +265,12 @@ insc_cours_supprimer:
 insc_coursModifier:
     path: /inscription/modifier/{id}
     controller: App\Controller\InscriptionController::modifierInscription
+
+con_Modifier:
+    path: /intervention/modifier/{id}
+    controller: App\Controller\InterventionController::modifierIntervention
+
+con_Supprimer:
+    path: /intervention/supprimer/{id}
+    controller: App\Controller\InterventionController::supprimerIntervention
+
