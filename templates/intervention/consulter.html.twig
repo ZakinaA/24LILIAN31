@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page d'une intervention </title>
+    </head>
+    <body>       
+        <h5>PAGE D'UNE INTERVENTION D'UN PROFESSIONNEL</h5>
+        <p>
+            <table>
+            <tr><td>DateDebut :</td><td>{{ intervention.dateDebut|date('d/m/Y') }}</td></tr>
+                <tr><td>DateFin : </td><td>{{ intervention.dateFin|date('d/m/Y')  }}</td></tr>
+                <tr><td>Descriptif : </td><td>{{ intervention.descriptif }}</td></tr>
+                <tr><td>Prix : </td><td>{{ intervention.prix }}</td></tr>
+                <tr><td>Quotite : </td><td>{{ intervention.quotite }}</td></tr>
+
+            </table>
+        </p>
+       </body>
+</html>
