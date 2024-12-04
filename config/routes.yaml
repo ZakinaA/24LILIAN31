@@ -234,6 +234,38 @@ con_lister:
     path: /intervention/lister
     controller: App\Controller\InterventionController::listerIntervention
 
+# -----------------------------------------------------------------------------------------
+# Inscription
+# -----------------------------------------------------------------------------------------
+
+insc_inscription:
+    path: /inscription
+    controller: App\Controller\InscriptionController::index
+
+insc_accueilinscription:
+    path: /inscription/accueil
+    controller: App\Controller\InscriptionController::accueil
+
+insc_ajouter:
+    path: /inscription/ajouter
+    controller: App\Controller\InscriptionController::ajouter
+
+insc_consulter:
+    path: /inscription/consulter/{id}
+    controller: App\Controller\InscriptionController::consulterInscription
+
+insc_lister:
+    path: /inscription/lister
+    controller: App\Controller\InscriptionController::listerInscription
+
+insc_cours_supprimer:
+    path: /inscription/supprimer/{id}
+    controller: App\Controller\InscriptionController::supprimerInscription
+    
+insc_coursModifier:
+    path: /inscription/modifier/{id}
+    controller: App\Controller\InscriptionController::modifierInscription
+
 con_Modifier:
     path: /intervention/modifier/{id}
     controller: App\Controller\InterventionController::modifierIntervention
@@ -241,3 +273,4 @@ con_Modifier:
 con_Supprimer:
     path: /intervention/supprimer/{id}
     controller: App\Controller\InterventionController::supprimerIntervention
+

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Modifier l'Inscription d'un Étudiant</title>
+    </head>
+    <body>
+        <h5>Modifier l'Inscription d'un Étudiant</h5>
+
+        <!-- Check if inscription exists -->
+        {% if inscription %}
+            <form method="POST" action="{{ path('modifier_inscription', {'id': inscription.id}) }}">
+                
+                <!-- Student Info (readonly) -->
+                <p>
+                    <strong>Nom : </strong>{{ inscription.eleve.nom }} <br>
+                    <strong>Prénom : </strong>{{ inscription.eleve.prenom }} <br>
+                    <strong>Adresse : </strong>{{ inscription.eleve.numRue }} {{ inscription.eleve.rue }} <br>
+                </p>
+
+                <!-- Date of inscription (editable) -->
+                <label for="date_inscription">Date d'Inscription : </label>
+                <input type="date" id="date_inscription" name="date_inscription" value="{{ inscription.dateInscription|date('Y-m-d') }}" required>
+                <br><br>
+
+                <!-- Course ID (editable) -->
+                <label for="cours_id">Choisir un Cours : </label>
+                <select id="cours_id" name="cours_id">
+                    {% for cours in cours_list %}
+                        <option value="{{ cours.id }}" {% if inscription.cours.id == cours.id %}selected{% endif %}>
+                            {{ cours.libelle }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <br><br>
+
+                <!-- Submit Button -->
+                <button type="submit">Modifier l'Inscription</button>
+
+            </form>
+        {% else %}
+            <p>L'inscription que vous souhaitez modifier n'existe pas.</p>
+        {% endif %}
+
+    </body>
+</html>
