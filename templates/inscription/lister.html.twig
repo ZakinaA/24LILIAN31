@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Liste des Inscriptions{% endblock %}</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="../image/logo.png" alt="ProDeal" class="logo">
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="#" class="active">Accueil</a></li>
+                    <li><a href="http://localhost/24lilian31/public/instrument/lister">Instrument</a></li>
+                    <li><a href="http://localhost/24lilian31/public/professeur/lister">Professeur</a></li>
+                    <li><a href="http://localhost/24lilian31/public/cours/lister">Cours</a></li>
+                    <li><a href="http://localhost/24lilian31/public/eleve/lister">Élève</a></li>
+                    <li><a href="http://localhost/24lilian31/public/intervention/lister">Intervention</a></li>
+                </ul>
+            </nav>
+            <div class="organization">
+                <ul>
+                    <li><a href="#">Déconnexion</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="main-header">
+                <h1>Liste des Inscriptions</h1>
+                <div class="search">
+                    <input type="text" placeholder="Rechercher ici..." />
+                </div>
+            </header>
+            <table class="document-table">
+                <thead>
+                    <tr>
+                        <th>Nom de l'Élève</th>
+                        <th>Date d'Inscription</th>
+                        <th>Cours</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inscription in inscriptions %}
+                        <tr>
+                            <td>
+                                <a href="#" class="inscription-name"
+                                   data-id="{{ inscription.id }}"
+                                   data-eleve="{{ inscription.eleve.nom }}" 
+                                   data-date="{{ inscription.dateInscription|date('d/m/Y') }}" 
+                                   data-cours="{{ inscription.cours.libelle }}"
+                                >
+                                    {{ inscription.eleve.nom }}  <!-- Affichage du nom de l'élève -->
+                                </a>
+                            </td>
+                            <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
+                            <td>{{ inscription.cours.libelle }}</td>
+                            <td>
+                                <form action="{{ path('inscription_supprimer', { id: inscription.id }) }}" method="post" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ inscription.id) }}">
+                                    <button type="submit">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">Aucune inscription trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <div id="inscriptionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Détails de l'Inscription</h2>
+            <table>
+                <tr><td>Nom de l'Élève : </td><td id="modal-eleve"></td></tr>
+                <tr><td>Date d'Inscription : </td><td id="modal-date"></td></tr>
+                <tr><td>Cours : </td><td id="modal-cours"></td></tr>
+                <tr><td>Type de Cours : </td><td id="modal-typeCours"></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("inscriptionModal");
+        const closeModal = document.querySelector(".close-btn");
+
+        document.querySelectorAll(".inscription-name").forEach(link => {
+            link.addEventListener("click", function(event) {
+                event.preventDefault(); // Empêche l'action par défaut du lien
+
+                // Récupérer les données stockées dans l'élément <a> cliqué
+                const eleveNom = this.getAttribute("data-eleve");
+                const dateInscription = this.getAttribute("data-date");
+                const coursLibelle = this.getAttribute("data-cours");
+
+                // Remplir les champs du modal avec les données récupérées
+                document.getElementById("modal-eleve").innerText = eleveNom;
+                document.getElementById("modal-date").innerText = dateInscription;
+                document.getElementById("modal-cours").innerText = coursLibelle;
+
+                // Afficher le modal
+                modal.style.display = "block";
+            });
+        });
+
+        // Fermer le modal
+        closeModal.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+
+        // Fermer le modal en cliquant à l'extérieur de la fenêtre
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+    </script>
+</body>
+</html>

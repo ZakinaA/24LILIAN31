@@ -1,0 +1,14 @@
+{# templates/inscription/modifier.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Inscription{% endblock %}
+
+{% block body %}
+    <h1>Modifier l'Inscription</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    
+{% endblock %}
