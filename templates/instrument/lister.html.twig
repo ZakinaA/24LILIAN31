@@ -11,7 +11,8 @@
         font-size: 25px;
     }
     .imgInstrument img {
-        max-width: 200px;
+        max-width: 150px;
+        height: auto;
         border-radius: 10px;
     }
 </style>
@@ -30,14 +31,21 @@
                         data-utilisation="{{ instrument.utilisation }}"
                         data-couleur="{{ instrument.couleur }}"
                         data-typeInstrument="{{ instrument.typeInstrument.libelle }}"
-                        
-                        data-image="{{'../image/' ~ instrument.CheminImage}}"
                         data-interventions="{{ instrument.interventions|json_encode }}">
                         <div class="liste-instrument">
                             ○&nbsp;&nbsp;{{ instrument.numSerie }}&nbsp;&nbsp;&nbsp;&nbsp;{{ instrument.utilisation }}&nbsp;&nbsp;&nbsp;&nbsp;{{ instrument.couleur }}&nbsp;&nbsp;&nbsp;&nbsp;{{ instrument.typeInstrument.libelle }}
                         </div>
-                        <div class="bouton-ajouter-instrument"><button><a href="{{ path('instrumentAjouter') }}" target="_blank"> Ajouter </a></button></div>
+                        <div class="bouton-ajouter-instrument">
+                            <button><a href="{{ path('instrumentAjouter') }}" target="_blank"> Ajouter </a></button>
+                        </div>
                     </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="tab-panel hidden" id="modele">
+                        
+                    </div>
                 </td>
             </tr>
         {% else %}
@@ -46,6 +54,7 @@
             </tr>
         {% endfor %}
     </tbody>
+
 </table>
 
 <div id="instrumentModal" class="modal">
@@ -53,9 +62,9 @@
         <button class="close-btn">&times;</button>
         <h2>Détails de l'instrument</h2>
         <div class="tabs">
-            <button class="tab-button active" data-target="instrument">Instrument</button>
-            <button class="tab-button" data-target="modele">Autres</button>
-        </div>
+    <button class="tab-button active" data-target="instrument">Instrument</button>
+    <button class="tab-button" data-target="modele"><a href="{{ path('instrumentConsulter', { 'id': instrument.id }) }}" target="_blank" style="text-decoration: none; color:green;"> Autres</a></button>
+</div>
 
         <div class="tab-content">
             <div class="tab-panel" id="instrument">
@@ -63,7 +72,9 @@
                 <div class="info-instrument">
                 <table>
                     <tr><td>Numéro de série :</td><td><span id="modal-numSerie"></span></td></tr>
+                    <br>
                     <tr><td>Date d'achat :</td><td><span id="modal-dateAchat"></span></td></tr>
+                    <br>
                     <tr><td>Prix d'achat :</td><td><span id="modal-prixAchat"></span></td></tr>
                     <tr><td>Utilisation :</td><td><span id="modal-utilisation"></span></td></tr>
                     <tr><td>Couleur :</td><td><span id="modal-couleur"></span></td></tr>
@@ -71,27 +82,18 @@
                 </table>
                 </div>
 
-                <div class="imgInstrument">
-                    <tr><td>
-                    <img id="modal-image" src="" alt="Image de l'instrument" title="Instrument" />
-                    </td></tr>
-                </div>
              </div>
 
-            {% for instrument in pInstruments %}
-                <div class="bouton-consulter-instrument"><button><a href="{{ path('instrumentModifier', { 'id': instrument.id }) }}" target="_blank"> Modifier </a></button></div>
-            {% endfor %}
+            <div class="bouton-consulter-instrument">
+                <button><a id="modal-modifier-button" href="#" target="_blank"> Modifier </a></button>
+             </div>
 
             </div>
             
-            {% for instrument in pInstruments %}
             <div class="tab-panel hidden" id="modele">
-                <table>
-                    <tr><td>Consulter les interventions, les prêts et les accessoires de l'instrument : </td></tr>
-                </table>
-                <div class="bouton-consulter-instrument"><button><a href="{{ path('instrumentConsulter', { 'id': instrument.id }) }}" target="_blank"> Consulter </a></button></div>
+                
             </div>
-            {% endfor %}
+            
 
             <div class="tab-panel hidden" id="marque">
                 <ul id="interventionsList"></ul>
