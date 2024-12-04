@@ -2,22 +2,27 @@
 {% block content %}
 <style>
     a {
-        text-decoration:none;
+        text-decoration: none;
     }
-    h1{
+    h1 {
         font-size: 40px;
     }
-    .document-table a{
-     font-size: 25px;
+    .document-table a {
+        font-size: 25px;
+    }
+    .imgInstrument img {
+        max-width: 200px;
+        border-radius: 10px;
     }
 </style>
-<h1> Liste des instruments</h1>
-    <table class="document-table">
-        <tbody>
-            {% for instrument in pInstruments %}
-                <tr>
-                    <td>
-                        <a href="#" class="instrument-name" 
+
+<h1>Liste des instruments</h1>
+<table class="document-table">
+    <tbody>
+        {% for instrument in pInstruments %}
+            <tr>
+                <td>
+                    <a href="#" class="instrument-name"
                         data-id="{{ instrument.id }}"
                         data-numSerie="{{ instrument.numSerie }}"
                         data-dateAchat="{{ instrument.dateAchat|date('d/m/Y') }}"
@@ -25,62 +30,73 @@
                         data-utilisation="{{ instrument.utilisation }}"
                         data-couleur="{{ instrument.couleur }}"
                         data-typeInstrument="{{ instrument.typeInstrument.libelle }}"
+                        
+                        data-image="{{'../image/' ~ instrument.CheminImage}}"
                         data-interventions="{{ instrument.interventions|json_encode }}">
-                       <div class="liste-instrument">
-                        ○&nbsp&nbsp{{ instrument.numSerie }}&nbsp&nbsp&nbsp&nbsp{{ instrument.utilisation }}&nbsp&nbsp&nbsp&nbsp{{ instrument.couleur }}&nbsp&nbsp&nbsp&nbsp{{ instrument.typeInstrument.libelle }}
-                       </div>
-                        </a>
-                     </td>
-                     
-                
-                </tr>
-                    {% else %}
-                        <tr>
-                            <td>Aucun instrument n'a été trouvé.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </main>
-    </div>
+                        <div class="liste-instrument">
+                            ○&nbsp;&nbsp;{{ instrument.numSerie }}&nbsp;&nbsp;&nbsp;&nbsp;{{ instrument.utilisation }}&nbsp;&nbsp;&nbsp;&nbsp;{{ instrument.couleur }}&nbsp;&nbsp;&nbsp;&nbsp;{{ instrument.typeInstrument.libelle }}
+                        </div>
+                        <div class="bouton-ajouter-instrument"><button><a href="{{ path('instrumentAjouter') }}" target="_blank"> Ajouter </a></button></div>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>Aucun instrument n'a été trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-    <div id="instrumentModal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn">&times;</button>
-            <h2>Détails de l'instrument</h2>
-            <div class="tabs">
-                <button class="tab-button active" data-target="instrument">Instrument</button>
-                <button class="tab-button" data-target="modele">Autres</button>
+<div id="instrumentModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn">&times;</button>
+        <h2>Détails de l'instrument</h2>
+        <div class="tabs">
+            <button class="tab-button active" data-target="instrument">Instrument</button>
+            <button class="tab-button" data-target="modele">Autres</button>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-panel" id="instrument">
+              <div class="info-total">
+                <div class="info-instrument">
+                <table>
+                    <tr><td>Numéro de série :</td><td><span id="modal-numSerie"></span></td></tr>
+                    <tr><td>Date d'achat :</td><td><span id="modal-dateAchat"></span></td></tr>
+                    <tr><td>Prix d'achat :</td><td><span id="modal-prixAchat"></span></td></tr>
+                    <tr><td>Utilisation :</td><td><span id="modal-utilisation"></span></td></tr>
+                    <tr><td>Couleur :</td><td><span id="modal-couleur"></span></td></tr>
+                    <tr><td>Type instrument :</td><td><span id="modal-typeInstrument"></span></td></tr>
+                </table>
+                </div>
+
+                <div class="imgInstrument">
+                    <tr><td>
+                    <img id="modal-image" src="" alt="Image de l'instrument" title="Instrument" />
+                    </td></tr>
+                </div>
+             </div>
+
+            {% for instrument in pInstruments %}
+                <div class="bouton-consulter-instrument"><button><a href="{{ path('instrumentModifier', { 'id': instrument.id }) }}" target="_blank"> Modifier </a></button></div>
+            {% endfor %}
+
             </div>
+            
+            {% for instrument in pInstruments %}
+            <div class="tab-panel hidden" id="modele">
+                <table>
+                    <tr><td>Consulter les interventions, les prêts et les accessoires de l'instrument : </td></tr>
+                </table>
+                <div class="bouton-consulter-instrument"><button><a href="{{ path('instrumentConsulter', { 'id': instrument.id }) }}" target="_blank"> Consulter </a></button></div>
+            </div>
+            {% endfor %}
 
-            <div class="tab-content">
-                <div class="tab-panel" id="instrument">
-                    <table>
-                        <tr><td>Numéro de série :</td><td><span id="modal-numSerie"></span></td></tr>
-                        <tr><td>Date d'achat :</td><td><span id="modal-dateAchat"></span></td></tr>
-                        <tr><td>Prix d'achat :</td><td><span id="modal-prixAchat"></span></td></tr>
-                        <tr><td>Utilisation :</td><td><span id="modal-utilisation"></span></td></tr>
-                        <tr><td>Couleur :</td><td><span id="modal-couleur"></span></td></tr>
-                        <tr><td>Type instrument :</td><td><span id="modal-typeInstrument"></span></td></tr>
-                    </table>
-                </div>
-
-                <div class="tab-panel hidden" id="accessoire"></div>
-
-                <div class="tab-panel hidden" id="modele">
-                    <table>
-                        <tr><td>Consulter les interventions, les prêts et les accessoires de l'instrument : </tr>
-                    </table>
-                    <div class="bouton-consulter-instrument"><button>consulter</button></div>
-                </div>
-
-                <div class="tab-panel hidden" id="marque">
-                    <ul id="interventionsList">
-					
-                    </ul>
-                </div>
+            <div class="tab-panel hidden" id="marque">
+                <ul id="interventionsList"></ul>
             </div>
         </div>
     </div>
-
+</div>
 {% endblock %}

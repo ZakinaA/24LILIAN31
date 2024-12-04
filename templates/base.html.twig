@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296⚫️</text></svg>">
         {% block stylesheets %}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
             
@@ -55,6 +55,7 @@
                 const prixAchat = this.getAttribute("data-prixAchat");
                 const utilisation = this.getAttribute("data-utilisation");
                 const couleur = this.getAttribute("data-couleur");
+                const image = this.getAttribute("data-image");
                 const typeInstrument = this.getAttribute("data-typeInstrument");
                 const interventions = JSON.parse(this.getAttribute("data-interventions"));
 
@@ -64,6 +65,7 @@
                 document.getElementById("modal-utilisation").innerText = utilisation;
                 document.getElementById("modal-couleur").innerText = couleur;
                 document.getElementById("modal-typeInstrument").innerText = typeInstrument;
+                document.getElementById("modal-image").src = image;
 
                 const interventionsContainer = document.getElementById("interventionsList");
                 interventionsContainer.innerHTML = '';  
@@ -109,14 +111,27 @@
                 });
             });
 
-            // Set the first tab as active
             tabButtons[0].classList.add("active");
             tabPanels[0].classList.remove("hidden");
         });
     </script>
 
     <style>
-    
+
+            .info-total{
+                display:flex;
+                justify-content: space-between;
+            }
+
+            .info-instrument, .imgInstrument{
+                display:flex;
+                flex-direction: column;
+            }
+
+            .info-instrument td, .imgInstrument td{
+                margin: 0;
+            }
+            
         body{
             background-color: #0A0D14;
         }
@@ -278,7 +293,17 @@
             margin-top:15px;
             
         }
+
+        .bouton-ajouter-instrument button{
+            border-radius:30px;
+            height: 30px;
+            width: 100px;
+            margin-top:15px;
+        }
+
+        .bouton-ajouter-instrument a{
+            font-size:15px;
+        }
     </style>
 </body>
 </html>
-
