@@ -1,22 +1,124 @@
 {% extends 'base.html.twig' %}
 {% block content %}
 <style>
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
 .formulaire-ajout {
     margin-top: 20px;
-    margin-left: 20px;
     border-radius: 30px;
-    background-color: red;
-    height: 400px;
-    width:400px;
+    background-color: #181B22;
+    height: 500px;
+    width: 500px; 
+    display: flex;
+    justify-content: center; 
+    align-items:center;  
+    padding: 20px;  
+}
+
+.left-column,
+.right-column {
+    width: 45%;  
+}
+
+.left-column {
+    margin-right: 20px; 
+}
+
+.right-column {
+    margin-left: 20px;  
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+form {
     display: flex;
     justify-content: center; 
     align-items: center;
+    width: 100%;
 }
 
+label {
+    font-family: sans-serif;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+}
+
+
 </style>
+
+<h1>Ajout d'un instrument</h1>
 <div class="formulaire-ajout">
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+    
+    <div class="left-column">
+        <div class="form-group">
+            {{ form_label(form.numSerie) }}
+            {{ form_widget(form.numSerie) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.dateAchat) }}
+            {{ form_widget(form.dateAchat) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.prixAchat) }}
+            {{ form_widget(form.prixAchat) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.utilisation) }}
+            {{ form_widget(form.utilisation) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.cheminImage) }}
+            {{ form_widget(form.cheminImage) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.couleur) }}
+            {{ form_widget(form.couleur) }}
+        </div>
+    </div>
+
+    <div class="right-column">
+        <div class="form-group">
+            {{ form_label(form.typeInstrument) }}
+            {{ form_widget(form.typeInstrument) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.marque) }}
+            {{ form_widget(form.marque) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.modele) }}
+            {{ form_widget(form.modele) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_widget(form.enregistrer) }}
+        </div>
+    </div>
+
     {{ form_end(form) }}
 </div>
+
 {% endblock %}
