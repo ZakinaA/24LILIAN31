@@ -70,6 +70,7 @@ class ProfesseurController extends AbstractController
             'planning' => $planning,
             'heures' => $heures,
             'jours' => $jours,
+            'cours' => $cours,
         ]);
     }
 

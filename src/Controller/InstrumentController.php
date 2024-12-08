@@ -101,11 +101,11 @@ class InstrumentController extends AbstractController
     
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
     
-                // Utilisation de Symfony String pour translittérer
+                
                 $slugger = new AsciiSlugger();
                 $safeFilename = $slugger->slug($originalFilename)->toString();
                 
-                // Génération du nouveau nom de fichier
+                
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension(); 
     
                 try {
