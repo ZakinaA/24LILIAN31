@@ -49,6 +49,9 @@ class Eleve
     #[ORM\ManyToOne(inversedBy: 'eleves')]
     private ?Responsable $responsable = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $cheminImage = null;
+
     public function __construct()
     {
         $this->inscriptions = new ArrayCollection();
@@ -217,4 +220,15 @@ class Eleve
 
         return $this;
     }
+
+    public function getCheminImage(): ?string
+{
+    return $this->cheminImage;
+}
+
+public function setCheminImage(string $cheminImage): static
+{
+    $this->cheminImage = $cheminImage;
+    return $this;
+}
 }

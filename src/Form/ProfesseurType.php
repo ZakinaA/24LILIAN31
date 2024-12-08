@@ -25,6 +25,7 @@ class ProfesseurType extends AbstractType
             ->add('ville')
             ->add('tel')
             ->add('mail')
+            ->add('cheminImage')
             ->add('typeInstrument', EntityType::class, [
                 'class' => TypeInstrument::class,
 'choice_label' => 'libelle',
