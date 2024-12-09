@@ -1,0 +1,41 @@
+{# templates/paiement/list.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Paiements{% endblock %}
+
+{% block content %}
+    <h1>Liste des Paiements</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Montant</th>
+                <th>Date de Paiement</th>
+                <th>Inscription</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paiement in paiements %}
+                <tr>
+                    <td>{{ paiement.id }}</td>
+                    <td>{{ paiement.montant }}</td>
+                    <td>{{ paiement.datePaiement|date('d/m/Y') }}</td>
+                    <td>{{ paiement.inscription.id }}</td>
+                    <td>
+                        <a href="{{ path('paiement_edit', {'id': paiement.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                        <a href="{{ path('paiement_delete', {'id': paiement.id}) }}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce paiement ?')">Supprimer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucun paiement trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('paiement_new') }}" class="btn btn-primary">Ajouter un Paiement</a>
+{% endblock %}
