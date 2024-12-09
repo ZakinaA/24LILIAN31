@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Paiements{% endblock %}
+
+{% block content %}
+    <h1>Liste des Paiements</h1>
+
+    {% if pPaiement is empty %}
+        <p>Aucun paiement trouvé.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Montant</th>
+                    <th>Date du Paiement</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+               {% for paiement in pPaiement %}
+    <tr>
+        <td>{{ paiement.id }}</td>
+        <td>{{ paiement.montant }}</td>
+        <td>{{ paiement.datePaiement|date('d/m/Y') }}</td>
+        <td>
+            <div class="bouton-consulter-paiement">
+                <button>
+                    <a href="{{ path('paiementModifier', { 'id': paiement.id }) }}" target="_blank">Modifier</a>
+                </button>
+            </div>
+        </td>
+    </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

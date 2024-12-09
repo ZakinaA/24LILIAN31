@@ -274,3 +274,34 @@ con_Supprimer:
     path: /intervention/supprimer/{id}
     controller: App\Controller\InterventionController::supprimerIntervention
 
+# -----------------------------------------------------------------------------------------
+# Paiement
+# -----------------------------------------------------------------------------------------
+
+app_paiement:
+    path: /paiement
+    controller: App\Controller\PaiementController::index
+
+app_paiement_accueil:
+    path: /paiement/accueil
+    controller: App\Controller\PaiementController::accueil
+
+paiementAjouter:
+    path: /paiement/ajouter
+    controller: App\Controller\PaiementController::ajouterPaiement
+
+paiementConsulter:
+    path: /paiement/consulter/{id}
+    controller: App\Controller\PaiementController::consulterPaiement
+
+paiementLister:
+    path: /paiement/lister
+    controller: App\Controller\PaiementController::listerPaiement
+
+paiementModifier:
+    path: /paiement/modifier/{id}
+    controller: App\Controller\PaiementController::modifierPaiement
+
+paiementSupprimer:
+    path: /paiement/supprimer/{id}
+    controller: App\Controller\PaiementController::supprimerPaiement
