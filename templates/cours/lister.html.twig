@@ -1,101 +1,293 @@
 {% extends 'base.html.twig' %}
+
 {% block content %}
+<main class="main">
+    <header class="main-header">
+        <h1>Liste des Cours</h1>
+        <p>Explorez nos cours et découvrez les détails des professeurs et horaires.</p>
+        <!-- Bouton Ajouter un Cours -->
+        <a href="http://172.20.177.77/lilian31/public/cours/ajouter" class="btn-add-course">Ajouter un Cours</a>
+    </header>
 
-
-        <main class="main">
-            <header class="main-header">
-                <h1>Cours</h1>
-            </header>
-            <table class="document-table">
-                <thead>
+    <section class="courses-container">
+        <table class="courses-table">
+            <thead>
+                <tr>
+                    <th>Nom du Cours</th>
+                    <th>Libellé</th>
+                    <th>Détails</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in pCours %}
                     <tr>
-                        <th>Nom du Cours</th>
-                        <th>Libellé</th>
+                        <td>
+                            <a href="#" class="course-name"
+                                data-id="{{ e.id }}"
+                                data-libelle="{{ e.libelle }}"
+                                data-jour="{{ e.jour.libelle  }}"
+                                data-heureDebut="{{ e.heureDebut|date('H:i') }}"
+                                data-heureFin="{{ e.heureFin|date('H:i') }}"
+                                data-typeCours="{{ e.typeCours.libelle  }}"
+                                data-typeInstrument="{{ e.typeInstrument.libelle  }}">
+                                {{ e.libelle }}
+                            </a>
+                        </td>
+                        <td>{{ e.libelle }}</td>
+                        <td><button class="btn-detail">Voir</button></td>
+                        <td>
+                            <!-- Bouton Supprimer avec confirmation -->
+                            <a href="javascript:void(0)" class="btn-delete" onclick="confirmDelete({{ e.id }})">Supprimer</a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for e in pCours %}
-                        <tr>
-                            <td>
-                                <a href="#" class="professor-name"
-                                    data-id="{{ e.id }}"
-                                    data-libelle="{{ e.libelle }}"
-                                    data-ageMini="{{ e.ageMini }}"
-                                    data-heureDebut="{{ e.heureDebut|date('H:i') }}"
-                                    data-heureFin="{{ e.heureFin|date('H:i') }}"
-                                >
-                                    {{ e.libelle }}
-                                </a>
-                            </td>
-                            <td>{{ e.libelle }}</td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="2">Aucun cours n'a été trouvé.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </main>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Aucun cours trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<!-- Modal -->
+<div id="courseModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Informations du Cours</h2>
+        <table class="modal-table">
+            <tr><td>Libellé:</td><td id="modal-libelle"></td></tr>
+            <tr><td>Jour:</td><td id="modal-jour"></td></tr>
+            <tr><td>Heure de début:</td><td id="modal-heureDebut"></td></tr>
+            <tr><td>Heure de fin:</td><td id="modal-heureFin"></td></tr>
+            <tr><td>Type de Cours:</td><td id="modal-typeCours"></td></tr>
+            <tr><td>Type d'Instrument:</td><td id="modal-typeInstrument"></td></tr>
+        </table>
+        <img src="/instrument/ertret.png" alt="Image du cours" class="modal-image">
     </div>
+</div>
 
-    <div id="professorModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Professeur Details</h2>
-            <table>
-                <tr><td>libelle : </td><td id="modal-libelle"></td></tr>
-                <tr><td>jour : </td><td id="modal-jour"></td></tr>
-                <tr><td>heure debut : </td><td id="modal-heureDebut"></td></tr>
-                <tr><td>heure fin : </td><td id="modal-heureFin"></td></tr>
-                <tr><td>type cours : </td><td id="modal-typeCours"></td></tr>
-                <tr><td>type instrument : </td><td id="modal-typeInstrument"></td></tr>
-            </table>
-    <img style="height:500px;" src="/instrument/ertret.png">
-        </div>
-    </div>
+<script>
+    // Fonction pour afficher une alerte de confirmation avant de supprimer
+    function confirmDelete(courseId) {
+        const confirmDelete = confirm("Êtes-vous sûr de vouloir supprimer ce cours ?");
+        if (confirmDelete) {
+            window.location.href = `http://172.20.177.77/lilian31/public/cours/supprimer/${courseId}`;
+        }
+    }
 
-    <script>
-        const modal = document.getElementById("professorModal");
-        const closeModal = document.querySelector(".close-btn");
+    // Sélection du modal et du bouton de fermeture
+    const modal = document.getElementById("courseModal");
+    const closeModal = document.querySelector(".close-btn");
 
-        document.querySelectorAll(".professor-name").forEach(link => {
-            link.addEventListener("click", function(event) {
-                event.preventDefault(); // Empêche l'action par défaut du lien
+    // Gestion de l'affichage des détails du cours
+    document.querySelectorAll(".course-name").forEach(link => {
+        link.addEventListener("click", function(event) {
+            event.preventDefault(); // Empêcher l'action par défaut du lien
 
-                // Récupérer les données stockées dans l'élément <a> cliqué
-                const professorLibelle = this.getAttribute("data-libelle");
-                const professorJour = this.getAttribute("data-jour");
-                const professorHeureDebut = this.getAttribute("data-heureDebut");
-                const professorHeureFin = this.getAttribute("data-heureFin");
-                const professorTypeCours = this.getAttribute("data-typeCours");
-                const professorTypeInstrument = this.getAttribute("data-typeInstrument");
+            // Récupérer les données stockées dans l'élément <a>
+            const professorLibelle = this.getAttribute("data-libelle");
+            const professorJour = this.getAttribute("data-jour");
+            const professorHeureDebut = this.getAttribute("data-heureDebut");
+            const professorHeureFin = this.getAttribute("data-heureFin");
+            const professorTypeCours = this.getAttribute("data-typeCours");
+            const professorTypeInstrument = this.getAttribute("data-typeInstrument");
 
-                // Remplir les champs du modal avec les données récupérées
-                document.getElementById("modal-libelle").innerText = professorLibelle;
-                document.getElementById("modal-jour").innerText = professorJour;
-                document.getElementById("modal-heureDebut").innerText = professorHeureDebut;
-                document.getElementById("modal-heureFin").innerText = professorHeureFin;
-                document.getElementById("modal-typeCours").innerText = professorTypeCours;
-                document.getElementById("modal-typeInstrument").innerText = professorTypeInstrument;
+            // Remplir le modal avec les informations
+            document.getElementById("modal-libelle").innerText = professorLibelle;
+            document.getElementById("modal-jour").innerText = professorJour;
+            document.getElementById("modal-heureDebut").innerText = professorHeureDebut;
+            document.getElementById("modal-heureFin").innerText = professorHeureFin;
+            document.getElementById("modal-typeCours").innerText = professorTypeCours;
+            document.getElementById("modal-typeInstrument").innerText = professorTypeInstrument;
 
-                // Afficher le modal
-                modal.style.display = "block";
-            });
+            // Afficher le modal
+            modal.style.display = "block";
         });
+    });
 
-        // Fermer le modal
-        closeModal.addEventListener("click", function() {
+    // Fermer le modal
+    closeModal.addEventListener("click", function() {
+        modal.style.display = "none";
+    });
+
+    // Fermer le modal en cliquant à l'extérieur de la fenêtre
+    window.onclick = function(event) {
+        if (event.target === modal) {
             modal.style.display = "none";
-        });
+        }
+    };
+</script>
 
-        // Fermer le modal en cliquant à l'extérieur de la fenêtre
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        };
-    </script>
-</body>
-</html>
+<style>
+    /* Général */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f7fc;
+        margin: 0;
+        padding: 0;
+    }
+
+    a {
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Conteneur principal */
+    .main {
+        padding: 20px;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .main-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .course-table td a {
+        text-decoration: none;
+        color: white;
+    }
+
+    .main-header h1 {
+        font-size: 2.5rem;
+        color: #333;
+    }
+
+    .main-header p {
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    .courses-container {
+        overflow-x: auto;
+    }
+
+    .courses-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .courses-table th, .courses-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .courses-table th {
+        background-color: #181B22;
+        color: white;
+    }
+
+    .courses-table td {
+        background-color: #181B22;
+    }
+
+    .btn-detail {
+        padding: 8px 16px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-detail:hover {
+        background-color: #218838;
+    }
+
+    .btn-delete {
+        padding: 8px 16px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-delete:hover {
+        background-color: #c82333;
+    }
+
+    .btn-add-course {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-top: 20px;
+        display: inline-block;
+    }
+
+    .btn-add-course:hover {
+        background-color: #0056b3;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #181B22;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 800px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .modal-table td {
+        padding: 10px;
+        font-size: 1.1rem;
+    }
+
+    .modal-table td:nth-child(1) {
+        font-weight: bold;
+    }
+
+    .modal-image {
+        width: 100%;
+        height: auto;
+        margin-top: 20px;
+        border-radius: 8px;
+    }
+
+    .close-btn {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 25px;
+        cursor: pointer;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+        color: black;
+        text-decoration: none;
+    }
+</style>
+
 {% endblock %}

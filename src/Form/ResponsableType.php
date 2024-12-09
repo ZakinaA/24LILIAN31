@@ -21,6 +21,11 @@ class ResponsableType extends AbstractType
             ->add('copos')
             ->add('ville')
             ->add('tel')
+            ->add('cheminImage', FileType::class, [
+                'label' => 'Choisir une image',
+                'required' => false,
+                'mapped' => false,
+            ])
         ;
     }
 

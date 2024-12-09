@@ -31,20 +31,50 @@ class EleveController extends AbstractController
         ]);
     }
 
-    public function consultereleve(ManagerRegistry $doctrine, int $id){
+    // Controller action for displaying the student's schedule
+public function consulterEleve(ManagerRegistry $doctrine, int $id)
+{
+    $eleve = $doctrine->getRepository(Eleve::class)->find($id);
+    
+    if (!$eleve) {
+        throw $this->createNotFoundException('Aucun étudiant trouvé avec le numéro ' . $id);
+    }
+    
+    $inscriptions = $eleve->getInscriptions();
+    
+    // Initialize the schedule with empty values
+    $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    $heures = range(8, 20); // Example: 8 AM to 8 PM
+    $planning = [];
 
-		$eleve= $doctrine->getRepository(Eleve::class)->find($id);
+    // Initialize empty schedule
+    foreach ($jours as $jour) {
+        foreach ($heures as $heure) {
+            $planning[$jour][$heure] = null;
+        }
+    }
 
-		if (!$eleve) {
-			throw $this->createNotFoundException(
-            'Aucun eleve trouvé avec le numéro '.$id
-			);
-		}
+    // Populate the schedule with the enrolled courses
+    foreach ($inscriptions as $inscription) {
+        $jour = $inscription->getCours()->getJour()->getLibelle(); // Example: 'Lundi'
+        $heureDebut = (int)$inscription->getCours()->getHeureDebut()->format('H');
+        $heureFin = (int)$inscription->getCours()->getHeureFin()->format('H');
+        
+        $coursNom = $inscription->getCours()->getLibelle(); // Replace with actual method to get course name or other details
+        
+        for ($heure = $heureDebut; $heure < $heureFin; $heure++) {
+            $planning[$jour][$heure] = $coursNom; // Store the course name or string
+        }
+    }
 
-		//return new Response('Eleve : '.$eleve->getNom());
-		return $this->render('eleve/consulter.html.twig', [
-            'eleve' => $eleve,]);
-	}
+    return $this->render('eleve/consulter.html.twig', [
+        'eleve' => $eleve,
+        'planning' => $planning,
+        'heures' => $heures,
+        'jours' => $jours,
+    ]);
+}
+
 
     public function listereleve(ManagerRegistry $doctrine){
 

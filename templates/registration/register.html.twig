@@ -1,6 +1,4 @@
-{# templates/registration/register.html.twig #}
 
-{% extends 'base.html.twig' %}
 
 {% block title %}Register{% endblock %}
 
@@ -28,6 +26,7 @@
         {{ form_row(registrationForm.responsable.rue) }}
         {{ form_row(registrationForm.responsable.copos) }}
         {{ form_row(registrationForm.responsable.ville) }}
+        {{ form_row(registrationForm.responsable.cheminImage) }}
 
         {# Bouton pour soumettre le formulaire #}
         <button type="submit" class="btn btn-primary">Register</button>
