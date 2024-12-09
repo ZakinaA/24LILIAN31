@@ -18,20 +18,19 @@
     }
 
     .eleve-item {
-    text-align: center;
-    color: white;
-    width: 200px;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-    margin-bottom: 40px;
-}
+        text-align: center;
+        color: white;
+        width: 200px;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        margin-bottom: 40px;
+    }
 
-.eleve-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
-    background-color: #313237;
-    border-radius: 10px;
-}
-
+    .eleve-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+        background-color: #313237;
+        border-radius: 10px;
+    }
 
     .eleve-photo {
         width: 120px;
@@ -62,6 +61,27 @@
 
     .info-btn:hover {
         background-color: #313237;
+    }
+
+    /* New delete button styles */
+    .delete-btn {
+        display: block;
+        margin-top: 10px;
+        text-decoration: none;
+        color: #fff;
+        font-size: 1.2rem;
+        background-color: red;
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .delete-btn:hover {
+        background-color: #b23131;
+    }
+
+    .delete-btn i {
+        margin-right: 5px;
     }
 
     /* Popup Styles */
@@ -124,23 +144,27 @@
 <div class="eleve-grid">
     {% for e in eEleves %}
         <div class="eleve-item">
-    <a href="{{ path('eleveConsulter', { 'id': e.id }) }}">
-        <div class="eleve-photo" style="background-image: url('{{ asset('eleve/' ~ e.cheminImage) }}');"></div>
-    </a>
-    <p>{{ e.nom }} {{ e.prenom }}</p>
-    <a href="#" class="info-btn" data-id="{{ e.id }}"
-       data-nom="{{ e.nom }}"
-       data-prenom="{{ e.prenom }}"
-       data-tel="{{ e.tel }}"
-       data-mail="{{ e.mail }}"
-       data-numRue="{{ e.numRue }}"
-       data-rue="{{ e.rue }}"
-       data-copos="{{ e.copos }}"
-       data-ville="{{ e.ville }}">
-        + d'infos
-    </a>
-</div>
-
+            <a href="{{ path('eleveConsulter', { 'id': e.id }) }}">
+                <div class="eleve-photo" style="background-image: url('{{ asset('eleve/' ~ e.cheminImage) }}');"></div>
+            </a>
+            <p>{{ e.nom }} {{ e.prenom }}</p>
+            <a href="#" class="info-btn" data-id="{{ e.id }}"
+               data-nom="{{ e.nom }}"
+               data-prenom="{{ e.prenom }}"
+               data-tel="{{ e.tel }}"
+               data-mail="{{ e.mail }}"
+               data-numRue="{{ e.numRue }}"
+               data-rue="{{ e.rue }}"
+               data-copos="{{ e.copos }}"
+               data-ville="{{ e.ville }}">
+                + d'infos
+            </a>
+            
+            <!-- New Delete Button -->
+            <a href="#" class="delete-btn" data-id="{{ e.id }}">
+                <i class="fas fa-trash-alt"></i> Supprimer
+            </a>
+        </div>
     {% else %}
         <p>Aucun élève trouvé.</p>
     {% endfor %}
@@ -181,8 +205,6 @@
             document.getElementById('modal-mail').textContent = this.dataset.mail;
             document.getElementById('modal-adresse').textContent = this.dataset.numRue + ' ' + this.dataset.rue + ', ' + this.dataset.copos + ' ' + this.dataset.ville;
 
-
-
             document.querySelector('.popup').classList.add('open');
             document.querySelector('.popup-overlay').classList.add('open');
         });
@@ -198,27 +220,19 @@
         document.querySelector('.popup-overlay').classList.remove('open');
     });
 
-    document.querySelectorAll('.eleve-item').forEach(item => {
-    item.addEventListener('mouseenter', function() {
-        // Appliquer le zoom et l'ombre lors du survol
-        item.style.transform = 'scale(1.05)';
-        item.style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.3)';
-    });
+    // Confirmation de suppression
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
 
-    item.addEventListener('mouseleave', function() {
-        // Réinitialiser le zoom et l'ombre lorsqu'on quitte l'élément
-        item.style.transform = 'scale(1)';
-        item.style.boxShadow = 'none';
+            const eleveId = this.dataset.id;
+            const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cet élève ?');
+            
+            if (confirmation) {
+                window.location.href = `http://172.20.177.77/lilian31/public/eleve/supprimer/${eleveId}`;
+            }
+        });
     });
-});
-
-document.querySelectorAll('.eleve-photo').forEach(photo => {
-    photo.addEventListener('click', function() {
-        const eleveId = this.parentElement.querySelector('.info-btn').dataset.id;
-        window.location.href = `/eleveConsulter/${eleveId}`;
-    });
-});
-
 
 </script>
 {% endblock %}

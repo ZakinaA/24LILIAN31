@@ -63,6 +63,20 @@
         background-color: #313237;
     }
 
+    /* Delete button styles */
+    .delete-btn {
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 1rem;
+        color: red;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .delete-btn:hover {
+        color: #f1f1f1;
+    }
+
     /* Popup Styles */
     .popup {
         display: none;
@@ -138,6 +152,10 @@
                data-ville="{{ p.ville }}">
                 + d'infos
             </a>
+            <!-- Delete Button -->
+            <a href="#" class="delete-btn" data-id="{{ p.id }}" onclick="confirmDelete(event, {{ p.id }})">
+                <i class="fa fa-trash"></i> Supprimer
+            </a>
         </div>
     {% else %}
         <p>Aucun professeur trouvé.</p>
@@ -194,5 +212,14 @@
         document.querySelector('.popup').classList.remove('open');
         document.querySelector('.popup-overlay').classList.remove('open');
     });
+
+    // Function to confirm deletion
+    function confirmDelete(event, professorId) {
+        event.preventDefault();
+        if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
+            window.location.href = 'http://172.20.177.77/lilian31/public/professeur/supprimer/' + professorId;
+        }
+    }
 </script>
+
 {% endblock %}
