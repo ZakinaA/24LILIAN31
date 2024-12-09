@@ -1,49 +1,160 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Instrument - {{ instrument.numSerie }}{% endblock %}
+{% block content %}
 
-{% block body %}
-    <h1>Détails de l'instrument</h1>
+<h1>Consulter l'instrument {{ instrument.numSerie }}</h1>
 
-    <table>
-        <tr><td>Numéro de série :</td><td>{{ instrument.numSerie }}</td></tr>
-        <tr><td>Date d'achat :</td><td>{{ instrument.dateAchat|date('d/m/Y') }}</td></tr>
-        <tr><td>Prix d'achat :</td><td>{{ instrument.prixAchat }}</td></tr>
-        <tr><td>Utilisation :</td><td>{{ instrument.utilisation }}</td></tr>
-        <tr><td>Couleur :</td><td>{{ instrument.couleur }}</td></tr>
-        <tr><td>Type instrument :</td><td>{{ instrument.typeInstrument.libelle }}</td></tr>
-    </table>
+<div class="container">
+    <div class="left">
+        <div class="image-container">
+            <img src="{{'../../image/' ~ instrument.CheminImage}}">
+        </div>
+    </div>
+    <div class="right">
+        <div class="container2">
+            <div class="instrument-info">
+                <h2 class="title"><i class="fas fa-keyboard"></i>&nbsp&nbsp Instrument</h2><br>
+                <div class="info-item">
+                     <strong>Numéro de série :</strong> {{ instrument.numSerie }}
+                </div>
+                <div class="info-item">
+                     <strong>Date d'achat :</strong> {{ instrument.dateAchat|date('d/m/Y') }}
+                </div>
+                <div class="info-item">
+                     <strong>Prix d'achat :</strong> {{ instrument.prixAchat }}
+                </div>
+                <div class="info-item">
+                     <strong>Utilisation :</strong> {{ instrument.utilisation }}
+                </div>
+                <div class="info-item">
+                     <strong>Couleur :</strong> {{ instrument.couleur }}
+                </div>
+                <div class="info-item">
+                     <strong>Type instrument :</strong> {{ instrument.typeInstrument.libelle }}
+                </div>
+            </div>
+            <div class="left2">
+                <br>
+                <div class="interventions-prets">
+                    <h2 class="title"><i class="fas fa-wrench"></i>&nbsp&nbsp Intervention(s)</h2>
+                    {% if interventions is not empty %}
+                        <ul>
+                            {% for intervention in interventions %}
+                                <li> <strong>Descriptif : </strong>{{ intervention.descriptif }}</li>
+                                <li> <strong>Date de début :</strong> {{ intervention.dateDebut|date('d/m/Y') }} </li>
+                                <li> <strong>Prix :</strong> {{ intervention.prix }} €  </li>
+                                <br>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Aucune intervention trouvée.</p>
+                    {% endif %}
+                    <br>
+                    <h2 class="title"><i class="fas fa-hand-holding"></i>&nbsp&nbsp Prêt(s)</h2>
+                    {% if prets is not empty %}
+                        <ul>
+                            {% for pret in prets %}
+                                <li> <strong>Prêt effectué le  :</strong> {{ pret.dateDebut|date('d/m/Y') }}<br></li>
+                                <li> <strong>Date de fin :</strong> {{ pret.dateFin|date('d/m/Y') }} <br></li>
+                                <li> <strong>Etat détaillé début :</strong> {{ pret.etatDetailleDebut }} <br></li>
+                                <li> <strong>Etat détaillé retour :</strong> {{ pret.etatDetailleRetour }} </li>
+                                <br>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Aucun prêt trouvé.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <h2>Interventions</h2>
-    {% if interventions is not empty %}
-        <ul>
-            {% for intervention in interventions %}
-                <li>
-                    descriptif {{ intervention.descriptif }} - <br> 
-                    date debut {{ intervention.dateDebut|date('d/m/Y') }} - <br>
-                   prix : {{ intervention.prix }} €
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aucune intervention trouvée.</p>
-    {% endif %}
+<style>
+.image-container {
+    width: 400px;
+    height: 500px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    border-radius: 30px;
+    align-items: center;
+}
 
-    <h2>Prêts</h2>
-    {% if prets is not empty %}
-        <ul>
-            {% for pret in prets %}
-                <li>
-    Prêt effectué le {{ pret.dateDebut|date('d/m/Y') }} - <br>
-    date fin : {{ pret.dateFin|date('d/m/Y') }} - <br>
-    etat detaille debut : {{ pret.etatDetailleDebut}} - <br>
-    etat detaille retour : {{ pret.etatDetailleRetour}} - 
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aucun prêt trouvé.</p>
-    {% endif %}
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    padding: 10px;
+    margin-top: 100px;
+}
+
+.left, .right {
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.left {
+    width: 400px;
+}
+
+.right {
+    background-color: #181B22;
+    border-radius: 30px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 600px;
+}
+
+.container2 {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    padding: 10px;
+}
+
+.left2 {
+    width: 50%;
+}
+
+.right2 {
+    background-color: #181B22;
+    border-radius: 30px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 50%;
+}
+
+.instrument-info .info-item {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.instrument-info{
+    margin-top:40px;
+}
+.interventions-prets {
+    margin-top: 20px;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 5px;
+}
+</style>
 
 {% endblock %}

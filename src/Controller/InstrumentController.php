@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Pret;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use App\Entity\Intervention;
 use App\Entity\Instrument;
 use App\Entity\Maison;
@@ -35,28 +36,23 @@ class InstrumentController extends AbstractController
 
     public function consulterInstrument(ManagerRegistry $doctrine, int $id)
 {
-    // Récupérer l'instrument avec ses interventions et prêts associés
     $instrument = $doctrine->getRepository(Instrument::class)->find($id);
 
     if (!$instrument) {
-        throw $this->createNotFoundException(
-            'Aucun instrument trouvé avec le numéro ' . $id
-        );
+        throw $this->createNotFoundException('Aucun instrument trouvé avec le numéro ' . $id);
     }
 
-    // Récupérer les interventions liées à cet instrument
     $interventions = $doctrine->getRepository(Intervention::class)->findBy(['instrument' => $instrument]);
 
-    // Récupérer les prêts associés à cet instrument
     $prets = $doctrine->getRepository(Pret::class)->findBy(['instrument' => $instrument]);
 
-    // Passer l'instrument, les interventions et les prêts à la vue
     return $this->render('instrument/consulter.html.twig', [
         'instrument' => $instrument,
         'interventions' => $interventions,
         'prets' => $prets,
     ]);
 }
+
 
 
     public function listerInstrument(ManagerRegistry $doctrine){
@@ -69,51 +65,70 @@ class InstrumentController extends AbstractController
     }
 
     public function modifierInstrument(ManagerRegistry $doctrine, $id, Request $request)
-{
-    // Récupération de l'étudiant dont l'id est passé en paramètre
-    $instrument = $doctrine->getRepository(Instrument::class)->find($id);
+    {
+        $instrument = $doctrine->getRepository(Instrument::class)->find($id);
+    
+        if (!$instrument) {
+            throw $this->createNotFoundException('Aucun instrument trouvé avec le numéro ' . $id);
+        }
+    
+        $form = $this->createForm(InstrumentModifierType::class, $instrument);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
 
-    if (!$instrument) {
-        throw $this->createNotFoundException('Aucun étudiant trouvé avec le numéro '.$id);
-    }
-
-    $form = $this->createForm(InstrumentModifierType::class, $instrument);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        $instrument = $form->getData();
-        $entityManager = $doctrine->getManager(); // Corrected this line
-        $entityManager->persist($instrument);
-        $entityManager->flush();
-
-        return $this->render('instrument/consulter.html.twig', ['instrument' => $instrument]);
-    } else {
-        return $this->render('instrument/ajouter.html.twig', ['form' => $form->createView()]);
-    }
-}
-
-
-
-    public function ajouterInstrument(ManagerRegistry $doctrine,Request $request){
-        $instrument = new instrument();
-	    $form = $this->createForm(InstrumentType::class, $instrument);
-	    $form->handleRequest($request);
- 
-	if ($form->isSubmitted() && $form->isValid()) {
- 
-            $instrument = $form->getData();
- 
             $entityManager = $doctrine->getManager();
             $entityManager->persist($instrument);
             $entityManager->flush();
- 
-	    return $this->render('instrument/consulter.html.twig', ['instrument' => $instrument,]);
-	}
-	else
-        {
-            return $this->render('instrument/ajouter.html.twig', array('form' => $form->createView(),));
-	}
-}
+    
+            return $this->render('instrument/consulter.html.twig', ['instrument' => $instrument]);
+        }
+    
+        return $this->render('instrument/modifier.html.twig', ['form' => $form->createView()]);
+    }
+    
+    public function ajouterInstrument(ManagerRegistry $doctrine, Request $request)
+    {
+        $instrument = new Instrument();
+        $form = $this->createForm(InstrumentType::class, $instrument);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+    
+            $imageFile = $form->get('cheminImage')->getData();
+    
+            if ($imageFile) {
+    
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+    
+                
+                $slugger = new AsciiSlugger();
+                $safeFilename = $slugger->slug($originalFilename)->toString();
+                
+                
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension(); 
+    
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'), 
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('Erreur lors du téléchargement de l\'image');
+                }
+    
+                $instrument->setCheminImage($newFilename);
+            }
+    
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($instrument);
+            $entityManager->flush();
+    
+            return $this->render('instrument/consulter.html.twig', ['instrument' => $instrument]);
+        }
+    
+        return $this->render('instrument/ajouter.html.twig', ['form' => $form->createView()]);
+    }
 
 
     public function supprimerInstrument(ManagerRegistry $doctrine, int $id): Response

@@ -1,41 +1,150 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Page de Consultation d'un Étudiant</title>
-    </head>
-    <body>       
-        <h5>PAGE DE CONSULTATION D'UN ETUDIANT</h5>
-        <p>
-            <table>
-                <tr><td>Nom : </td><td>{{ eleve.nom }}</td></tr>
-                <tr><td>Prénom : </td><td>{{ eleve.prenom }}</td></tr>
-                <tr><td>Rue : </td><td>{{ eleve.numRue }} {{ eleve.rue }}</td></tr>
-                <tr><td>Code postal : </td><td>{{ eleve.copos }}</td></tr>
-                <tr><td>Ville : </td><td>{{ eleve.ville }}</td></tr>
-                <tr><td>Téléphone : </td><td>{{ eleve.tel }}</td></tr>
-                <tr><td>Email : </td><td>{{ eleve.mail }}</td></tr>
-            </table>
-        </p>
-        
-<h5>Cours de l'étudiant :</h5>
-        <ul>
-            {% for inscription in eleve.inscriptions %}
-                <li>
-                    <div class="course-info">
-                        <span>{{ inscription.cours.libelle }}</span> 
-                        <span>Inscrit depuis : {{ inscription.cours.inscriptions|length }} inscription(s)</span>
-                    </div>
-                    <div class="course-info">
-                        <span>Jour :</span> {{ inscription.cours.jour.libelle }} 
-                        
-                    </div>
-                </li>
-            {% else %}
-                <li>Aucun cours inscrit.</li>
-            {% endfor %}
-        </ul>
-    </div>
+{% extends 'base.html.twig' %}
 
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+    }
 
-    </body>
-</html>
+    .container {
+        width: 80%;
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #313237;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h5 {
+        font-size: 1.6rem;
+        color: white;
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 40px;
+    }
+
+    table td {
+        padding: 12px 20px;
+        font-size: 1.1rem;
+        color: white;
+        background-color: #313237;
+    }
+
+    table td:nth-child(1) {
+        font-weight: bold;
+        color: white;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .course-info {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 1.1rem;
+        color: white;
+    }
+
+    .course-info span {
+        color: white;
+    }
+
+    .course-info .course-name {
+        font-weight: bold;
+        color: #1d72b8;
+    }
+
+    .course-info .course-date {
+        font-style: italic;
+        color: #999;
+    }
+
+    .no-courses {
+        font-size: 1.2rem;
+        color: #999;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-top: 30px;
+        background-color: green;
+        color: #fff;
+        font-size: 1.1rem;
+        text-align: center;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .button:hover {
+        background-color: #0c5a8e;
+    }
+
+    .back-button {
+        background-color: green;
+    }
+
+    .back-button:hover {
+        background-color: #313237;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container {
+            width: 90%;
+        }
+
+        table td {
+            font-size: 1rem;
+            padding: 10px 15px;
+        }
+    }
+</style>
+
+<div class="container">
+    <h5>Page de Consultation d'un Étudiant</h5>
+    <p>
+        <table>
+            <tr><td>Nom :</td><td>{{ eleve.nom }}</td></tr>
+            <tr><td>Prénom :</td><td>{{ eleve.prenom }}</td></tr>
+            <tr><td>Adresse :</td><td>{{ eleve.numRue }} {{ eleve.rue }}</td></tr>
+            <tr><td>Code postal :</td><td>{{ eleve.copos }}</td></tr>
+            <tr><td>Ville :</td><td>{{ eleve.ville }}</td></tr>
+            <tr><td>Téléphone :</td><td>{{ eleve.tel }}</td></tr>
+            <tr><td>Email :</td><td>{{ eleve.mail }}</td></tr>
+        </table>
+    </p>
+
+    <h5>Cours de l'étudiant</h5>
+    <ul>
+        {% for inscription in eleve.inscriptions %}
+            <li>
+                <div class="course-info">
+                    <span class="course-name">{{ inscription.cours.libelle }}</span>
+                    <span class="course-date">Inscrit depuis : {{ inscription.cours.inscriptions|length }} inscription(s)</span>
+                </div>
+                <div class="course-info">
+                    <span>Jour :</span> {{ inscription.cours.jour.libelle }}
+                </div>
+            </li>
+        {% else %}
+            <li class="no-courses">Aucun cours inscrit.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('eleveLister') }}" class="button back-button">Retour à la liste des élèves</a>
+</div>
+{% endblock %}

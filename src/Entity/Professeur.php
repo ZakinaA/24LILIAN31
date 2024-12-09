@@ -46,6 +46,9 @@ class Professeur
     #[ORM\OneToMany(targetEntity: Cours::class, mappedBy: 'professeur')]
     private Collection $cours;
 
+    #[ORM\Column(length: 255)]
+    private ?string $cheminImage = null;
+
     public function __construct()
     {
         $this->typeInstrument = new ArrayCollection();
@@ -203,6 +206,18 @@ class Professeur
                 $cour->setProfesseur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCheminImage(): ?string
+    {
+        return $this->cheminImage;
+    }
+
+    public function setCheminImage(string $cheminImage): static
+    {
+        $this->cheminImage = $cheminImage;
 
         return $this;
     }

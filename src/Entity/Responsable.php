@@ -45,6 +45,9 @@ class Responsable
     #[ORM\OneToOne(inversedBy: 'responsable', cascade: ['persist', 'remove'])]
     private ?User $compte = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $cheminImage = null;
+
     public function __construct()
     {
         $this->eleves = new ArrayCollection();
@@ -177,6 +180,18 @@ class Responsable
     public function setCompte(?User $compte): self
     {
         $this->compte = $compte;
+
+        return $this;
+    }
+
+    public function getCheminImage(): ?string
+    {
+        return $this->cheminImage;
+    }
+
+    public function setCheminImage(string $cheminImage): static
+    {
+        $this->cheminImage = $cheminImage;
 
         return $this;
     }
