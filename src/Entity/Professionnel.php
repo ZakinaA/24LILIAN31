@@ -36,6 +36,9 @@ class Professionnel
     #[ORM\ManyToMany(targetEntity: Metier::class, mappedBy: 'professionnel')]
     private Collection $metiers;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
     public function __construct()
     {
         $this->metiers = new ArrayCollection();
@@ -141,6 +144,18 @@ class Professionnel
         if ($this->metiers->removeElement($metier)) {
             $metier->removeProfessionnel($this);
         }
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
 
         return $this;
     }
