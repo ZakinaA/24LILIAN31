@@ -118,48 +118,46 @@ class InstrumentController extends AbstractController
 }
 
     
-    public function ajouterInstrument(ManagerRegistry $doctrine, Request $request)
-    {
-        $instrument = new Instrument();
-        $form = $this->createForm(InstrumentType::class, $instrument);
-        $form->handleRequest($request);
+public function ajouterInstrument(ManagerRegistry $doctrine, Request $request)
+{
+    $instrument = new Instrument();
+    $form = $this->createForm(InstrumentType::class, $instrument);
+    $form->handleRequest($request);
     
-        if ($form->isSubmitted() && $form->isValid()) {
+    // Check if the form is submitted and valid
+    if ($form->isSubmitted() && $form->isValid()) {
     
-            $imageFile = $form->get('cheminImage')->getData();
-    
-            if ($imageFile) {
-    
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-    
-                
-                $slugger = new AsciiSlugger();
-                $safeFilename = $slugger->slug($originalFilename)->toString();
-                
-                
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension(); 
-    
-                try {
-                    $imageFile->move(
-                        $this->getParameter('images_directory'), 
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    throw new \Exception('Erreur lors du téléchargement de l\'image');
-                }
-    
-                $instrument->setCheminImage($newFilename);
+        // Handle the file upload
+        $imageFile = $form->get('cheminImage')->getData();
+        if ($imageFile) {
+            // Image handling code...
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $slugger = new AsciiSlugger();
+            $safeFilename = $slugger->slug($originalFilename)->toString();
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension(); 
+
+            try {
+                $imageFile->move($this->getParameter('images_directory'), $newFilename);
+            } catch (FileException $e) {
+                throw new \Exception('Erreur lors du téléchargement de l\'image');
             }
-    
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($instrument);
-            $entityManager->flush();
-    
-            return $this->render('instrument/consulter.html.twig', ['instrument' => $instrument]);
+
+            $instrument->setCheminImage($newFilename);
         }
-    
-        return $this->render('instrument/ajouter.html.twig', ['form' => $form->createView()]);
+
+        // Persist the instrument
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($instrument);
+        $entityManager->flush();
+        
+        // Redirect to the 'consulter' page to see the instrument
+        return $this->redirectToRoute('app_instrument');
     }
+
+    // Render form again if the form is not submitted or valid
+    return $this->render('instrument/ajouter.html.twig', ['form' => $form->createView()]);
+}
+
 
 
     public function supprimerInstrument(ManagerRegistry $doctrine, int $id): Response
