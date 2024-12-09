@@ -1,160 +1,248 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-
 <h1>Consulter l'instrument {{ instrument.numSerie }}</h1>
+
+<!-- Bouton de retour en haut à gauche -->
+<div class="back-button">
+    <a href="{{ path('instrumentLister') }}" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
+</div>
 
 <div class="container">
     <div class="left">
         <div class="image-container">
-            <img src="{{'../../image/' ~ instrument.CheminImage}}">
+            <img src="{{'../../image/' ~ instrument.CheminImage}}" alt="Instrument Image">
         </div>
     </div>
     <div class="right">
         <div class="container2">
             <div class="instrument-info">
-                <h2 class="title"><i class="fas fa-keyboard"></i>&nbsp&nbsp Instrument</h2><br>
+                <h2 class="title"><i class="fas fa-keyboard"></i>&nbsp; Instrument</h2>
                 <div class="info-item">
-                     <strong>Numéro de série :</strong> {{ instrument.numSerie }}
+                    <strong>Numéro de série :</strong> {{ instrument.numSerie }}
                 </div>
                 <div class="info-item">
-                     <strong>Date d'achat :</strong> {{ instrument.dateAchat|date('d/m/Y') }}
+                    <strong>Date d'achat :</strong> {{ instrument.dateAchat|date('d/m/Y') }}
                 </div>
                 <div class="info-item">
-                     <strong>Prix d'achat :</strong> {{ instrument.prixAchat }}
+                    <strong>Prix d'achat :</strong> {{ instrument.prixAchat }} €
                 </div>
                 <div class="info-item">
-                     <strong>Utilisation :</strong> {{ instrument.utilisation }}
+                    <strong>Utilisation :</strong> {{ instrument.utilisation }}
                 </div>
                 <div class="info-item">
-                     <strong>Couleur :</strong> {{ instrument.couleur }}
+                    <strong>Couleur :</strong> {{ instrument.couleur }}
                 </div>
                 <div class="info-item">
-                     <strong>Type instrument :</strong> {{ instrument.typeInstrument.libelle }}
+                    <strong>Type instrument :</strong> {{ instrument.typeInstrument.libelle }}
                 </div>
             </div>
-            <div class="left2">
-                <br>
-                <div class="interventions-prets">
-                    <h2 class="title"><i class="fas fa-wrench"></i>&nbsp&nbsp Intervention(s)</h2>
-                    {% if interventions is not empty %}
-                        <ul>
-                            {% for intervention in interventions %}
-                                <li> <strong>Descriptif : </strong>{{ intervention.descriptif }}</li>
-                                <li> <strong>Date de début :</strong> {{ intervention.dateDebut|date('d/m/Y') }} </li>
-                                <li> <strong>Prix :</strong> {{ intervention.prix }} €  </li>
-                                <br>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>Aucune intervention trouvée.</p>
-                    {% endif %}
-                    <br>
-                    <h2 class="title"><i class="fas fa-hand-holding"></i>&nbsp&nbsp Prêt(s)</h2>
-                    {% if prets is not empty %}
-                        <ul>
-                            {% for pret in prets %}
-                                <li> <strong>Prêt effectué le  :</strong> {{ pret.dateDebut|date('d/m/Y') }}<br></li>
-                                <li> <strong>Date de fin :</strong> {{ pret.dateFin|date('d/m/Y') }} <br></li>
-                                <li> <strong>Etat détaillé début :</strong> {{ pret.etatDetailleDebut }} <br></li>
-                                <li> <strong>Etat détaillé retour :</strong> {{ pret.etatDetailleRetour }} </li>
-                                <br>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>Aucun prêt trouvé.</p>
-                    {% endif %}
-                </div>
+            <div class="interventions-prets">
+                <h2 class="title"><i class="fas fa-wrench"></i>&nbsp; Intervention(s)</h2>
+                {% if interventions is not empty %}
+                    <ul>
+                        {% for intervention in interventions %}
+                            <li> <strong>Descriptif : </strong>{{ intervention.descriptif }}</li>
+                            <li> <strong>Date de début :</strong> {{ intervention.dateDebut|date('d/m/Y') }} </li>
+                            <li> <strong>Prix :</strong> {{ intervention.prix }} € </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Aucune intervention trouvée.</p>
+                {% endif %}
+                <h2 class="title"><i class="fas fa-hand-holding"></i>&nbsp; Prêt(s)</h2>
+                {% if prets is not empty %}
+                    <ul>
+                        {% for pret in prets %}
+                            <li> <strong>Prêt effectué le :</strong> {{ pret.dateDebut|date('d/m/Y') }}</li>
+                            <li> <strong>Date de fin :</strong> {{ pret.dateFin|date('d/m/Y') }}</li>
+                            <li> <strong>Etat détaillé début :</strong> {{ pret.etatDetailleDebut }}</li>
+                            <li> <strong>Etat détaillé retour :</strong> {{ pret.etatDetailleRetour }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Aucun prêt trouvé.</p>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
+<script>
+    // Animation for hover effects
+    const infoItems = document.querySelectorAll('.info-item');
+    infoItems.forEach(item => {
+        item.addEventListener('mouseover', function() {
+            item.style.backgroundColor = '#2d3436';
+            item.style.transform = 'scale(1.05)';
+            item.style.transition = 'all 0.3s ease';
+        });
+        item.addEventListener('mouseout', function() {
+            item.style.backgroundColor = 'transparent';
+            item.style.transform = 'scale(1)';
+        });
+    });
+
+    // Modal or Tooltip example for more details (useful for tooltips on price, usage, etc.)
+    function showTooltip(event, message) {
+        const tooltip = document.createElement('div');
+        tooltip.classList.add('tooltip');
+        tooltip.innerHTML = message;
+        tooltip.style.position = 'absolute';
+        tooltip.style.left = `${event.pageX + 10}px`;
+        tooltip.style.top = `${event.pageY + 10}px`;
+        document.body.appendChild(tooltip);
+    }
+
+    function hideTooltip() {
+        const tooltip = document.querySelector('.tooltip');
+        if (tooltip) {
+            tooltip.remove();
+        }
+    }
+
+    document.querySelectorAll('.info-item').forEach(item => {
+        item.addEventListener('mouseover', (event) => {
+            showTooltip(event, "Plus de détails ici!");
+        });
+        item.addEventListener('mouseout', () => {
+            hideTooltip();
+        });
+    });
+</script>
+
 <style>
-.image-container {
-    width: 400px;
-    height: 500px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    border-radius: 30px;
-    align-items: center;
-}
+    /* Global Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        margin: 0;
+        padding: 100px 0;
+    }
 
-.image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    h1 {
+        font-size: 48px;
+        font-weight: bold;
+        text-align: center;
+        color: green;
+        margin-bottom: 30px;
+    }
 
-.container {
-    display: flex;
-    justify-content: center;
-    gap: 50px;
-    padding: 10px;
-    margin-top: 100px;
-}
+    /* Back Button Style */
+    .back-button {
+        margin-left: 20px;
+        margin-bottom: 20px;
+        width: 13%;
+    }
 
-.left, .right {
-    padding: 10px;
-    border-radius: 5px;
-    color: white;
-}
+    .btn-back {
+        font-size: 18px;
+        padding: 10px 20px;
+        background-color: #444;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background-color 0.3s ease;
+    }
 
-.left {
-    width: 400px;
-}
+    .btn-back:hover {
+        background-color: #333;
+    }
 
-.right {
-    background-color: #181B22;
-    border-radius: 30px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 600px;
-}
+    /* Container Layout */
+    .container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 50px;
+    }
 
-.container2 {
-    display: flex;
-    justify-content: center;
-    gap: 50px;
-    padding: 10px;
-}
+    .left, .right {
+        padding: 20px;
+        border-radius: 8px;
+    }
 
-.left2 {
-    width: 50%;
-}
+    .left {
+        width: 380px;
+        background-color: #1e2125;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
 
-.right2 {
-    background-color: #181B22;
-    border-radius: 30px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 50%;
-}
+    .right {
+        width: 600px;
+        background-color: #181B22;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
 
-.instrument-info .info-item {
-    margin-bottom: 10px;
-    line-height: 1.5;
-}
+    /* Image Section */
+    .image-container {
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+        border-radius: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.instrument-info{
-    margin-top:40px;
-}
-.interventions-prets {
-    margin-top: 20px;
-}
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
 
-.title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    padding: 5px;
-}
+    .image-container img:hover {
+        transform: scale(1.1);
+    }
+
+    /* Instrument Info */
+    .instrument-info .info-item {
+        background-color: #232323;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .instrument-info .info-item:hover {
+        background-color: #2d3436;
+        transform: scale(1.05);
+    }
+
+    /* Title for Sections */
+    .title {
+        font-size: 22px;
+        color: green;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .info-item {
+        font-size: 16px;
+        color: #bbb;
+    }
+
+    /* Tooltip */
+    .tooltip {
+        background-color: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 14px;
+        max-width: 200px;
+        white-space: nowrap;
+    }
 </style>
 
 {% endblock %}
