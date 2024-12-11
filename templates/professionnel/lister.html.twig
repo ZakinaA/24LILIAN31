@@ -1,3 +1,5 @@
+{% extends 'base.html.twig' %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -95,61 +97,61 @@
 
         <main class="main">
             <header class="main-header">
-    <h1>Professionnel</h1>
+    <h1>Liste des Professionnels</h1>
     <div class="header-actions">
         <a href="{{ path('professionnel_ajouter') }}" class="btn btn-success">Ajouter une professionnel</a>
-    </div>
-    <div class="search">
-        <input type="text" placeholder="Rechercher ici..." />
     </div>
 </header>
             <table class="document-table">
     <thead>
         <tr>
             <th>Nom</th>
-            <th>numéro de rue</th>
-            <th>rue</th>
-            <th>Code postale</th>
-            <th>Vile</th>
-            <th>Téléphone</th>
-            <th>Mail</th>
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
-        {% for i in iProfessionnels %}
-            <tr>
-                <td>
-                    <a href="#" class="professionnel-name" 
-                       data-id="{{ i.id }}"
-                       data-nom="{{ i.nom }}"
-                       data-numRue="{{ i.numRue }}"
-                       data-rue="{{ i.rue }}"
-                       data-copos="{{ i.copos }}"
-                       data-ville="{{ i.ville }}"
-                       data-tel="{{ i.tel }}"
-                       data-mail="{{ i.mail }}">
-                    </a>
-                    <!-- Lien pour modifier -->
-                    <a href="{{ path('professionnel_modifier', {'id': i.id}) }}" class="btn btn-primary">
-                        Modifier
-                    </a>
-                    <!-- Formulaire pour supprimer -->
-                    <form action="{{ path('professionnel_supprimer', {'id': i.id}) }}" method="post" style="display:inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ i.id) }}">
-                        <button type="submit" class="btn btn-danger" 
-                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce professionnel ?')">
-                            Supprimer
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">Aucun professionnel n'a été trouvée.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
+   <tbody>
+    {% for i in iProfessionnels %}
+        <tr>
+            <!-- Affiche uniquement le nom -->
+            <td>{{ i.nom }}</td>
+            <td>
+                <!-- Lien pour afficher les détails dans le modal -->
+                <a href="#" 
+                   class="btn btn-info professionnel-name" 
+                   data-id="{{ i.id }}"
+                   data-nom="{{ i.nom }}"
+                   data-numRue="{{ i.numRue }}"
+                   data-rue="{{ i.rue }}"
+                   data-copos="{{ i.copos }}"
+                   data-ville="{{ i.ville }}"
+                   data-tel="{{ i.tel }}"
+                   data-mail="{{ i.mail }}">
+                    Consulter
+                </a>
+            </td>
+            <td>
+                <!-- Lien pour modifier -->
+                <a href="{{ path('professionnel_modifier', {'id': i.id}) }}" class="btn btn-primary">
+                    Modifier
+                </a>
+                <!-- Formulaire pour supprimer -->
+                <form action="{{ path('professionnel_supprimer', {'id': i.id}) }}" method="post" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ i.id) }}">
+                    <button type="submit" class="btn btn-danger" 
+                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce professionnel ?')">
+                        Supprimer
+                    </button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="8">Aucun professionnel trouvé.</td>
+        </tr>
+    {% endfor %}
+</tbody>
+
+
 </table>
 
         </main>
@@ -160,7 +162,7 @@
         <button class="close-btn">&times;</button>
         <h2>Détails du professionnel</h2>
         <div class="tabs">
-            <button class="tab-button active" data-target="professionnel">Professionnel</button>
+            <button class="tab-button active" data-target="professionnel">Liste des Professionnels</button>
         </div>
 
         <div class="tab-content">
@@ -268,3 +270,4 @@
     </script>
 </body>
 </html>
+{% endblock %}

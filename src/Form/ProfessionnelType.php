@@ -14,6 +14,7 @@ class ProfessionnelType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('nom')
             ->add('numRue')
             ->add('rue')
             ->add('copos')
@@ -22,7 +23,7 @@ class ProfessionnelType extends AbstractType
             ->add('mail')
             ->add('metiers', EntityType::class, [
                 'class' => Metier::class,
-                'choice_label' => 'id',
+                'choice_label' => 'libelle',
                 'multiple' => true,
             ])
         ;
