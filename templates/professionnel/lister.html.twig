@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Liste des Professionnels{% endblock %}</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 0;
+            font-size: 14px;
+            color: #555;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .tab-button.active {
+            color: #000;
+            font-weight: bold;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .tab-button:hover {
+            color: #000;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; 
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="../image/logo.png" alt="ProDeal" class="logo">
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="#" class="active">Accueil</a></li>
+                    <li><a href="http://localhost/24lilian31/public/instrument/lister">Instrument</a></li>
+                    <li><a href="http://localhost/24lilian31/public/professeur/lister">Professeur</a></li>
+                    <li><a href="http://localhost/24lilian31/public/cours/lister">Cours</a></li>
+                    <li><a href="http://localhost/24lilian31/public/eleve/lister">Élève</a></li>
+                    <li><a href="http://localhost/24lilian31/public/professionnel/lister">Professionnel</a></li>
+                </ul>
+            </nav>
+            <div class="organization">
+                <ul>
+                    <li><a href="#">Déconnexion</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="main-header">
+    <h1>Professionnel</h1>
+    <div class="header-actions">
+        <a href="{{ path('professionnel_ajouter') }}" class="btn btn-success">Ajouter une professionnel</a>
+    </div>
+    <div class="search">
+        <input type="text" placeholder="Rechercher ici..." />
+    </div>
+</header>
+            <table class="document-table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>numéro de rue</th>
+            <th>rue</th>
+            <th>Code postale</th>
+            <th>Vile</th>
+            <th>Téléphone</th>
+            <th>Mail</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in iProfessionnels %}
+            <tr>
+                <td>
+                    <a href="#" class="professionnel-name" 
+                       data-id="{{ i.id }}"
+                       data-nom="{{ i.nom }}"
+                       data-numRue="{{ i.numRue }}"
+                       data-rue="{{ i.rue }}"
+                       data-copos="{{ i.copos }}"
+                       data-ville="{{ i.ville }}"
+                       data-tel="{{ i.tel }}"
+                       data-mail="{{ i.mail }}">
+                    </a>
+                    <!-- Lien pour modifier -->
+                    <a href="{{ path('professionnel_modifier', {'id': i.id}) }}" class="btn btn-primary">
+                        Modifier
+                    </a>
+                    <!-- Formulaire pour supprimer -->
+                    <form action="{{ path('professionnel_supprimer', {'id': i.id}) }}" method="post" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ i.id) }}">
+                        <button type="submit" class="btn btn-danger" 
+                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce professionnel ?')">
+                            Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun professionnel n'a été trouvée.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+        </main>
+    </div>
+
+  <div id="professionnelModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn">&times;</button>
+        <h2>Détails du professionnel</h2>
+        <div class="tabs">
+            <button class="tab-button active" data-target="professionnel">Professionnel</button>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-panel" id="professionnel">
+                <table>
+                    <tr>
+                        <td><strong>Nom :</strong></td>
+                        <td id="modal-nom"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>numéro de rue :</strong></td>
+                        <td id="modal-numRue"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>rue :</strong></td>
+                        <td id="modal-rue"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Code postale :</strong></td>
+                        <td id="modal-copos"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ville :</strong></td>
+                        <td id="modal-ville"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Téléphone :</strong></td>
+                        <td id="modal-tel"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mail :</strong></td>
+                        <td id="modal-mail"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        const modal = document.getElementById("professionnelModal");
+        const closeModal = document.querySelector(".close-btn");
+
+        document.querySelectorAll(".professionnel-name").forEach(link => {
+    link.addEventListener("click", function(event) {
+        event.preventDefault();
+
+        // Récupération des valeurs depuis les attributs data-* du lien cliqué
+        const professionnelId = this.getAttribute("data-id");
+        const nom = this.getAttribute("data-nom");
+        const numRue = this.getAttribute("data-numRue");
+        const rue = this.getAttribute("data-rue");
+        const copos = this.getAttribute("data-copos");
+        const ville = this.getAttribute("data-ville");
+        const tel = this.getAttribute("data-tel");
+        const mail = this.getAttribute("data-mail");
+
+
+
+        // Remplir les champs du modal avec les valeurs de l'professionnel
+        document.getElementById("modal-nom").innerText = nom;
+        document.getElementById("modal-numRue").innerText = numRue;
+        document.getElementById("modal-rue").innerText = rue;
+        document.getElementById("modal-copos").innerText = copos;
+        document.getElementById("modal-ville").innerText = ville;
+        document.getElementById("modal-tel").innerText = tel;
+        document.getElementById("modal-mail").innerText = mail;
+
+        // Afficher le modal
+        modal.style.display = "flex";
+    });
+});
+
+
+
+        closeModal.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabButtons = document.querySelectorAll(".tab-button");
+            const tabPanels = document.querySelectorAll(".tab-panel");
+
+            tabButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    tabButtons.forEach(btn => btn.classList.remove("active"));
+                    tabPanels.forEach(panel => panel.classList.add("hidden"));
+
+                    button.classList.add("active");
+                    const target = button.getAttribute("data-target");
+                    document.getElementById(target).classList.remove("hidden");
+                });
+            });
+
+            tabButtons[0].classList.add("active");
+            tabPanels[0].classList.remove("hidden");
+        });
+    </script>
+</body>
+</html>

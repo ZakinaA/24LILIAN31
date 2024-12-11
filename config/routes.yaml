@@ -234,6 +234,14 @@ con_lister:
     path: /intervention/lister
     controller: App\Controller\InterventionController::listerIntervention
 
+interventionModifier:
+    path: /intervention/modifier/{id}
+    controller: App\Controller\InterventionController::modifierIntervention
+
+interventionSupprimer:
+    path: /intervention/supprimer/{id}
+    controller: App\Controller\InterventionController::supprimerIntervention
+
 # -----------------------------------------------------------------------------------------
 # Inscription
 # -----------------------------------------------------------------------------------------
@@ -274,6 +282,11 @@ con_Supprimer:
     path: /intervention/supprimer/{id}
     controller: App\Controller\InterventionController::supprimerIntervention
 
+
+# -----------------------------------------------------------------------------------------
+# Professionnel
+# -----------------------------------------------------------------------------------------
+
 app_professionnel:
     path: /professionnel
     controller: App\Controller\ProfessionnelController::index
@@ -282,13 +295,13 @@ app_accueilprofessionnel:
     path: /professionel/accueil
     controller: App\Controller\ProfessionnelController::accueil
 
-pro_lister:
-    path: /professionnel/lister
-    controller: App\Controller\ProfessionnelController::listerProfessionnel
-
 pro_consulter:
     path: /professionnel/consulter/{id}
     controller: App\Controller\ProfessionnelController::consulterProfessionnel
+
+pro_lister:
+    path: /professionnel/lister
+    controller: App\Controller\ProfessionnelController::listerProfessionnel
 
 professionnelModifier:
     path: /professionnel/modifier/{id}

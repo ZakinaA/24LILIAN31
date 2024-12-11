@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+<style>
+.formulaire-ajout {
+    margin-top: 20px;
+    margin-left: 20px;
+    border-radius: 30px;
+    background-color: red;
+    height: 400px;
+    width:400px;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+</style>
+<div class="formulaire-ajout">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+</div>
+{% endblock %}
