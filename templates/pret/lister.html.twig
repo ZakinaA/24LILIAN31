@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        margin: 0;
+        padding: 100px 0 0;
+    }
+    h1 {
+        font-size: 48px;
+        font-weight: bold;
+        text-align: center;
+        margin: 20px 0;
+        color: green;
+    }
+    a {
+        text-decoration: none;
+        color: green;
+        transition: color 0.3s ease;
+    }
+    a:hover {
+        color: #ff5733;
+    }
+
+    .pret-table {
+        margin: 20px auto;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .pret-table thead th {
+        font-size: 18px;
+        background-color: #232323;
+        padding: 15px;
+        text-align: left;
+        color: green;
+    }
+    .pret-table tbody tr {
+        border-bottom: 1px solid #444;
+        transition: background-color 0.3s ease;
+    }
+    .pret-table tbody tr:hover {
+        background-color: #313237;
+    }
+    .pret-table td {
+        padding: 15px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background-color: green;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    .btn:hover {
+        background-color: #313237;
+        color: white;
+    }
+    .btn-small {
+        font-size: 14px;
+        padding: 5px 10px;
+    }
+    .btn-trash {
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .btn-trash:hover {
+        color: #e74c3c;
+    }
+
+    .btn-add {
+        display: inline-block;
+        margin-top: 20px;
+    }
+</style>
+
+<h1>Liste des prêts</h1>
+
+<table class="pret-table">
+    <thead>
+        <tr>
+            <th>Emprunteur</th>
+            <th>Instrument</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>État au début</th>
+            <th>État au retour</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for pret in pPrets %}
+        <tr>
+            <td>{{ pret.eleve ? pret.eleve.nom : 'N/A' }}</td>
+            <td>{{ pret.instrument ? pret.instrument.numSerie : 'N/A' }}</td>
+            <td>{{ pret.dateDebut ? pret.dateDebut|date('d/m/Y') : 'N/A' }}</td>
+            <td>{{ pret.dateFin ? pret.dateFin|date('d/m/Y') : 'N/A' }}</td>
+            <td>{{ pret.etatDetailleDebut ? pret.etatDetailleDebut : 'N/A' }}</td>
+            <td>{{ pret.etatDetailleRetour ? pret.etatDetailleRetour : 'N/A' }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<!-- Ajouter un prêt sous la table, aligné à gauche -->
+<div class="btn-add">
+    <a href="{{ path('pret_ajouter') }}" class="btn">+ Ajouter un prêt</a>
+</div>
+
+<script>
+    // Fonction pour confirmer la suppression
+    function confirmDelete(titre, pretId) {
+        const confirmMessage = `Êtes-vous sûr de vouloir supprimer le prêt intitulé : ${titre} ?`;
+        if (confirm(confirmMessage)) {
+            // Redirection vers la route de suppression du prêt
+            window.location.href = `/lilian31/public/pret/supprimer/${pretId}`;
+        }
+    }
+</script>
+
+{% endblock %}

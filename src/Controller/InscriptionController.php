@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Doctrine\ORM\EntityManagerInterface;
 
 class InscriptionController extends AbstractController
 {
@@ -47,57 +48,33 @@ class InscriptionController extends AbstractController
         ]);
     }
 
-    public function modifierInscription($id, Request $request, ManagerRegistry $doctrine, InscriptionRepository $inscriptionRepo, CoursRepository $coursRepo)
-{
-    // Fetch the inscription to be modified
-    $inscription = $inscriptionRepo->find($id);
+    public function modifierInscription(Request $request, $id, InscriptionRepository $inscriptionRepository, EntityManagerInterface $entityManager)
+    {
+        // Récupérer l'inscription à modifier
+        $inscription = $inscriptionRepository->find($id);
 
-    if (!$inscription) {
-        throw $this->createNotFoundException('Inscription not found');
+        if (!$inscription) {
+            throw $this->createNotFoundException('Inscription non trouvée');
+        }
+
+        // Création du formulaire pour modifier l'inscription
+        $form = $this->createForm(InscriptionType::class, $inscription);
+        $form->handleRequest($request);
+
+        // Si le formulaire est soumis et valide, on met à jour
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();  // Enregistre les modifications en base de données
+
+            $this->addFlash('success', 'Inscription mise à jour avec succès!');
+            return $this->redirectToRoute('inscription_consulter', ['id' => $id]);  // Redirige vers la page consulter après modification
+        }
+
+        // Afficher le formulaire pour modifier les données
+        return $this->render('inscription/modifier.html.twig', [
+            'form' => $form->createView(),
+            'inscription' => $inscription,
+        ]);
     }
-
-    // Fetch all available courses
-    $coursList = $coursRepo->findAll();
-
-    // Create the form for updating the inscription
-    $form = $this->createFormBuilder($inscription)
-        ->add('dateInscription', DateType::class, [
-            'widget' => 'single_text',
-            'label' => 'Date d\'inscription',
-        ])
-        ->add('cours', ChoiceType::class, [
-            'choices' => $coursList,
-            'choice_label' => function($cours) {
-                return $cours->getLibelle();  // Assuming 'libelle' is the name of the course
-            },
-            'choice_value' => function($cours) {
-                return $cours ? $cours->getId() : null;  // Assuming 'id' is the identifier
-            },
-            'label' => 'Choisir un cours'
-        ])
-        ->add('submit', SubmitType::class, ['label' => 'Mettre à jour'])
-        ->getForm();
-
-    // Handle the form submission
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Persist the changes to the database
-        $entityManager = $doctrine->getManager();
-        $entityManager->flush();
-
-        // Redirect to the inscription list or success page
-        return $this->redirectToRoute('inscription_lister');
-    }
-
-    // Render the form
-    return $this->render('inscription/modifier.html.twig', [
-        'form' => $form->createView(),
-        'inscription' => $inscription,
-        'cours_list' => $coursList
-    ]);
-}
-
 
     #[Route('/inscription/lister', name: 'inscription_lister')]
     public function listerInscription(ManagerRegistry $doctrine): Response
@@ -183,4 +160,23 @@ public function inscriptionMontant(
 
 
 
+}
+   
+    
+    #[Route('/inscription/consulter/{id}', name: 'inscription_consulter')]
+    
+   public function consulterInscription($id, InscriptionRepository $inscriptionRepository)
+   {
+       // Récupérer les données de l'inscription
+       $inscription = $inscriptionRepository->find($id);
+   
+       if (!$inscription) {
+           throw $this->createNotFoundException('Inscription non trouvée');
+       }
+   
+       // Rendu du template de consultation
+       return $this->render('inscription/consulter.html.twig', [
+           'inscription' => $inscription
+       ]);
+   }
 }

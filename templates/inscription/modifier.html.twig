@@ -1,14 +1,12 @@
-{# templates/inscription/modifier.html.twig #}
-
+{# modifier.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier Inscription{% endblock %}
+{% block content %}
+<h1>Modifier l'inscription</h1>
 
-{% block body %}
-    <h1>Modifier l'Inscription</h1>
+{{ form_start(form) }}
+    {{ form_row(form.cours) }}
+    {{ form_row(form.dateInscription) }}
+{{ form_end(form) }}
 
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        {{ form_end(form) }}
-    
 {% endblock %}
