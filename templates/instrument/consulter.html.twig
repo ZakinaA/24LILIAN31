@@ -18,6 +18,51 @@
     </div>
     <div class="right">
         <div class="container2">
+            <div class="accordion">
+                <div class="accordion-item">
+    <div class="accordion-header">
+        <i class="fas fa-wrench"></i>&nbsp; Intervention(s)
+    </div>
+    <div class="accordion-content">
+        {% if interventions is not empty %}
+            <ul>
+                {% for intervention in interventions %}
+                    <li>
+                        <a href="{{ path('intervention_consulter', {'id': intervention.id}) }}" class="intervention-link">
+                            {{ intervention.descriptif }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucune intervention effectuée pour le moment.</p>
+        {% endif %}
+    </div>
+</div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <i class="fas fa-hand-holding"></i>&nbsp; Prêt(s)
+                    </div>
+                    <div class="accordion-content">
+                        {% if prets is not empty %}
+                            <ul>
+                                {% for pret in prets %}
+                                    <li>
+                                        <a href="{{ path('pretConsulter', {'id': pret.id}) }}" class="pret-link">
+                                            {{ pret.dateDebut|date('d/m/Y') }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>Aucun prêt trouvé.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <br>
             <div class="instrument-info">
                 <h2 class="title"><i class="fas fa-keyboard"></i>&nbsp; Instrument</h2>
                 <div class="info-item">
@@ -39,76 +84,18 @@
                     <strong>Type instrument :</strong> {{ instrument.typeInstrument.libelle }}
                 </div>
             </div>
-            <div class="interventions-prets">
-                <h2 class="title"><i class="fas fa-wrench"></i>&nbsp; Intervention(s)</h2>
-                {% if interventions is not empty %}
-                    <ul>
-                        {% for intervention in interventions %}
-                            <li> <strong>Descriptif : </strong>{{ intervention.descriptif }}</li>
-                            <li> <strong>Date de début :</strong> {{ intervention.dateDebut|date('d/m/Y') }} </li>
-                            <li> <strong>Prix :</strong> {{ intervention.prix }} € </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Aucune intervention trouvée.</p>
-                {% endif %}
-                <h2 class="title"><i class="fas fa-hand-holding"></i>&nbsp; Prêt(s)</h2>
-                {% if prets is not empty %}
-                    <ul>
-                        {% for pret in prets %}
-                            <li> <strong>Prêt effectué le :</strong> {{ pret.dateDebut|date('d/m/Y') }}</li>
-                            <li> <strong>Date de fin :</strong> {{ pret.dateFin|date('d/m/Y') }}</li>
-                            <li> <strong>Etat détaillé début :</strong> {{ pret.etatDetailleDebut }}</li>
-                            <li> <strong>Etat détaillé retour :</strong> {{ pret.etatDetailleRetour }}</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Aucun prêt trouvé.</p>
-                {% endif %}
-            </div>
+        
         </div>
     </div>
 </div>
 
 <script>
-    // Animation for hover effects
-    const infoItems = document.querySelectorAll('.info-item');
-    infoItems.forEach(item => {
-        item.addEventListener('mouseover', function() {
-            item.style.backgroundColor = '#2d3436';
-            item.style.transform = 'scale(1.05)';
-            item.style.transition = 'all 0.3s ease';
-        });
-        item.addEventListener('mouseout', function() {
-            item.style.backgroundColor = 'transparent';
-            item.style.transform = 'scale(1)';
-        });
-    });
-
-    // Modal or Tooltip example for more details (useful for tooltips on price, usage, etc.)
-    function showTooltip(event, message) {
-        const tooltip = document.createElement('div');
-        tooltip.classList.add('tooltip');
-        tooltip.innerHTML = message;
-        tooltip.style.position = 'absolute';
-        tooltip.style.left = `${event.pageX + 10}px`;
-        tooltip.style.top = `${event.pageY + 10}px`;
-        document.body.appendChild(tooltip);
-    }
-
-    function hideTooltip() {
-        const tooltip = document.querySelector('.tooltip');
-        if (tooltip) {
-            tooltip.remove();
-        }
-    }
-
-    document.querySelectorAll('.info-item').forEach(item => {
-        item.addEventListener('mouseover', (event) => {
-            showTooltip(event, "Plus de détails ici!");
-        });
-        item.addEventListener('mouseout', () => {
-            hideTooltip();
+    // JavaScript for accordion functionality
+    document.querySelectorAll('.accordion-header').forEach(item => {
+        item.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            this.classList.toggle('active');
         });
     });
 </script>
@@ -203,6 +190,42 @@
         transform: scale(1.1);
     }
 
+    /* Accordion Styles */
+    .accordion {
+        margin-top: 20px;
+    }
+
+    .accordion-item {
+        background-color: #232323;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .accordion-header {
+        padding: 15px;
+        font-size: 18px;
+        color: green;
+        background-color: #181B22;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .accordion-header:hover {
+        background-color: #2d3436;
+    }
+
+    .accordion-header.active {
+        background-color: #2d3436;
+    }
+
+    .accordion-content {
+        display: none;
+        padding: 15px;
+        background-color: #1e2125;
+        color: #bbb;
+    }
+
     /* Instrument Info */
     .instrument-info .info-item {
         background-color: #232323;
@@ -226,22 +249,6 @@
         align-items: center;
         gap: 10px;
         margin-bottom: 10px;
-    }
-
-    .info-item {
-        font-size: 16px;
-        color: #bbb;
-    }
-
-    /* Tooltip */
-    .tooltip {
-        background-color: rgba(0, 0, 0, 0.75);
-        color: #fff;
-        padding: 8px;
-        border-radius: 5px;
-        font-size: 14px;
-        max-width: 200px;
-        white-space: nowrap;
     }
 </style>
 

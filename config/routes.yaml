@@ -282,6 +282,7 @@ con_Supprimer:
     path: /intervention/supprimer/{id}
     controller: App\Controller\InterventionController::supprimerIntervention
 
+
 # -----------------------------------------------------------------------------------------
 # Professionnel
 # -----------------------------------------------------------------------------------------
@@ -291,7 +292,7 @@ app_professionnel:
     controller: App\Controller\ProfessionnelController::index
 
 app_accueilprofessionnel:
-    path: /professionnel/accueil
+    path: /professionel/accueil
     controller: App\Controller\ProfessionnelController::accueil
 
 pro_consulter:
