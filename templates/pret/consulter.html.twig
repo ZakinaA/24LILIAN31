@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+<h1>Consulter le prêt {{ pret.id }}</h1>
+
+<!-- Bouton de retour en haut à gauche -->
+<div class="back-button">
+    <a href="{{ path('pret_lister') }}" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Retour à la liste des prêts
+    </a>
+</div>
+
+<div class="container">
+    <div class="right">
+        <div class="info-container">
+            <h2 class="title"><i class="fas fa-hand-holding"></i>&nbsp; Informations du prêt</h2>
+            <div class="info-item">
+                <strong>Emprunteur :</strong> {{ pret.eleve ? pret.eleve.nom : 'N/A' }}
+            </div>
+            <div class="info-item">
+                <strong>Instrument :</strong> {{ pret.instrument ? pret.instrument.numSerie : 'N/A' }}
+            </div>
+            <div class="info-item">
+                <strong>Date de début :</strong> {{ pret.dateDebut|date('d/m/Y') }}
+            </div>
+            <div class="info-item">
+                <strong>Date de fin :</strong> {{ pret.dateFin|date('d/m/Y') }}
+            </div>
+            <div class="info-item">
+                <strong>État au début :</strong> {{ pret.etatDetailleDebut }}
+            </div>
+            <div class="info-item">
+                <strong>État au retour :</strong> {{ pret.etatDetailleRetour }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Si nécessaire pour d'autres interactions JavaScript
+</script>
+
+<style>
+    /* Style global */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #121212;
+        color: #fff;
+        margin: 0;
+        padding: 50px 0;
+    }
+
+    h1 {
+        font-size: 36px;
+        text-align: center;
+        color: #1DB954; /* Vert Spotify */
+        margin-bottom: 30px;
+    }
+
+    /* Bouton de retour */
+    .back-button {
+        margin-left: 20px;
+        margin-bottom: 20px;
+        width: 20%;
+    }
+
+    .btn-back {
+        font-size: 18px;
+        padding: 10px 20px;
+        background-color: #444;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background-color: #333;
+    }
+
+    /* Container Layout */
+    .container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 50px;
+    }
+
+    .right {
+        width: 600px;
+        background-color: #181B22;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Instrument Info */
+    .info-container .info-item {
+        background-color: #232323;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .info-container .info-item:hover {
+        background-color: #2d3436;
+        transform: scale(1.05);
+    }
+
+    /* Title for Sections */
+    .title {
+        font-size: 22px;
+        color: #1DB954;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+
+{% endblock %}

@@ -21,13 +21,13 @@ class InscriptionModifierType extends AbstractType
             ])
             ->add('cours', EntityType::class, [
                 'class' => Cours::class,
-                'choice_label' => 'id',
+                'choice_label' => 'libelle',
             ])
             ->add('eleve', EntityType::class, [
                 'class' => Eleve::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom','prenom',
             ])
-            ->add('enregistrer', SubmitType::class, array('label' => 'nouveau'))
+            ->add('enregistrer', SubmitType::class, array('label' => 'Enregistrer modification'))
         ;
     }
 
