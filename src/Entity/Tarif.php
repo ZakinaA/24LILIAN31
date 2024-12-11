@@ -18,13 +18,12 @@ class Tarif
     #[ORM\Column]
     private ?float $montant = null;
 
-    #[ORM\ManyToMany(targetEntity: TypeCours::class, mappedBy: 'tarif')]
-    private Collection $typeCours;
+    #[ORM\ManyToOne(inversedBy: 'tarifs')]
+    private ?TypeCours $typeCours = null;
 
-    public function __construct()
-    {
-        $this->typeCours = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'tarifs')]
+    private ?QuotientFamilial $quotientFamilial = null;
+
 
     public function getId(): ?int
     {
@@ -43,30 +42,28 @@ class Tarif
         return $this;
     }
 
-    /**
-     * @return Collection<int, TypeCours>
-     */
-    public function getTypeCours(): Collection
+    public function getTypeCours(): ?TypeCours
     {
         return $this->typeCours;
     }
 
-    public function addTypeCour(TypeCours $typeCour): static
+    public function setTypeCours(?TypeCours $typeCours): static
     {
-        if (!$this->typeCours->contains($typeCour)) {
-            $this->typeCours->add($typeCour);
-            $typeCour->addTarif($this);
-        }
+        $this->typeCours = $typeCours;
 
         return $this;
     }
 
-    public function removeTypeCour(TypeCours $typeCour): static
+    public function getQuotientFamilial(): ?QuotientFamilial
     {
-        if ($this->typeCours->removeElement($typeCour)) {
-            $typeCour->removeTarif($this);
-        }
+        return $this->quotientFamilial;
+    }
+
+    public function setQuotientFamilial(?QuotientFamilial $quotientFamilial): static
+    {
+        $this->quotientFamilial = $quotientFamilial;
 
         return $this;
     }
+
 }

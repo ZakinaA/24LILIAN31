@@ -1,0 +1,19 @@
+{# templates/inscription/montant.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Montant à payer{% endblock %}
+
+{% block content %}
+    <h1>Liste des montants à payer</h1>
+
+    {% for montant in montants %}
+        <p>{{ montant.eleve }} : {{ montant.montant }} €</p>
+    {% endfor %}
+
+    <hr>
+    <h2>Total à payer : {{ totalMontant }} €</h2>
+
+    <a href="{{ path('inscription_lister') }}">Retour à la liste des inscriptions</a>
+{% endblock %}
+

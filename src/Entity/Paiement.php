@@ -21,7 +21,7 @@ class Paiement
     private ?\DateTimeInterface $datePaiement = null;
 
     #[ORM\ManyToOne(inversedBy: 'paiements')]
-    private ?Inscription $inscription = null;
+    private ?Responsable $responsable = null;
 
     public function getId(): ?int
     {
@@ -52,15 +52,17 @@ class Paiement
         return $this;
     }
 
-    public function getInscription(): ?Inscription
+    public function getResponsable(): ?Responsable
     {
-        return $this->inscription;
+        return $this->responsable;
     }
 
-    public function setInscription(?Inscription $inscription): static
+    public function setResponsable(?Responsable $responsable): static
     {
-        $this->inscription = $inscription;
+        $this->responsable = $responsable;
 
         return $this;
     }
+
+
 }

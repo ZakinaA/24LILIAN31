@@ -22,9 +22,6 @@ class Inscription
     #[ORM\ManyToOne(inversedBy: 'inscriptions')]
     private ?Cours $cours = null;
 
-    #[ORM\OneToMany(targetEntity: Paiement::class, mappedBy: 'inscription')]
-    private Collection $paiements;
-
     // Corrigez la relation ManyToOne ici
     #[ORM\ManyToOne(inversedBy: 'inscriptions')] 
     private ?Eleve $eleve = null;
@@ -61,35 +58,6 @@ class Inscription
         return $this;
     }
 
-    /**
-     * @return Collection<int, Paiement>
-     */
-    public function getPaiements(): Collection
-    {
-        return $this->paiements;
-    }
-
-    public function addPaiement(Paiement $paiement): static
-    {
-        if (!$this->paiements->contains($paiement)) {
-            $this->paiements->add($paiement);
-            $paiement->setInscription($this);
-        }
-
-        return $this;
-    }
-
-    public function removePaiement(Paiement $paiement): static
-    {
-        if ($this->paiements->removeElement($paiement)) {
-            // set the owning side to null (unless already changed)
-            if ($paiement->getInscription() === $this) {
-                $paiement->setInscription(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getEleve(): ?Eleve
     {
