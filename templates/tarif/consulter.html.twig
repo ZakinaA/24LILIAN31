@@ -1,0 +1,28 @@
+{# templates/tarif/consulter.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Consulter le tarif{% endblock %}
+
+{% block content %}
+    <h1>Consulter le tarif</h1>
+
+    <table>
+        <tr>
+            <th>Montant</th>
+            <td>{{ tarif.montant }} €</td>
+        </tr>
+        <tr>
+            <th>Type de cours</th>
+            <td>{{ tarif.typeCours.libelle }}</td> 
+        </tr>
+        <tr>
+            <th>Quotient familial</th>
+            <td>{{ tarif.quotientFamilial.quotienMini }}</td>
+        </tr>
+    </table>
+
+    <br>
+
+    <a href="{{ path('tarif_lister') }}">Retour à la liste des tarifs</a>
+{% endblock %}

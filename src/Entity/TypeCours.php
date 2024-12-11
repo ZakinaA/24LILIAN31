@@ -21,13 +21,18 @@ class TypeCours
     #[ORM\OneToMany(targetEntity: Cours::class, mappedBy: 'typeCours')]
     private Collection $cours;
 
-    #[ORM\ManyToMany(targetEntity: Tarif::class, inversedBy: 'typeCours')]
-    private Collection $tarif;
+    /**
+     * @var Collection<int, Tarif>
+     */
+    #[ORM\OneToMany(targetEntity: Tarif::class, mappedBy: 'typeCours')]
+    private Collection $tarifs;
+
+   
 
     public function __construct()
     {
         $this->cours = new ArrayCollection();
-        $this->tarif = new ArrayCollection();
+        $this->tarifs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,15 +85,16 @@ class TypeCours
     /**
      * @return Collection<int, Tarif>
      */
-    public function getTarif(): Collection
+    public function getTarifs(): Collection
     {
-        return $this->tarif;
+        return $this->tarifs;
     }
 
     public function addTarif(Tarif $tarif): static
     {
-        if (!$this->tarif->contains($tarif)) {
-            $this->tarif->add($tarif);
+        if (!$this->tarifs->contains($tarif)) {
+            $this->tarifs->add($tarif);
+            $tarif->setTypeCours($this);
         }
 
         return $this;
@@ -96,8 +102,14 @@ class TypeCours
 
     public function removeTarif(Tarif $tarif): static
     {
-        $this->tarif->removeElement($tarif);
+        if ($this->tarifs->removeElement($tarif)) {
+            // set the owning side to null (unless already changed)
+            if ($tarif->getTypeCours() === $this) {
+                $tarif->setTypeCours(null);
+            }
+        }
 
         return $this;
     }
+
 }

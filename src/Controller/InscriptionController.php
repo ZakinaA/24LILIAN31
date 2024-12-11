@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\CoursRepository;
+use App\Repository\TarifRepository;
 use App\Repository\InscriptionRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Inscription;
@@ -39,7 +40,7 @@ class InscriptionController extends AbstractController
             $entityManager->persist($inscription);
             $entityManager->flush();
 
-            return $this->redirectToRoute('inscription_lister', ['id' => $inscription->getId()]);
+            return $this->redirectToRoute('inscription_montant', ['id' => $inscription->getId()]);
         }
 
         return $this->render('inscription/ajouter.html.twig', [
@@ -102,6 +103,64 @@ class InscriptionController extends AbstractController
 
         return $this->redirectToRoute('inscription_lister');
     }
+
+    #[Route('/inscription/{id}/montant', name: 'inscription_montant')]
+public function inscriptionMontant(
+    Request $request,
+    Inscription $inscription,
+    TarifRepository $tarifRepository,
+    CoursRepository $coursRepository
+): Response {
+    $eleve = $inscription->getEleve();
+    $responsable = $eleve->getResponsable();
+
+    if (!$responsable) {
+        throw $this->createNotFoundException('Responsable non trouvé pour cet élève.');
+    }
+
+    $quotientFamilial = $responsable->getQuotientFamilial();
+
+    if (!$quotientFamilial) {
+        throw $this->createNotFoundException('Quotient familial non trouvé pour ce responsable.');
+    }
+
+    $totalMontant = 0;
+    $montants = [];
+
+    foreach ($responsable->getEleves() as $eleve) {
+        $quotientFamilial = $eleve->getResponsable()->getQuotientFamilial();
+        if (!$quotientFamilial) {
+            throw $this->createNotFoundException('Quotient familial non trouvé pour cet élève.');
+        }
+
+        $tarifs = $quotientFamilial->getTarifs();
+        if (count($tarifs) === 0) {
+            throw $this->createNotFoundException('Aucun tarif trouvé pour ce quotient familial.');
+        }
+
+        $tarif = $tarifs->first(); 
+
+        if (!$tarif) {
+            throw $this->createNotFoundException('Tarif non trouvé dans la collection.');
+        }
+
+        $montants[] = [
+            'eleve' => $eleve->getNom(),
+            'montant' => $tarif->getMontant()
+        ];
+        $totalMontant += $tarif->getMontant();
+    }
+
+    return $this->render('inscription/montant.html.twig', [
+        'inscription' => $inscription,
+        'montants' => $montants, 
+        'totalMontant' => $totalMontant, 
+    ]);
+}
+
+
+
+}
    
     
     #[Route('/inscription/consulter/{id}', name: 'inscription_consulter')]

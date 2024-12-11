@@ -21,11 +21,26 @@ class QuotientFamilial
     #[ORM\Column(length: 255)]
     private ?string $quotienMini = null;
 
+
+
+    /**
+     * @var Collection<int, Tarif>
+     */
+    #[ORM\OneToMany(targetEntity: Tarif::class, mappedBy: 'quotientFamilial')]
+    private Collection $tarifs;
+
+    #[ORM\Column(length: 255)]
+    private ?string $quotientMax = null;
+
+    /**
+     * @var Collection<int, Responsable>
+     */
     #[ORM\OneToMany(targetEntity: Responsable::class, mappedBy: 'quotientFamilial')]
     private Collection $responsables;
 
     public function __construct()
     {
+        $this->tarifs = new ArrayCollection();
         $this->responsables = new ArrayCollection();
     }
 
@@ -54,6 +69,49 @@ class QuotientFamilial
     public function setQuotienMini(string $quotienMini): static
     {
         $this->quotienMini = $quotienMini;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Tarif>
+     */
+    public function getTarifs(): Collection
+    {
+        return $this->tarifs;
+    }
+
+    public function addTarif(Tarif $tarif): static
+    {
+        if (!$this->tarifs->contains($tarif)) {
+            $this->tarifs->add($tarif);
+            $tarif->setQuotientFamilial($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTarif(Tarif $tarif): static
+    {
+        if ($this->tarifs->removeElement($tarif)) {
+            // set the owning side to null (unless already changed)
+            if ($tarif->getQuotientFamilial() === $this) {
+                $tarif->setQuotientFamilial(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getQuotientMax(): ?string
+    {
+        return $this->quotientMax;
+    }
+
+    public function setQuotientMax(string $quotientMax): static
+    {
+        $this->quotientMax = $quotientMax;
 
         return $this;
     }

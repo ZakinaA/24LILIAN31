@@ -48,9 +48,19 @@ class Responsable
     #[ORM\Column(length: 255)]
     private ?string $cheminImage = null;
 
+    #[ORM\ManyToOne(inversedBy: 'responsables')]
+    private ?QuotientFamilial $quotientFamilial = null;
+
+    /**
+     * @var Collection<int, Paiement>
+     */
+    #[ORM\OneToMany(targetEntity: Paiement::class, mappedBy: 'responsable')]
+    private Collection $paiements;
+
     public function __construct()
     {
         $this->eleves = new ArrayCollection();
+        $this->paiements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -192,6 +202,48 @@ class Responsable
     public function setCheminImage(string $cheminImage): static
     {
         $this->cheminImage = $cheminImage;
+
+        return $this;
+    }
+
+    public function getQuotientFamilial(): ?QuotientFamilial
+    {
+        return $this->quotientFamilial;
+    }
+
+    public function setQuotientFamilial(?QuotientFamilial $quotientFamilial): static
+    {
+        $this->quotientFamilial = $quotientFamilial;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Paiement>
+     */
+    public function getPaiements(): Collection
+    {
+        return $this->paiements;
+    }
+
+    public function addPaiement(Paiement $paiement): static
+    {
+        if (!$this->paiements->contains($paiement)) {
+            $this->paiements->add($paiement);
+            $paiement->setResponsable($this);
+        }
+
+        return $this;
+    }
+
+    public function removePaiement(Paiement $paiement): static
+    {
+        if ($this->paiements->removeElement($paiement)) {
+            // set the owning side to null (unless already changed)
+            if ($paiement->getResponsable() === $this) {
+                $paiement->setResponsable(null);
+            }
+        }
 
         return $this;
     }

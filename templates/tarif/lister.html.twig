@@ -1,0 +1,36 @@
+{# templates/tarif/lister.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Lister les tarifs{% endblock %}
+
+{% block content %}
+    <h1>Liste des tarifs</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Montant</th>
+                <th>Type de cours</th>
+                <th>Quotient familial</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tarif in tarifs %}
+                <tr>
+                    <td>{{ tarif.montant }} €</td>
+                    <td>{{ tarif.typeCours.libelle }}</td> {# Assurez-vous que 'libelle' est un attribut de 'TypeCours' #}
+                    <td>{{ tarif.quotientFamilial.libelle }}</td> {# Assurez-vous que 'libelle' est un attribut de 'QuotientFamilial' #}
+                    <td>
+                        <a href="{{ path('tarif_consulter', {'id': tarif.id}) }}">Consulter</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">Aucun tarif trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
