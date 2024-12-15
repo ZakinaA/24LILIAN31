@@ -2,33 +2,116 @@
 
 {% block content %}
 <style>
-a { 
-    text-decoration: none; 
-    color: white;
-}
-.view-details-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 5px 10px;
-    text-decoration: none;
-    border-radius: 5px;
-    display: inline-block;
-}
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+    }
 
-.view-details-btn:hover {
-    background-color: #0056b3;
-}
+    h1 {
+        text-align: center;
+        color: green;
+        padding-top: 20px;
+    }
+
+    .inscription-bouton-ajout {
+        background-color: green;
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        display: inline-block;
+        margin: 20px auto;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .inscription-bouton-ajout:hover {
+        background-color: #218838;
+    }
+
+    /* Tableau des inscriptions */
+    .inscription-tableau {
+        width: 90%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .inscription-tableau th, .inscription-tableau td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .inscription-tableau th {
+        background-color: #181B22;
+        color: white;
+    }
+
+    .inscription-tableau tr:hover {
+        background-color: green;
+    }
+
+    .inscription-bouton-action {
+        background-color: #181B22;
+        color: white;
+        padding: 6px 12px;
+        text-decoration: none;
+        border-radius: 5px;
+        display: inline-block;
+        font-size: 14px;
+    }
+
+    .inscription-bouton-action:hover {
+        background-color: #313237;
+    }
+
+    .inscription-modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .inscription-modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+    }
+
+    .inscription-modal-fermer {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        float: right;
+    }
+
+    .inscription-modal-fermer:hover,
+    .inscription-modal-fermer:focus {
+        color: black;
+        cursor: pointer;
+    }
+
 </style>
 
-<main class="main">
-    <h1> Liste des inscriptions </h1>
+<main class="inscription-main">
+    <a href="{{ path('inscription_ajouter') }}" class="inscription-bouton-ajout">Ajouter une inscription</a>
 
-    <a href="{{ path('inscription_ajouter') }}" class="view-details-btn">Ajouter une inscription</a>
+    <h1>Liste des Inscriptions</h1>
 
     {% if inscriptions is empty %}
         <p>Aucune inscription trouvée.</p>
     {% else %}
-        <table class="document-table">
+        <table class="inscription-tableau">
             <thead>
                 <tr>
                     <th>Nom de l'Élève</th>
@@ -40,7 +123,7 @@ a {
                 {% for inscription in inscriptions %}
                     <tr>
                         <td>
-                            <a href="#" class="inscription-name"
+                            <a href="#" class="inscription-nom"
                                data-id="{{ inscription.id }}"
                                data-eleve="{{ inscription.eleve ? inscription.eleve.nom : 'Nom non disponible' }}" 
                                data-date="{{ inscription.dateInscription|date('d/m/Y') }}">
@@ -49,15 +132,11 @@ a {
                         </td>
                         <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
                         <td>
-                            <!-- Lien pour consulter l'inscription -->
-                            <a href="{{ path('inscription_consulter', {'id': inscription.id}) }}" class="view-details-btn">
-                                Voir Détails
-                            </a>
+                            <a href="{{ path('inscription_consulter', {'id': inscription.id}) }}" class="inscription-bouton-action">Voir Détails</a>
 
-                            <!-- Formulaire pour supprimer l'inscription avec confirmation -->
                             <form action="{{ path('inscription_supprimer', {'id': inscription.id}) }}" method="post" style="display:inline;">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ inscription.id) }}">
-                                <button type="submit" class="view-details-btn" onclick="return confirmDelete();">Supprimer</button>
+                                <button type="submit" class="inscription-bouton-action" onclick="return confirmDelete();"><i class="fas fa-trash"></i></button>
                             </form>
                         </td>
                     </tr>
@@ -67,30 +146,30 @@ a {
     {% endif %}
 </main>
 
-<div id="inscriptionModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
+<div id="inscriptionModal" class="inscription-modal">
+    <div class="inscription-modal-content">
+        <span class="inscription-modal-fermer">&times;</span>
         <h2>Détails de l'Inscription</h2>
         <table>
-            <tr><td>Nom de l'Élève : </td><td id="modal-eleve"></td></tr>
-            <tr><td>Date d'Inscription : </td><td id="modal-date"></td></tr>
+            <tr><td>Nom de l'Élève : </td><td id="inscription-modal-eleve"></td></tr>
+            <tr><td>Date d'Inscription : </td><td id="inscription-modal-date"></td></tr>
         </table>
     </div>
 </div>
 
 <script>
     const modal = document.getElementById("inscriptionModal");
-    const closeModal = document.querySelector(".close-btn");
+    const closeModal = document.querySelector(".inscription-modal-fermer");
 
-    document.querySelectorAll(".inscription-name").forEach(link => {
+    document.querySelectorAll(".inscription-nom").forEach(link => {
         link.addEventListener("click", function(event) {
             event.preventDefault();
 
             const eleveNom = this.getAttribute("data-eleve");
             const dateInscription = this.getAttribute("data-date");
 
-            document.getElementById("modal-eleve").innerText = eleveNom;
-            document.getElementById("modal-date").innerText = dateInscription;
+            document.getElementById("inscription-modal-eleve").innerText = eleveNom;
+            document.getElementById("inscription-modal-date").innerText = dateInscription;
 
             modal.style.display = "block";
         });
@@ -106,7 +185,6 @@ a {
         }
     };
 
-    // Fonction pour confirmer la suppression
     function confirmDelete() {
         return confirm("Êtes-vous sûr de vouloir supprimer cette inscription ?");
     }

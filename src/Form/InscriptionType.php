@@ -27,7 +27,7 @@ class InscriptionType extends AbstractType
                 'class' => Eleve::class,
                 'choice_label' => 'nom',
             ])
-            ->add('enregistrer', SubmitType::class, array('label' => 'Inscrire'))
+            ->add('enregistrer', SubmitType::class, array('label' => 'Enregistrer'))
         ;
     }
 

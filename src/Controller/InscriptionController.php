@@ -157,12 +157,7 @@ public function inscriptionMontant(
         'totalMontant' => $totalMontant, 
     ]);
 }
-
-
-
-}
-   
-    
+       
     #[Route('/inscription/consulter/{id}', name: 'inscription_consulter')]
     
    public function consulterInscription($id, InscriptionRepository $inscriptionRepository)

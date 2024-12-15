@@ -38,7 +38,7 @@ class CoursType extends AbstractType
                 'class' => TypeInstrument::class,
 'choice_label' => 'libelle',
             ])
-            ->add('enregistrer', SubmitType::Class, array('label' => 'nouveau'))
+            ->add('enregistrer', SubmitType::Class, array('label' => 'Enregistrer'))
         ;
     }
 

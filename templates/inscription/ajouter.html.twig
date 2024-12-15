@@ -1,9 +1,139 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
+<main class="inscription-ajouter-main">
+    <header class="inscription-ajouter-header">
+        <h1>Ajouter une Inscription</h1>
+    </header>
 
-{{ form_start(form) }}
-{{ form_widget(form) }}
-{{ form_end(form) }}
+    <section class="inscription-ajouter-form">
+        <div class="inscription-ajouter-form-container">
+            <h2>Veuillez remplir les informations suivantes :</h2>
+            
+            {{ form_start(form) }}
+            
+            <div class="inscription-ajouter-form-group">
+                {{ form_label(form.dateInscription) }}
+                {{ form_widget(form.dateInscription) }}
+            </div>
 
+            <div class="inscription-ajouter-form-group">
+                {{ form_label(form.eleve) }}
+                {{ form_widget(form.eleve) }}
+            </div>
+
+            <div class="inscription-ajouter-form-group">
+                {{ form_label(form.cours) }}
+                {{ form_widget(form.cours) }}
+            </div>
+
+            <div class="inscription-ajouter-form-group">
+                {{ form_widget(form.enregistrer) }}
+            </div>
+            
+            {{ form_end(form) }}
+        </div>
+    </section>
+</main>
+<style>
+/* Styles généraux pour la page d'inscription */
+.inscription-ajouter-main {
+    padding: 30px;
+    min-height: 100vh;
+}
+
+.inscription-ajouter-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.inscription-ajouter-header h1 {
+    font-size: 2rem;
+    color: green;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.inscription-ajouter-form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #181B22;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.inscription-ajouter-form-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: white;
+    text-align: center;
+}
+
+.inscription-ajouter-form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.inscription-ajouter-form-group label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+}
+
+.inscription-ajouter-form-group input, 
+.inscription-ajouter-form-group select, 
+.inscription-ajouter-form-group textarea {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: white;
+    background-color: #181B22;
+    transition: border-color 0.3s ease;
+}
+
+.inscription-ajouter-form-group input:focus, 
+.inscription-ajouter-form-group select:focus, 
+.inscription-ajouter-form-group textarea:focus {
+    border-color: green;
+    outline: none;
+}
+
+.inscription-ajouter-form-group button {
+    padding: 10px 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.inscription-ajouter-form-group button:hover {
+    background-color: #45a049;
+}
+
+.inscription-ajouter-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inscription-ajouter-form-container h2 {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.inscription-ajouter-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+</style>
 {% endblock %}
