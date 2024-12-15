@@ -1,66 +1,64 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ asset('styles.css') }}">
-
-<div class="form-container">
-    <h1 class="title-primary">Modifier un Instrument</h1>
-    <div class="formulaire-ajout">
-        <div class="left-column">
+<div class="modifier-form-container">
+    <h1 class="modifier-title-primary">Modifier un Instrument</h1>
+    <div class="modifier-formulaire-ajout">
+        <div class="modifier-left-column">
             {{ form_start(form) }}
 
-            <div class="form-group">
+            <div class="modifier-form-group">
                 {{ form_label(form.numSerie) }}
                 {{ form_widget(form.numSerie) }}
             </div>
 
-            <div class="form-group">
+            <div class="modifier-form-group">
                 {{ form_label(form.dateAchat) }}
                 {{ form_widget(form.dateAchat) }}
             </div>
 
-            <div class="form-group">
+            <div class="modifier-form-group">
                 {{ form_label(form.prixAchat) }}
                 {{ form_widget(form.prixAchat) }}
             </div>
 
-            <div class="form-group">
+            <div class="modifier-form-group">
                 {{ form_label(form.utilisation) }}
                 {{ form_widget(form.utilisation) }}
             </div>
 
-            <div class="form-group">
+            <div class="modifier-form-group">
                 {{ form_label(form.couleur) }}
                 {{ form_widget(form.couleur) }}
             </div>
 
-            <div class="form-group">
+            <div class="modifier-form-group">
                 {{ form_label(form.typeInstrument) }}
                 {{ form_widget(form.typeInstrument) }}
             </div>
         </div>
 
-        <div class="right-column">
-            <div class="form-group">
+        <div class="modifier-right-column">
+            <div class="modifier-form-group">
                 {{ form_label(form.marque) }}
                 {{ form_widget(form.marque) }}
             </div>
 
-            <div class="form-group">
+            <div class="modifier-form-group">
                 {{ form_label(form.modele) }}
                 {{ form_widget(form.modele) }}
             </div>
 
-            <div class="image-container">
+            <div class="modifier-image-container">
                 <img id="image-preview" src="{{ form.cheminImage is not empty ? asset(form.cheminImage) : asset('placeholder-image.png') }}" alt="Prévisualisation">
             </div>
 
-            <div class="form-group">
+            <div class="modifier-form-group">
                 {{ form_label(form.cheminImage) }}
                 {{ form_widget(form.cheminImage) }}
             </div>
 
-            <div class="form-group">
+            <div class="modifier-form-group">
                 {{ form_widget(form.enregistrer) }}
             </div>
 
@@ -69,10 +67,43 @@
         {{ form_end(form) }}
     </div>
 
-    <div id="progress-container">
-        <div id="progress-bar"></div>
+    <div class="modifier-progress-container">
+        <div class="modifier-progress-bar"></div>
     </div>
 </div>
+
+
+<script>
+document.querySelector('input[type="file"]').addEventListener('change', event => {
+    const preview = document.getElementById('image-preview');
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        preview.src = reader.result;
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+});
+
+
+const fields = document.querySelectorAll('.modifier-form-group input, .modifier-form-group select, .modifier-form-group textarea');
+const progressBar = document.querySelector('.modifier-progress-bar'); 
+
+fields.forEach(field => {
+    field.addEventListener('input', updateProgress);
+});
+
+function updateProgress() {
+    const filledFields = Array.from(fields).filter(field => field.value.trim() !== '');
+    const progress = (filledFields.length / fields.length) * 100;
+    progressBar.style.width = `${progress}%`;
+}
+
+</script>
+
 
 <style>
 body, h1, h2, p, ul, li, a, img {
@@ -92,8 +123,7 @@ body {
     align-items: center;
     height: 100vh;
 }
-
-.title-primary {
+.modifier-title-primary {
     font-size: 36px;
     font-weight: bold;
     text-align: center;
@@ -101,8 +131,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* Conteneur du formulaire */
-.formulaire-ajout {
+.modifier-formulaire-ajout {
     background-color: #181B22;
     border-radius: 20px;
     padding: 20px;
@@ -112,12 +141,12 @@ body {
     align-items: flex-start;
 }
 
-.left-column,
-.right-column {
+.modifier-left-column,
+.modifier-right-column {
     flex: 1;
 }
 
-.image-container {
+.modifier-image-container {
     width: 100%;
     height: 200px;
     border: 2px solid #444;
@@ -130,26 +159,26 @@ body {
     margin-bottom: 15px;
 }
 
-.image-container img {
+.modifier-image-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.form-group {
+.modifier-form-group {
     margin-bottom: 15px;
 }
 
-.form-group label {
+.modifier-form-group label {
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
     color: #ccc;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.modifier-form-group input,
+.modifier-form-group select,
+.modifier-form-group textarea {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
@@ -158,16 +187,16 @@ body {
     color: white;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.modifier-form-group input:focus,
+.modifier-form-group select:focus,
+.modifier-form-group textarea:focus {
     border-color: green;
     outline: none;
     box-shadow: 0 0 8px green;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-#progress-container {
+.modifier-progress-container {
     width: 100%;
     background-color: #ddd;
     border-radius: 20px;
@@ -176,42 +205,11 @@ body {
     overflow: hidden;
 }
 
-#progress-bar {
+.modifier-progress-bar {
     width: 0%;
     height: 100%;
     background-color: green;
     transition: width 0.3s ease;
 }
 </style>
-
-<script>
-document.querySelector('input[type="file"]').addEventListener('change', event => {
-    const preview = document.getElementById('image-preview');
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-        preview.src = reader.result;
-    };
-
-    if (file) {
-        reader.readAsDataURL(file);
-    }
-});
-
-// Mettre à jour la barre de progression lorsque l'utilisateur saisit quelque chose
-const fields = document.querySelectorAll('.form-group input, .form-group select, .form-group textarea');
-const progressBar = document.getElementById('progress-bar');
-
-fields.forEach(field => {
-    field.addEventListener('input', updateProgress);
-});
-
-function updateProgress() {
-    const filledFields = Array.from(fields).filter(field => field.value.trim() !== '');
-    const progress = (filledFields.length / fields.length) * 100;
-    progressBar.style.width = `${progress}%`;
-}
-</script>
-
 {% endblock %}

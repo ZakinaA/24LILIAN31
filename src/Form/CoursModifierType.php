@@ -38,7 +38,7 @@ class CoursModifierType extends AbstractType
                 'class' => TypeInstrument::class,
 'choice_label' => 'id',
             ])
-            ->add('enregistrer', SubmitType::Class, array('label' => 'nouveau'))
+            ->add('enregistrer', SubmitType::Class, array('label' => 'Modifier'))
         ;
     }
 

@@ -1,21 +1,55 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-<main class="main">
-    <header class="main-header">
+<main class="cours-main">
+    <header class="cours-header">
         <h1>Liste des Cours</h1>
-        <p>Explorez nos cours et découvrez les détails des professeurs et horaires.</p>
-        <!-- Bouton Ajouter un Cours -->
-        <a href="http://172.20.177.77/lilian31/public/cours/ajouter" class="btn-add-course">Ajouter un Cours</a>
     </header>
 
-    <section class="courses-container">
-        <table class="courses-table">
+    <section class="cours-container-filtre">
+        <button class="cours-btn-filtre-toggle">
+            <img src="/path/to/filter-icon.png" alt="Filtrer" class="cours-icône-filtre">
+            Filtrer
+        </button>
+        
+        <div class="cours-dropdown-filtre">
+            <form method="get" action="{{ path('app_lister') }}">
+                <label for="cours-typeCours">Type de Cours:</label>
+                <select name="typeCours" id="cours-typeCours">
+                    <option value="">Choisir...</option>
+                    {% for typeCours in typeCours %}
+                        <option value="{{ typeCours.id }}">{{ typeCours.libelle }}</option>
+                    {% endfor %}
+                </select><br>
+                
+                <label for="cours-typeInstrument">Type d'Instrument:</label>
+                <select name="typeInstrument" id="cours-typeInstrument">
+                    <option value="">Choisir...</option>
+                    {% for typeInstrument in typeInstruments %}
+                        <option value="{{ typeInstrument.id }}">{{ typeInstrument.libelle }}</option>
+                    {% endfor %}
+                </select><br>
+                
+                <button type="submit" class="cours-btn-filtre">Appliquer les filtres</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="cours-container-recherche">
+        <form method="GET" action="{{ path('app_lister') }}">
+            <input type="text" name="search" id="cours-recherche" placeholder="Rechercher un cours..." class="cours-input-recherche">
+            <button type="submit" class="cours-btn-recherche">Rechercher</button>
+        </form>
+    </section>
+
+    <div class="cours-total">
+    <a href="http://172.20.177.77/lilian31/public/cours/ajouter" class="cours-btn-ajouter">Ajouter un Cours</a>
+    <section class="cours-container-liste">
+        <table class="cours-tableau">
             <thead>
                 <tr>
                     <th>Nom du Cours</th>
-                    <th>Libellé</th>
-                    <th>Détails</th>
+                    <th>Jour</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -23,22 +57,21 @@
                 {% for e in pCours %}
                     <tr>
                         <td>
-                            <a href="#" class="course-name"
+                            <a href="#" class="cours-nom"
                                 data-id="{{ e.id }}"
                                 data-libelle="{{ e.libelle }}"
-                                data-jour="{{ e.jour.libelle  }}"
+                                data-jour="{{ e.jour.libelle }}"
                                 data-heureDebut="{{ e.heureDebut|date('H:i') }}"
                                 data-heureFin="{{ e.heureFin|date('H:i') }}"
-                                data-typeCours="{{ e.typeCours.libelle  }}"
-                                data-typeInstrument="{{ e.typeInstrument.libelle  }}">
+                                data-typeCours="{{ e.typeCours.libelle }}"
+                                data-typeInstrument="{{ e.typeInstrument.libelle }}">
                                 {{ e.libelle }}
                             </a>
                         </td>
-                        <td>{{ e.libelle }}</td>
-                        <td><button class="btn-detail">Voir</button></td>
+                        <td>{{ e.jour.libelle }}</td>
                         <td>
-                            <!-- Bouton Supprimer avec confirmation -->
-                            <a href="javascript:void(0)" class="btn-delete" onclick="confirmDelete({{ e.id }})">Supprimer</a>
+                            <a href="{{ path('app_coursModifier', {'id': e.id}) }}" class="cours-btn-modifier"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:void(0)" class="cours-btn-supprimer" onclick="confirmDelete({{ e.id }})"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                 {% else %}
@@ -49,245 +82,28 @@
             </tbody>
         </table>
     </section>
+    </div>
+
+    <div class="cours-pagination">
+        <button class="cours-btn-prev"><i class="fas fa-arrow-left"></i></button>
+        <button class="cours-btn-next"><i class="fas fa-arrow-right"></i></button>
+    </div>
 </main>
 
-<!-- Modal -->
-<div id="courseModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
+<div id="coursModal" class="cours-modal">
+    <div class="cours-modal-content">
+        <span class="cours-close-btn">&times;</span>
         <h2>Informations du Cours</h2>
-        <table class="modal-table">
-            <tr><td>Libellé:</td><td id="modal-libelle"></td></tr>
-            <tr><td>Jour:</td><td id="modal-jour"></td></tr>
-            <tr><td>Heure de début:</td><td id="modal-heureDebut"></td></tr>
-            <tr><td>Heure de fin:</td><td id="modal-heureFin"></td></tr>
-            <tr><td>Type de Cours:</td><td id="modal-typeCours"></td></tr>
-            <tr><td>Type d'Instrument:</td><td id="modal-typeInstrument"></td></tr>
+        <table class="cours-modal-table">
+            <tr><td>Libellé:</td><td id="cours-modal-libelle"></td></tr>
+            <tr><td>Jour:</td><td id="cours-modal-jour"></td></tr>
+            <tr><td>Heure de début:</td><td id="cours-modal-heureDebut"></td></tr>
+            <tr><td>Heure de fin:</td><td id="cours-modal-heureFin"></td></tr>
+            <tr><td>Type de Cours:</td><td id="cours-modal-typeCours"></td></tr>
+            <tr><td>Type d'Instrument:</td><td id="cours-modal-typeInstrument"></td></tr>
         </table>
-        <img src="/instrument/ertret.png" alt="Image du cours" class="modal-image">
     </div>
 </div>
 
-<script>
-    // Fonction pour afficher une alerte de confirmation avant de supprimer
-    function confirmDelete(courseId) {
-        const confirmDelete = confirm("Êtes-vous sûr de vouloir supprimer ce cours ?");
-        if (confirmDelete) {
-            window.location.href = `http://172.20.177.77/lilian31/public/cours/supprimer/${courseId}`;
-        }
-    }
-
-    // Sélection du modal et du bouton de fermeture
-    const modal = document.getElementById("courseModal");
-    const closeModal = document.querySelector(".close-btn");
-
-    // Gestion de l'affichage des détails du cours
-    document.querySelectorAll(".course-name").forEach(link => {
-        link.addEventListener("click", function(event) {
-            event.preventDefault(); // Empêcher l'action par défaut du lien
-
-            // Récupérer les données stockées dans l'élément <a>
-            const professorLibelle = this.getAttribute("data-libelle");
-            const professorJour = this.getAttribute("data-jour");
-            const professorHeureDebut = this.getAttribute("data-heureDebut");
-            const professorHeureFin = this.getAttribute("data-heureFin");
-            const professorTypeCours = this.getAttribute("data-typeCours");
-            const professorTypeInstrument = this.getAttribute("data-typeInstrument");
-
-            // Remplir le modal avec les informations
-            document.getElementById("modal-libelle").innerText = professorLibelle;
-            document.getElementById("modal-jour").innerText = professorJour;
-            document.getElementById("modal-heureDebut").innerText = professorHeureDebut;
-            document.getElementById("modal-heureFin").innerText = professorHeureFin;
-            document.getElementById("modal-typeCours").innerText = professorTypeCours;
-            document.getElementById("modal-typeInstrument").innerText = professorTypeInstrument;
-
-            // Afficher le modal
-            modal.style.display = "block";
-        });
-    });
-
-    // Fermer le modal
-    closeModal.addEventListener("click", function() {
-        modal.style.display = "none";
-    });
-
-    // Fermer le modal en cliquant à l'extérieur de la fenêtre
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    };
-</script>
-
-<style>
-    /* Général */
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f7fc;
-        margin: 0;
-        padding: 0;
-    }
-
-    a {
-        color: white;
-        text-decoration: none;
-    }
-
-    /* Conteneur principal */
-    .main {
-        padding: 20px;
-        max-width: 1200px;
-        margin: auto;
-    }
-
-    .main-header {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .course-table td a {
-        text-decoration: none;
-        color: white;
-    }
-
-    .main-header h1 {
-        font-size: 2.5rem;
-        color: #333;
-    }
-
-    .main-header p {
-        font-size: 1.1rem;
-        color: #666;
-    }
-
-    .courses-container {
-        overflow-x: auto;
-    }
-
-    .courses-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .courses-table th, .courses-table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .courses-table th {
-        background-color: #181B22;
-        color: white;
-    }
-
-    .courses-table td {
-        background-color: #181B22;
-    }
-
-    .btn-detail {
-        padding: 8px 16px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .btn-detail:hover {
-        background-color: #218838;
-    }
-
-    .btn-delete {
-        padding: 8px 16px;
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .btn-delete:hover {
-        background-color: #c82333;
-    }
-
-    .btn-add-course {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border-radius: 4px;
-        text-decoration: none;
-        margin-top: 20px;
-        display: inline-block;
-    }
-
-    .btn-add-course:hover {
-        background-color: #0056b3;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
-        padding-top: 60px;
-    }
-
-    .modal-content {
-        background-color: #181B22;
-        margin: 5% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 80%;
-        max-width: 800px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .modal-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    .modal-table td {
-        padding: 10px;
-        font-size: 1.1rem;
-    }
-
-    .modal-table td:nth-child(1) {
-        font-weight: bold;
-    }
-
-    .modal-image {
-        width: 100%;
-        height: auto;
-        margin-top: 20px;
-        border-radius: 8px;
-    }
-
-    .close-btn {
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
-        position: absolute;
-        top: 10px;
-        right: 25px;
-        cursor: pointer;
-    }
-
-    .close-btn:hover,
-    .close-btn:focus {
-        color: black;
-        text-decoration: none;
-    }
-</style>
-
+<script src="../js/cours-script.js"></script>
 {% endblock %}
