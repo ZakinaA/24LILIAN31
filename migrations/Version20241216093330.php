@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241211090154 extends AbstractMigration
+final class Version20241216093330 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20241211090154 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE quotient_familial ADD quotient_max VARCHAR(255) NOT NULL');
+        $this->addSql('ALTER TABLE professionnel ADD chemin_image VARCHAR(255) NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE quotient_familial DROP quotient_max');
+        $this->addSql('ALTER TABLE professionnel DROP chemin_image');
     }
 }
