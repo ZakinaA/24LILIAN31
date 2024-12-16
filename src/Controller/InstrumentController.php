@@ -9,7 +9,8 @@ use App\Entity\Pret;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use App\Entity\Intervention;
 use App\Entity\Instrument;
-use App\Entity\Maison;
+use App\Entity\TypeInstrument;
+use App\Entity\ClasseInstrument;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,14 +56,46 @@ class InstrumentController extends AbstractController
 
 
 
-    public function listerInstrument(ManagerRegistry $doctrine){
+public function listerInstrument(ManagerRegistry $doctrine, Request $request)
+{
+    $repository = $doctrine->getRepository(Instrument::class);
+    
+    // Créez le QueryBuilder
+    $queryBuilder = $repository->createQueryBuilder('i');
 
-        $repository = $doctrine->getRepository(Instrument::class);
-
-        $instruments= $repository->findAll();
-        return $this->render('instrument/lister.html.twig', [
-        'pInstruments' => $instruments,]);	
+    // Application du filtre par type d'instrument
+    if ($request->query->get('typeInstrument')) {
+        $queryBuilder->andWhere('i.typeInstrument = :typeInstrument')
+                     ->setParameter('typeInstrument', $request->query->get('typeInstrument'));
     }
+
+    // Application du filtre par classe d'instrument
+    if ($request->query->get('classeInstrument')) {
+        $queryBuilder->andWhere('i.typeInstrument.classeInstrument = :classeInstrument')
+                     ->setParameter('classeInstrument', $request->query->get('classeInstrument'));
+    }
+
+    // Récupérer les résultats
+    $instruments = $queryBuilder->getQuery()->getResult();
+
+    // Récupérer les types et les classes d'instruments pour le formulaire de filtrage
+    $typeInstruments = $doctrine->getRepository(TypeInstrument::class)->findAll();
+    $classeInstruments = $doctrine->getRepository(ClasseInstrument::class)->findAll();
+
+    // Rendu de la vue
+    return $this->render('instrument/lister.html.twig', [
+        'pInstruments' => $instruments, // Corrigé de $cours à $instruments
+        'typeInstruments' => $typeInstruments,
+        'classeInstruments' => $classeInstruments,
+    ]);
+}
+
+
+
+
+
+
+
 
     public function modifierInstrument(ManagerRegistry $doctrine, $id, Request $request)
 {

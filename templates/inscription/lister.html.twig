@@ -31,7 +31,6 @@
         background-color: #218838;
     }
 
-    /* Tableau des inscriptions */
     .inscription-tableau {
         width: 90%;
         margin: 20px auto;
@@ -80,7 +79,7 @@
     }
 
     .inscription-modal-content {
-        background-color: white;
+        background-color: #181B22;
         margin: 10% auto;
         padding: 20px;
         border-radius: 8px;
@@ -126,6 +125,7 @@
                             <a href="#" class="inscription-nom"
                                data-id="{{ inscription.id }}"
                                data-eleve="{{ inscription.eleve ? inscription.eleve.nom : 'Nom non disponible' }}" 
+                               data-elevee="{{ inscription.eleve ? inscription.eleve.prenom : 'Prenom non disponible' }}" 
                                data-date="{{ inscription.dateInscription|date('d/m/Y') }}">
                                 {{ inscription.eleve ? inscription.eleve.nom : 'Nom non disponible' }}
                             </a>
@@ -152,6 +152,7 @@
         <h2>Détails de l'Inscription</h2>
         <table>
             <tr><td>Nom de l'Élève : </td><td id="inscription-modal-eleve"></td></tr>
+            <tr><td>Prénom de l'Élève : </td><td id="inscription-modal-elevee"></td></tr>
             <tr><td>Date d'Inscription : </td><td id="inscription-modal-date"></td></tr>
         </table>
     </div>
@@ -166,9 +167,11 @@
             event.preventDefault();
 
             const eleveNom = this.getAttribute("data-eleve");
+            const elevePrenom = this.getAttribute("data-elevee");
             const dateInscription = this.getAttribute("data-date");
 
             document.getElementById("inscription-modal-eleve").innerText = eleveNom;
+            document.getElementById("inscription-modal-elevee").innerText = elevePrenom;
             document.getElementById("inscription-modal-date").innerText = dateInscription;
 
             modal.style.display = "block";

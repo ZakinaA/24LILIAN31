@@ -1,126 +1,183 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Montant à payer{% endblock %}
+{% block title %}Liste des élèves et montants{% endblock %}
 
 {% block content %}
-<main class="montant-main">
-    <header class="montant-header">
-        <h1>Liste des montants à payer</h1>
-    </header>
+<main class="eleves-main">
+    <div class="eleves-container">
+        <header class="eleves-header">
+            <h1>Liste des élèves et montants à payer</h1>
+            <p>Responsable : {{ responsable.nom }} {{ responsable.prenom }}</p>
+        </header>
 
-    <section class="montant-section">
-        <div class="montant-container">
-            <table class="montant-table">
+        <section class="eleves-section">
+            <table class="eleves-table">
                 <thead>
                     <tr>
                         <th>Élève(s)</th>
+                        <th>Cours</th>
                         <th>Montant(s)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for montant in montants %}
+                    {% for eleveData in montantsParEleve %}
                     <tr>
-                        <td>{{ montant.eleve }}</td>
-                        <td>{{ montant.montant }} €</td>
+                        <td>{{ eleveData.eleve.nom }} {{ eleveData.eleve.prenom }}</td>
+                        <td>
+                            <ul>
+                                {% for montant in eleveData.montants %}
+                                    <li>{{ montant.cours }} : {{ montant.montant }} €</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ eleveData.totalMontant }} €</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-
-            <div class="montant-total">
-                <hr>
-                <h2>Total à payer : {{ totalMontant }} €</h2>
+       
+            <div class="eleves-total">
+                <hr><br>
+                <h2>Total à payer pour tous les élèves : {{ totalGlobal }} €</h2>
             </div>
 
-            <div class="montant-return">
+            <div class="eleves-return">
                 <a href="{{ path('inscription_lister') }}" class="btn retour-btn">
                     Retour à la liste des inscriptions
                 </a>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </main>
 
 <style>
-.montant-main {
-    padding: 30px;
-    min-height: 100vh;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+.eleves-main {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    height: 100vh;
+    padding: 0 20px;
 }
 
-.montant-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.montant-header h1 {
-    font-size: 2rem;
-    color: green;
-    font-weight: bold;
-}
-
-.montant-section {
+.eleves-container {
     width: 100%;
-    max-width: 900px;
+    max-width: 1100px; 
+    background-color: #181B22;
     padding: 20px;
-    background-color: #181B22; 
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.montant-container {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+.eleves-header {
+    background-color: #181B22;
+    color: green;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
 }
 
-.montant-table {
+.eleves-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.eleves-header p {
+    font-size: 1.2rem;
+}
+
+.eleves-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
-.montant-table th, .montant-table td {
-    padding: 12px;
+.eleves-table th,
+.eleves-table td {
+    padding: 15px;
     text-align: left;
-    border-bottom: 1px solid black;
+    font-size: 1.1rem;
 }
 
-.montant-table th {
+.eleves-table th {
+    background-color: green;
     color: white;
 }
 
-.montant-total {
-    text-align: center;
-    margin-top: 30px;
+.eleves-table tr:hover {
+    background-color: #313237;
 }
 
-.montant-total h2 {
-    font-size: 1.5rem;
-    color: white; 
-    font-weight: bold;
+.eleves-table ul {
+    padding-left: 20px;
+    list-style-type: none;
 }
 
-.montant-return {
-    text-align: center;
-    margin-top: 30px;
-}
-
-.montant-return .btn {
-    padding: 10px 20px;
-    background-color: green; 
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
+.eleves-table ul li {
     font-size: 1rem;
-    display: inline-block;
+    color: white;
+}
+
+.eleves-total {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.eleves-total hr {
+    border: 1px solid green;
+    margin-top: 10px;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.eleves-return {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.eleves-return .btn {
+    background-color: green;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
-.montant-return .btn:hover {
-    background-color: #45a049; 
+.eleves-return .btn:hover {
+    background-color: #004d99;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .eleves-header h1 {
+        font-size: 2rem;
+    }
+
+    .eleves-table th, .eleves-table td {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    .eleves-total {
+        font-size: 1.2rem;
+    }
+
+    .eleves-return .btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
 }
 </style>
+
 {% endblock %}
