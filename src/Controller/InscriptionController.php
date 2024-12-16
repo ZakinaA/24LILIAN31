@@ -158,10 +158,6 @@ public function inscriptionMontant(
     ]);
 }
 
-
-
-}
-   
     
     #[Route('/inscription/consulter/{id}', name: 'inscription_consulter')]
     
