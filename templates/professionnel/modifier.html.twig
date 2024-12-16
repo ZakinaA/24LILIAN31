@@ -1,4 +1,5 @@
-{# templates/professionnel/modifier.html.twig #}
+{% extends 'base.html.twig' %}
+{% block content %}
 {{ form_start(form) }}
 
 {{ form_widget(form) }}
@@ -6,3 +7,4 @@
 <button type="submit" class="btn btn-success">Valider</button>
 
 {{ form_end(form) }}
+{% endblock %}

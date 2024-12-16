@@ -93,6 +93,10 @@ accessoireLister:
     path: /accessoire/lister
     controller: App\Controller\AccessoireController::listerAccessoire
 
+accessoireConsulter:
+    path: /accessoire/consulter/{id}
+    controller: App\Controller\AccessoireController::consulterAccessoire
+
 accessoireModifier:
     path: /accessoire/modifier/{id}
     controller: App\Controller\AccessoireController::modifierAccessoire
@@ -100,7 +104,7 @@ accessoireModifier:
 accessoireSupprimer:
     path: /accessoire/supprimer/{id}
     controller: App\Controller\AccessoireController::supprimerAccessoire
-
+    
 # -----------------------------------------------------------------------------------------
 # Modele
 # -----------------------------------------------------------------------------------------

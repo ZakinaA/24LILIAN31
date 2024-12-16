@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+<h1>Consulter l'accessoire {{ accessoire.libelle }}</h1>
+
+<!-- Bouton de retour en haut à gauche -->
+<div class="back-button">
+    <a href="{{ path('accessoireLister') }}" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
+</div>
+
+<div class="container">
+    <div class="left">
+    <div class="image-container">
+            <img src="{{'../../image/' ~ accessoire.CheminImage}}" alt="Accessoire Image">
+        </div>
+    </div>
+</div>    
+            <br>
+            <div class="accessoire-info">
+                <h2 class="title"><i class="fas fa-keyboard"></i>&nbsp; Accessoire</h2>
+                <div class="info-item">
+                    <strong>libellé:</strong> {{ accessoire.libelle }}
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript for accordion functionality
+    document.querySelectorAll('.accordion-header').forEach(item => {
+        item.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            this.classList.toggle('active');
+        });
+    });
+</script>
+
+<style>
+    /* Global Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        margin: 0;
+        padding: 100px 0;
+    }
+
+    h1 {
+        font-size: 48px;
+        font-weight: bold;
+        text-align: center;
+        color: green;
+        margin-bottom: 30px;
+    }
+
+    /* Back Button Style */
+    .back-button {
+        margin-left: 20px;
+        margin-bottom: 20px;
+        width: 13%;
+    }
+
+    .btn-back {
+        font-size: 18px;
+        padding: 10px 20px;
+        background-color: #444;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background-color: #333;
+    }
+
+    /* Container Layout */
+    .container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 50px;
+    }
+
+    .left, .right {
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .left {
+        width: 380px;
+        background-color: #1e2125;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .right {
+        width: 600px;
+        background-color: #181B22;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Image Section */
+    .image-container {
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+        border-radius: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .image-container img:hover {
+        transform: scale(1.1);
+    }
+
+    /* Accordion Styles */
+    .accordion {
+        margin-top: 20px;
+    }
+
+    .accordion-item {
+        background-color: #232323;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .accordion-header {
+        padding: 15px;
+        font-size: 18px;
+        color: green;
+        background-color: #181B22;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .accordion-header:hover {
+        background-color: #2d3436;
+    }
+
+    .accordion-header.active {
+        background-color: #2d3436;
+    }
+
+    .accordion-content {
+        display: none;
+        padding: 15px;
+        background-color: #1e2125;
+        color: #bbb;
+    }
+
+    /* Accessoire Info */
+    .accessoire-info .info-item {
+        background-color: #232323;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .accessoire-info .info-item:hover {
+        background-color: #2d3436;
+        transform: scale(1.05);
+    }
+
+    /* Title for Sections */
+    .title {
+        font-size: 22px;
+        color: green;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+
+{% endblock %}
