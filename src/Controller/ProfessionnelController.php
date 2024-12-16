@@ -34,7 +34,7 @@ class ProfessionnelController extends AbstractController
 
     // Route pour consulter une professionnel spécifique
     #[Route('/professionnel/{id}', name: 'professionnel_consulter', requirements: ['id' => '\d+'])]
-public function consulterProfessionnel(ManagerRegistry $doctrine, int $id): Response
+    public function consulterProfessionnel(ManagerRegistry $doctrine, int $id): Response
 
     {
         // Récupérer l'professionnel en fonction de son ID
@@ -59,7 +59,7 @@ public function consulterProfessionnel(ManagerRegistry $doctrine, int $id): Resp
         $professionnels = $repository->findAll();
 
         return $this->render('professionnel/lister.html.twig', [
-            'iProfessionnels' => $professionnels,
+            'pProfessionnels' => $professionnels,
         ]);
     }
 
