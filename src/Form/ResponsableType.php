@@ -6,6 +6,7 @@ use App\Entity\Responsable;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,6 +22,11 @@ class ResponsableType extends AbstractType
             ->add('copos')
             ->add('ville')
             ->add('tel')
+            ->add('cheminImage', FileType::class, [
+                'label' => 'Choisir une image',
+                'required' => false,
+                'mapped' => false,
+            ])
         ;
     }
 

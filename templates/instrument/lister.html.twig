@@ -1,102 +1,195 @@
 {% extends 'base.html.twig' %}
+
 {% block content %}
 <style>
-    a {
-        text-decoration: none;
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        margin: 0;
+        padding: 100px 0 0; 
     }
     h1 {
-        font-size: 40px;
+        font-size: 48px;
+        font-weight: bold;
+        text-align: center;
+        margin: 20px 0;
+        color: green;
     }
-    .document-table a {
-        font-size: 25px;
+    a {
+        text-decoration: none;
+        color: green;
+        transition: color 0.3s ease;
     }
-    .imgInstrument img {
-        max-width: 200px;
+    a:hover {
+        color: #ff5733;
+    }
+
+    .instrument-table {
+        margin: 20px auto;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .instrument-table thead th {
+        font-size: 18px;
+        background-color: #232323;
+        padding: 15px;
+        text-align: left;
+        color: green;
+    }
+    .instrument-table tbody tr {
+        border-bottom: 1px solid #444;
+        transition: background-color 0.3s ease;
+    }
+    .instrument-table tbody tr:hover {
+        background-color: #313237;
+    }
+    .instrument-table td {
+        padding: 15px;
+    }
+    .instrument-details {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .instrument-image img {
+        width: 120px;
+        height: auto;
         border-radius: 10px;
+        border: 2px solid green;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background-color: green;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    .btn:hover {
+        background-color: #313237;
+        color: white;
+    }
+    .btn-add {
+        display: inline-block;
+        margin-top: 20px;
+    }
+    .btn-small {
+        font-size: 14px;
+        padding: 5px 10px;
+    }
+    .btn-trash {
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .btn-trash:hover {
+        color: #e74c3c;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background-color: #232323;
+        padding: 20px;
+        border-radius: 10px;
+        width: 50%;
+        position: relative;
+        color: #ffffff;
+    }
+    .modal-content h2 {
+        color: green;
+    }
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .btn-add {
+        margin-top: 20px;
+        text-align: left;
     }
 </style>
 
 <h1>Liste des instruments</h1>
-<table class="document-table">
+
+<table class="instrument-table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Détails</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
     <tbody>
         {% for instrument in pInstruments %}
             <tr>
+                <td class="instrument-image">
+                    <img src="{{ asset('image/' ~ instrument.cheminImage) }}" alt="Instrument">
+                </td>
                 <td>
-                    <a href="#" class="instrument-name"
-                        data-id="{{ instrument.id }}"
-                        data-numSerie="{{ instrument.numSerie }}"
-                        data-dateAchat="{{ instrument.dateAchat|date('d/m/Y') }}"
-                        data-prixAchat="{{ instrument.prixAchat }}"
-                        data-utilisation="{{ instrument.utilisation }}"
-                        data-couleur="{{ instrument.couleur }}"
-                        data-typeInstrument="{{ instrument.typeInstrument.libelle }}"
-                        
-                        data-image="{{'../image/' ~ instrument.CheminImage}}"
-                        data-interventions="{{ instrument.interventions|json_encode }}">
-                        <div class="liste-instrument">
-                            ○&nbsp;&nbsp;{{ instrument.numSerie }}&nbsp;&nbsp;&nbsp;&nbsp;{{ instrument.utilisation }}&nbsp;&nbsp;&nbsp;&nbsp;{{ instrument.couleur }}&nbsp;&nbsp;&nbsp;&nbsp;{{ instrument.typeInstrument.libelle }}
+                    <div class="instrument-details">
+                        <div>
+                            <strong>Numéro de série :</strong> {{ instrument.numSerie }}<br>
+                            <strong>Type :</strong> {{ instrument.typeInstrument.libelle }}<br>
+                            <strong>Couleur :</strong> {{ instrument.couleur }}<br>
+                            <strong>Date d'achat :</strong> {{ instrument.dateAchat|date('d/m/Y') }}
                         </div>
-                        <div class="bouton-ajouter-instrument"><button><a href="{{ path('instrumentAjouter') }}" target="_blank"> Ajouter </a></button></div>
-                    </a>
+                    </div>
+                </td>
+                <td>
+                    <a href="{{ path('instrumentConsulter', { id: instrument.id }) }}" class="btn btn-small">Consulter</a>
+                    <a href="{{ path('instrumentModifier', { id: instrument.id }) }}" class="btn btn-small">Modifier</a>
+                    
+                    <button class="btn-trash" onclick="confirmDelete('{{ instrument.numSerie }}', {{ instrument.id }})">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td>Aucun instrument n'a été trouvé.</td>
+                <td colspan="3" style="text-align: center;">Aucun instrument trouvé.</td>
             </tr>
         {% endfor %}
     </tbody>
 </table>
 
-<div id="instrumentModal" class="modal">
-    <div class="modal-content">
-        <button class="close-btn">&times;</button>
-        <h2>Détails de l'instrument</h2>
-        <div class="tabs">
-            <button class="tab-button active" data-target="instrument">Instrument</button>
-            <button class="tab-button" data-target="modele">Autres</button>
-        </div>
-
-        <div class="tab-content">
-            <div class="tab-panel" id="instrument">
-              <div class="info-total">
-                <div class="info-instrument">
-                <table>
-                    <tr><td>Numéro de série :</td><td><span id="modal-numSerie"></span></td></tr>
-                    <tr><td>Date d'achat :</td><td><span id="modal-dateAchat"></span></td></tr>
-                    <tr><td>Prix d'achat :</td><td><span id="modal-prixAchat"></span></td></tr>
-                    <tr><td>Utilisation :</td><td><span id="modal-utilisation"></span></td></tr>
-                    <tr><td>Couleur :</td><td><span id="modal-couleur"></span></td></tr>
-                    <tr><td>Type instrument :</td><td><span id="modal-typeInstrument"></span></td></tr>
-                </table>
-                </div>
-
-                <div class="imgInstrument">
-                    <tr><td>
-                    <img id="modal-image" src="" alt="Image de l'instrument" title="Instrument" />
-                    </td></tr>
-                </div>
-             </div>
-
-            {% for instrument in pInstruments %}
-                <div class="bouton-consulter-instrument"><button><a href="{{ path('instrumentModifier', { 'id': instrument.id }) }}" target="_blank"> Modifier </a></button></div>
-            {% endfor %}
-
-            </div>
-            
-            {% for instrument in pInstruments %}
-            <div class="tab-panel hidden" id="modele">
-                <table>
-                    <tr><td>Consulter les interventions, les prêts et les accessoires de l'instrument : </td></tr>
-                </table>
-                <div class="bouton-consulter-instrument"><button><a href="{{ path('instrumentConsulter', { 'id': instrument.id }) }}" target="_blank"> Consulter </a></button></div>
-            </div>
-            {% endfor %}
-
-            <div class="tab-panel hidden" id="marque">
-                <ul id="interventionsList"></ul>
-            </div>
-        </div>
-    </div>
+<!-- Ajouter un instrument sous la table, aligné à gauche -->
+<div class="btn-add">
+    <a href="{{ path('instrumentAjouter') }}" class="btn">+ Ajouter un instrument</a>
 </div>
+
+<script>
+    // Fonction pour confirmer la suppression
+    function confirmDelete(numSerie, instrumentId) {
+        const confirmMessage = `Êtes-vous sûr de vouloir supprimer l'instrument avec le numéro de série: ${numSerie} ?`;
+        if (confirm(confirmMessage)) {
+            // Redirection vers la route de suppression de l'instrument
+            window.location.href = `/lilian31/public/instrument/supprimer/${instrumentId}`;
+        }
+    }
+</script>
+
 {% endblock %}

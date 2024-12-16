@@ -1,10 +1,8 @@
-{# templates/registration/register.html.twig #}
 
-{% extends 'base.html.twig' %}
 
 {% block title %}Register{% endblock %}
 
-{% block body %}
+{% block content %}
     <h1>Register</h1>
 
     {# Affiche les erreurs du formulaire principal #}
@@ -18,7 +16,7 @@
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password'
         }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+       
 
 
         {{ form_row(registrationForm.responsable.nom) }}
@@ -28,7 +26,8 @@
         {{ form_row(registrationForm.responsable.rue) }}
         {{ form_row(registrationForm.responsable.copos) }}
         {{ form_row(registrationForm.responsable.ville) }}
-
+        {{ form_row(registrationForm.responsable.cheminImage) }}
+         {{ form_row(registrationForm.agreeTerms) }}
         {# Bouton pour soumettre le formulaire #}
         <button type="submit" class="btn btn-primary">Register</button>
 

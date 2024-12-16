@@ -20,17 +20,80 @@
     </div>
         <ul>
             <li><a href="#" class="active"><i class="fas fa-home"></i>&nbsp&nbsp Accueil</a></li>
-            <li><a href=""><i class="fas fa-keyboard"></i>&nbsp&nbsp Instrument</a></li>
-            <li><a href=""><i class="fas fa-book"></i>&nbsp&nbsp Cours</a></li>
-            <li><a href=""><i class="fas fa-user-plus"></i>&nbsp&nbsp Inscription</a></li>
-            <li><a href=""><i class="fas fa-child"></i>&nbsp&nbsp Eleve</a></li>
-            <li><a href=""><i class="fas fa-chalkboard-teacher"></i>&nbsp&nbsp Professeur</a></li>
-            <li><a href=""><i class="fas fa-wrench"></i>&nbsp&nbsp Intervention</a></li>
+            <li><a href="http://172.20.177.77/lilian31/public/instrument/lister"><i class="fas fa-keyboard"></i>&nbsp&nbsp Instrument</a></li>
+            <li><a href="http://172.20.177.77/lilian31/public/cours/lister"><i class="fas fa-book"></i>&nbsp&nbsp Cours</a></li>
+            <li><a href="http://172.20.177.77/lilian31/public/inscription/lister"><i class="fas fa-user-plus"></i>&nbsp&nbsp Inscription</a></li>
+            <li><a href="http://172.20.177.77/lilian31/public/eleve/lister"><i class="fas fa-child"></i>&nbsp&nbsp Eleve</a></li>
+            <li><a href="http://172.20.177.77/lilian31/public/professeur/lister"><i class="fas fa-chalkboard-teacher"></i>&nbsp&nbsp Professeur</a></li>
+            <li><a href="http://172.20.177.77/lilian31/public/intervention/lister"><i class="fas fa-wrench"></i>&nbsp&nbsp Intervention</a></li>
         </ul>
+    
+  
+{% if app.user %}
+    <div class="user-info" onclick="openMenu()">
+    <div class="user-photo" style="background-image: url('{{ asset('responsable/' ~ app.user.responsable.cheminImage) }}');"></div>
+        <span>{{ app.user.responsable.nom }} {{ app.user.responsable.prenom }}  </span>
+    </div>
     <div class="organization">
-        <a href="#"><i class="fas fa-sign-out-alt"></i>&nbsp&nbsp Déconnexion</a>
+        <a href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i>&nbsp&nbsp Déconnexion</a>
     </div>
 
+    <div class="menu-vertical" id="menuVertical">
+    <button class="close-menu" onclick="closeMenu()">&#8592;</button> <!-- Flèche de fermeture -->
+    <div class="menu-content">
+
+        <div class="user-info-card">
+            <div class="profile-photo" style="background-image: url('{{ asset('responsable/' ~ app.user.responsable.cheminImage) }}');"></div>
+            <h2>{{ app.user.responsable.nom }} {{ app.user.responsable.prenom }}</h2>
+            <p class="role">Responsable</p>
+        </div>
+        
+        <div class="info-table">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <td>{{ app.user.responsable.id }}</td>
+                </tr>
+                <tr>
+                    <th>Nom</th>
+                    <td>{{ app.user.responsable.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Prénom</th>
+                    <td>{{ app.user.responsable.prenom }}</td>
+                </tr>
+                <tr>
+                    <th>Numéro de rue</th>
+                    <td>{{ app.user.responsable.numRue }}</td>
+                </tr>
+                <tr>
+                    <th>Rue</th>
+                    <td>{{ app.user.responsable.rue }}</td>
+                </tr>
+                <tr>
+                    <th>Code Postal</th>
+                    <td>{{ app.user.responsable.copos }}</td>
+                </tr>
+                <tr>
+                    <th>Ville</th>
+                    <td>{{ app.user.responsable.ville }}</td>
+                </tr>
+                <tr>
+                    <th>Téléphone</th>
+                    <td>{{ app.user.responsable.tel }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% if not app.user %}
+    <div class="organization">
+        <a href="{{ path('app_login') }}"><i class="fas fa-sign-in-alt"></i>&nbsp&nbsp Se connecter</a>
+    </div>
+{% endif %}
     </nav>
     </aside>
 
@@ -55,7 +118,6 @@
                 const prixAchat = this.getAttribute("data-prixAchat");
                 const utilisation = this.getAttribute("data-utilisation");
                 const couleur = this.getAttribute("data-couleur");
-                const image = this.getAttribute("data-image");
                 const typeInstrument = this.getAttribute("data-typeInstrument");
                 const interventions = JSON.parse(this.getAttribute("data-interventions"));
 
@@ -65,7 +127,10 @@
                 document.getElementById("modal-utilisation").innerText = utilisation;
                 document.getElementById("modal-couleur").innerText = couleur;
                 document.getElementById("modal-typeInstrument").innerText = typeInstrument;
-                document.getElementById("modal-image").src = image;
+
+            
+             const modifierButton = document.getElementById("modal-modifier-button");
+                modifierButton.setAttribute("href", "{{ path('instrumentModifier', { 'id': '__ID__' }) }}".replace('__ID__', instrumentId));
 
                 const interventionsContainer = document.getElementById("interventionsList");
                 interventionsContainer.innerHTML = '';  
@@ -95,7 +160,7 @@
             }
         };
 
-        // Tab functionality
+
         document.addEventListener("DOMContentLoaded", function () {
             const tabButtons = document.querySelectorAll(".tab-button");
             const tabPanels = document.querySelectorAll(".tab-panel");
@@ -114,9 +179,167 @@
             tabButtons[0].classList.add("active");
             tabPanels[0].classList.remove("hidden");
         });
+
+        function openMenu() {
+    const menu = document.getElementById("menuVertical");
+    if (menu.style.display === "block") {
+        menu.style.display = "none";  
+    } else {
+        menu.style.display = "block"; 
+    }
+}
+
+function closeMenu() {
+    const menu = document.getElementById("menuVertical");
+    menu.style.display = "none"; 
+}
     </script>
 
     <style>
+/* Menu Vertical */
+.menu-vertical {
+    display: none; /* Cacher le menu par défaut */
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 350px;
+    height: 100%;
+    background-color: #1C1F28;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+/* Profil */
+.user-info {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 0;
+}
+
+.user-photo {
+    width: 50px;
+    height: 50px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Contenu du menu */
+.menu-content {
+    padding-top: 20px;
+}
+
+/* Card du profil */
+.user-info-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 22px;
+    margin: 0;
+    color: white;
+}
+
+.role {
+    font-size: 16px;
+    color: green;
+}
+
+/* Table des informations */
+.info-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.info-table th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+.info-table th {
+    width: 30%;
+    font-weight: bold;
+    color: green;
+}
+
+.info-table td {
+    width: 70%;
+    font-size: 14px;
+}
+
+/* Bouton de fermeture du menu */
+.close-menu {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* Animation du menu */
+@keyframes slideIn {
+    0% {
+        right: -350px;
+    }
+    100% {
+        right: 0;
+    }
+}
+
+.menu-vertical.open {
+    display: block;
+    animation: slideIn 0.3s ease-out;
+}
+
+
+.user-info {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.user-info a {
+    color: green;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.user-info a:hover {
+    text-decoration: underline;
+}
 
             .info-total{
                 display:flex;
@@ -134,6 +357,7 @@
             
         body{
             background-color: #0A0D14;
+            font-family: sans-serif;
         }
         .tabs {
             display: flex;

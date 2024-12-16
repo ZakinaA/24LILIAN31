@@ -1,4 +1,4 @@
-{% block title %}Connexion{% endblock %}
+{% block title %}{% endblock %}
 
 
 {% block body %}
@@ -26,12 +26,12 @@
             <input type="hidden" name="_csrf_token"
                value="{{ csrf_token('authenticate') }}"
         >
-		<button class="submit-btn">Sign up</button>
+		<button class="submit-btn">Connexion</button>
 	</div>
 	<div class="login slide-up">
 		<div class="center">
 			<h2 class="form-title" id="login">Pas de compte ?</h2>
-			<button style="height:50px;" class="submit-btn">Créer un compte</button>
+			<button style="height:50px;" class="submit-btn"><a href="http://172.20.177.77/lilian31/public/register">Créer un compte</a></button>
 			<button class="submit-btn">Mot de passe oublié ?</button>
 		</div>
 	</div>
@@ -43,7 +43,7 @@
 html,body {
 	position: relative;
 	min-height: 100vh;
-	background-color: #E1E8EE;
+	background-color: #181B22;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -53,7 +53,7 @@ html,body {
 }
 
 .form-structor {
-	background-color: #222;
+	background-color: black;
 	border-radius: 15px;
 	height: 550px;
 	width: 350px;

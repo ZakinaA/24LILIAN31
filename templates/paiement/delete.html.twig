@@ -1,0 +1,14 @@
+{# templates/paiement/delete.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Supprimer le Paiement{% endblock %}
+
+{% block content %}
+    <h1>Êtes-vous sûr de vouloir supprimer le paiement #{{ paiement.id }} ?</h1>
+
+    <form action="{{ path('paiement_delete', {'id': paiement.id}) }}" method="POST">
+        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+        <a href="{{ path('paiement_list') }}" class="btn btn-secondary">Annuler</a>
+    </form>
+{% endblock %}

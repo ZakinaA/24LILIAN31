@@ -2,6 +2,78 @@
 
 {% block content %}
 <link rel="stylesheet" href="{{ asset('styles.css') }}">
+
+<div class="form-container">
+    <h1 class="title-primary">Modifier un Instrument</h1>
+    <div class="formulaire-ajout">
+        <div class="left-column">
+            {{ form_start(form) }}
+
+            <div class="form-group">
+                {{ form_label(form.numSerie) }}
+                {{ form_widget(form.numSerie) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.dateAchat) }}
+                {{ form_widget(form.dateAchat) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.prixAchat) }}
+                {{ form_widget(form.prixAchat) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.utilisation) }}
+                {{ form_widget(form.utilisation) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.couleur) }}
+                {{ form_widget(form.couleur) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.typeInstrument) }}
+                {{ form_widget(form.typeInstrument) }}
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="form-group">
+                {{ form_label(form.marque) }}
+                {{ form_widget(form.marque) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.modele) }}
+                {{ form_widget(form.modele) }}
+            </div>
+
+            <div class="image-container">
+                <img id="image-preview" src="{{ form.cheminImage is not empty ? asset(form.cheminImage) : asset('placeholder-image.png') }}" alt="Prévisualisation">
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.cheminImage) }}
+                {{ form_widget(form.cheminImage) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_widget(form.enregistrer) }}
+            </div>
+
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+</div>
+
 <style>
 body, h1, h2, p, ul, li, a, img {
     margin: 0;
@@ -111,84 +183,8 @@ body {
     transition: width 0.3s ease;
 }
 </style>
-<div class="form-container">
-    <h1 class="title-primary">Ajout d'un Instrument</h1>
-    <div class="formulaire-ajout">
-        <div class="left-column">
-            {{ form_start(form) }}
-
-            <div class="form-group">
-                {{ form_label(form.numSerie) }}
-                {{ form_widget(form.numSerie) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.dateAchat) }}
-                {{ form_widget(form.dateAchat) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.prixAchat) }}
-                {{ form_widget(form.prixAchat) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.utilisation) }}
-                {{ form_widget(form.utilisation) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.couleur) }}
-                {{ form_widget(form.couleur) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.typeInstrument) }}
-                {{ form_widget(form.typeInstrument) }}
-            </div>
-        </div>
-
-        <div class="right-column">
-            <div class="form-group">
-                {{ form_label(form.marque) }}
-                {{ form_widget(form.marque) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.modele) }}
-                {{ form_widget(form.modele) }}
-            </div>
-
-            <div class="image-container">
-                <img id="image-preview" src="{{ asset('placeholder-image.png') }}" alt="Prévisualisation">
-            </div>
-
-            <div class="form-group">
-                {{ form_label(form.cheminImage) }}
-                {{ form_widget(form.cheminImage) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_widget(form.enregistrer) }}
-            </div>
-
-        </div>
-
-        {{ form_end(form) }}
-    </div>
-
-    <div id="progress-container">
-        <div id="progress-bar"></div>
-    </div>
-</div>
-
-<style>
-/* Style général */
-
-</style>
 
 <script>
-
 document.querySelector('input[type="file"]').addEventListener('change', event => {
     const preview = document.getElementById('image-preview');
     const file = event.target.files[0];
@@ -216,7 +212,6 @@ function updateProgress() {
     const progress = (filledFields.length / fields.length) * 100;
     progressBar.style.width = `${progress}%`;
 }
-
 </script>
 
 {% endblock %}

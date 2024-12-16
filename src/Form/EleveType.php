@@ -20,6 +20,7 @@ class EleveType extends AbstractType
             ->add('ville')
             ->add('tel')
             ->add('mail')
+            ->add('cheminImage')
             ->add('enregistrer', SubmitType::class, array('label' => 'Créer'))
         ;
     }
