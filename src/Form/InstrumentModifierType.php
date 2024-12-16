@@ -43,7 +43,7 @@ class InstrumentModifierType extends AbstractType
                 'multiple' => true,
                 'expanded' => true, 
             ])
-            ->add('enregistrer', SubmitType::class, array('label' => 'nouveau'))
+            ->add('enregistrer', SubmitType::class, array('label' => 'Modifier'))
         ;
     }
 

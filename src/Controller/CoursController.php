@@ -7,7 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Cours;
-use App\Entity\Maison;
+use App\Entity\TypeCours;
+use App\Entity\TypeInstrument;
 use App\Form\CoursType;
 use App\Form\CoursModifierType;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,15 +69,31 @@ class CoursController extends AbstractController
                 'cours' => $cours,]);
         }
 
-        public function listerCours(ManagerRegistry $doctrine){
-
-            $repository = $doctrine->getRepository(Cours::class);
+        public function listerCours(ManagerRegistry $doctrine, Request $request)
+{
+    $repository = $doctrine->getRepository(Cours::class);
     
-            $cours= $repository->findAll();
-            return $this->render('cours/lister.html.twig', [
-                'pCours' => $cours,]);	
-                
-        }
+    $queryBuilder = $repository->createQueryBuilder('c');
+
+    if ($request->query->get('typeCours')) {
+        $queryBuilder->andWhere('c.typeCours = :typeCours')
+                     ->setParameter('typeCours', $request->query->get('typeCours'));
+    }
+
+    if ($request->query->get('typeInstrument')) {
+        $queryBuilder->andWhere('c.typeInstrument = :typeInstrument')
+                     ->setParameter('typeInstrument', $request->query->get('typeInstrument'));
+    }
+
+    $cours = $queryBuilder->getQuery()->getResult();
+
+    return $this->render('cours/lister.html.twig', [
+        'pCours' => $cours,
+        'typeCours' => $doctrine->getRepository(TypeCours::class)->findAll(),
+        'typeInstruments' => $doctrine->getRepository(TypeInstrument::class)->findAll()
+    ]);
+}
+
        
         public function supprimerCours(ManagerRegistry $doctrine, int $id): Response
         {
@@ -96,7 +113,6 @@ class CoursController extends AbstractController
 
         public function modifierCours(ManagerRegistry $doctrine, $id, Request $request){
  
-            //récupération de l'élève dont l'id est passé en paramètre
             $cours = $doctrine->getRepository(Cours::class)->find($id);
         
             if (!$cours) {
@@ -116,7 +132,7 @@ class CoursController extends AbstractController
                         return $this->render('cours/consulter.html.twig', ['cours' => $cours,]);
                 }
                 else{
-                        return $this->render('cours/ajouter.html.twig', array('form' => $form->createView(),));
+                        return $this->render('cours/modifier.html.twig', array('form' => $form->createView(),));
                 }
                 }
                 

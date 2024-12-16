@@ -12,7 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PretController extends AbstractController
 {
-    // Route pour afficher la liste des prêts
     #[Route('/pret', name: 'app_pret')]
     public function index(): Response
     {
@@ -21,10 +20,16 @@ class PretController extends AbstractController
         ]);
     }
 
-    // Route pour lister tous les prêts
-    #[Route('/pret/lister', name: 'pret_lister')]
+    #[Route('/eleve/pret/lister', name: 'pret_lister_eleve')]
+    #[Route('/admin/pret/lister', name: 'pret_lister_admin')]
     public function listerPret(ManagerRegistry $doctrine): Response
     {
+        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_ELEVE')) {
+           
+        } else {
+            throw $this->createAccessDeniedException('Accès non autorisé');
+        }
+
         $repository = $doctrine->getRepository(Pret::class);
         $prets = $repository->findAll();
 

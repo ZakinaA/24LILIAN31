@@ -1,30 +1,153 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
+<style>
+    body {
+        font-family: 'Roboto', Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        margin-top: 250px;
+    }
 
-<h1>Consulter l'inscription</h1>
+    h1 {
+        text-align: center;
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
 
-<table>
-    <tr>
-        <th>Nom</th>
-        <td>{{ inscription.eleve.nom }}</td>
-    </tr>
-    <tr>
-        <th>Prénom</th>
-        <td>{{ inscription.eleve.prenom }}</td>
-    </tr>
-    <tr>
-        <th>Cours</th>
-        <td>{{ inscription.cours.libelle }}</td>
-    </tr>
-    <tr>
-        <th>Date d'inscription</th>
-        <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
-    </tr>
-</table>
+    .inscription-container {
+        max-width: 800px;
+        margin: 30px auto;
+        background-color: #181B22;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
 
-<!-- Lien vers la modification -->
-<a href="{{ path('insc_coursModifier', {'id': inscription.id}) }}">Modifier l'inscription</a>
+    .inscription-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
 
+    .profile-image {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #dee2e6;
+    }
+
+    .inscription-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .inscription-table th, .inscription-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .inscription-table th {
+        color: white;
+        text-transform: uppercase;
+        font-size: 1rem;
+    }
+
+    .inscription-table td {
+        font-size: 1rem;
+        color: #495057;
+    }
+
+    .inscription-name-link {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .inscription-name-link:hover {
+        text-decoration: underline;
+    }
+
+    .action-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 8px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+        text-transform: uppercase;
+    }
+
+    .action-btn:hover {
+        background-color: #218838;
+    }
+
+    .responsable-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid #dee2e6;
+    }
+
+    .responsable-details {
+        color: #495057;
+    }
+
+    .responsable-details p {
+        margin: 5px 0;
+        color: #6c757d;
+    }
+</style>
+
+<main class="inscription-container">
+    <h1>Détails de l'Inscription</h1>
+
+    <div class="inscription-header">
+        {% if inscription.eleve.cheminImage %}
+            <img src="{{ asset('eleve/' ~ inscription.eleve.cheminImage) }}" alt="Image Élève" class="profile-image">
+        {% endif %}
+        <div>
+            <a href="{{ path('eleveConsulter', {'id': inscription.eleve.id}) }}" class="inscription-name-link">
+                {{ inscription.eleve.nom }} {{ inscription.eleve.prenom }}
+            </a>
+            <p style="color: #6c757d; margin: 5px 0;">Cours: {{ inscription.cours.libelle }}</p>
+        </div>
+    </div>
+
+    <table class="inscription-table">
+        <tr>
+            <th>Date d'Inscription</th>
+            <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
+        </tr>
+    </table>
+
+    <div class="responsable-header">
+        {% if inscription.eleve.responsable.cheminImage %}
+            <img src="{{ asset('responsable/' ~ inscription.eleve.responsable.cheminImage) }}" alt="Image Responsable" class="profile-image">
+        {% endif %}
+        <div class="responsable-details">
+            <a href="{{ path('eleveConsulter', {'id': inscription.eleve.responsable.id}) }}" class="inscription-name-link">
+                {{ inscription.eleve.responsable.nom }} {{ inscription.eleve.responsable.prenom }}
+            </a>
+            <p>Responsable de l'élève</p>
+        </div>
+    </div>
+
+    <a href="{{ path('insc_coursModifier', {'id': inscription.id}) }}" class="action-btn">
+        Modifier l'Inscription
+    </a>
+</main>
 
 {% endblock %}

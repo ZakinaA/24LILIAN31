@@ -21,7 +21,7 @@ body {
     height: 100vh;
 }
 
-.title-primary {
+.ajouter-title-primary {
     font-size: 36px;
     font-weight: bold;
     text-align: center;
@@ -30,7 +30,7 @@ body {
 }
 
 /* Conteneur du formulaire */
-.formulaire-ajout {
+.ajouter-formulaire-ajout {
     background-color: #181B22;
     border-radius: 20px;
     padding: 20px;
@@ -40,12 +40,12 @@ body {
     align-items: flex-start;
 }
 
-.left-column,
-.right-column {
+.ajouter-left-column,
+.ajouter-right-column {
     flex: 1;
 }
 
-.image-container {
+.ajouter-image-container {
     width: 100%;
     height: 200px;
     border: 2px solid #444;
@@ -58,26 +58,26 @@ body {
     margin-bottom: 15px;
 }
 
-.image-container img {
+.ajouter-image-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.form-group {
+.ajouter-form-group {
     margin-bottom: 15px;
 }
 
-.form-group label {
+.ajouter-form-group label {
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
     color: #ccc;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.ajouter-form-group input,
+.ajouter-form-group select,
+.ajouter-form-group textarea {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
@@ -86,16 +86,16 @@ body {
     color: white;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.ajouter-form-group input:focus,
+.ajouter-form-group select:focus,
+.ajouter-form-group textarea:focus {
     border-color: green;
     outline: none;
     box-shadow: 0 0 8px green;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-#progress-container {
+.ajouter-progress-container {
     width: 100%;
     background-color: #ddd;
     border-radius: 20px;
@@ -104,119 +104,86 @@ body {
     overflow: hidden;
 }
 
-#progress-bar {
+.ajouter-progress-bar {
     width: 0%;
     height: 100%;
     background-color: green;
     transition: width 0.3s ease;
 }
 </style>
-<div class="form-container">
-    <h1 class="title-primary">Ajout d'un Instrument</h1>
-    <div class="formulaire-ajout">
-        <div class="left-column">
+<div class="ajouter-form-container">
+    <h1 class="ajouter-title-primary">Ajout d'un Instrument</h1>
+    <div class="ajouter-formulaire-ajout">
+        <div class="ajouter-left-column">
             {{ form_start(form) }}
 
-            <div class="form-group">
+            <div class="ajouter-form-group">
                 {{ form_label(form.numSerie) }}
                 {{ form_widget(form.numSerie) }}
             </div>
 
-            <div class="form-group">
+            <div class="ajouter-form-group">
                 {{ form_label(form.dateAchat) }}
                 {{ form_widget(form.dateAchat) }}
             </div>
 
-            <div class="form-group">
+            <div class="ajouter-form-group">
                 {{ form_label(form.prixAchat) }}
                 {{ form_widget(form.prixAchat) }}
             </div>
 
-            <div class="form-group">
+            <div class="ajouter-form-group">
                 {{ form_label(form.utilisation) }}
                 {{ form_widget(form.utilisation) }}
             </div>
 
-            <div class="form-group">
+            <div class="ajouter-form-group">
                 {{ form_label(form.couleur) }}
                 {{ form_widget(form.couleur) }}
             </div>
 
-            <div class="form-group">
+            <div class="ajouter-form-group">
                 {{ form_label(form.typeInstrument) }}
                 {{ form_widget(form.typeInstrument) }}
             </div>
         </div>
 
-        <div class="right-column">
-            <div class="form-group">
+        <div class="ajouter-right-column">
+            <div class="ajouter-form-group">
                 {{ form_label(form.marque) }}
                 {{ form_widget(form.marque) }}
             </div>
 
-            <div class="form-group">
+            <div class="ajouter-form-group">
                 {{ form_label(form.modele) }}
                 {{ form_widget(form.modele) }}
             </div>
 
-            <div class="image-container">
+            <div class="ajouter-image-container">
                 <img id="image-preview" src="{{ asset('placeholder-image.png') }}" alt="Prévisualisation">
             </div>
 
-            <div class="form-group">
+            <div class="ajouter-form-group">
                 {{ form_label(form.cheminImage) }}
                 {{ form_widget(form.cheminImage) }}
             </div>
+            
 
-            <div class="form-group">
+            <div class="ajouter-form-group">
                 {{ form_widget(form.enregistrer) }}
             </div>
 
+            
         </div>
 
         {{ form_end(form) }}
     </div>
 
-    <div id="progress-container">
-        <div id="progress-bar"></div>
+    <div class="ajouter-progress-container">
+        <div class="ajouter-progress-bar"></div>
     </div>
 </div>
 
-<style>
-/* Style général */
-
-</style>
-
-<script>
-
-document.querySelector('input[type="file"]').addEventListener('change', event => {
-    const preview = document.getElementById('image-preview');
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-        preview.src = reader.result;
-    };
-
-    if (file) {
-        reader.readAsDataURL(file);
-    }
-});
-
-// Mettre à jour la barre de progression lorsque l'utilisateur saisit quelque chose
-const fields = document.querySelectorAll('.form-group input, .form-group select, .form-group textarea');
-const progressBar = document.getElementById('progress-bar');
-
-fields.forEach(field => {
-    field.addEventListener('input', updateProgress);
-});
-
-function updateProgress() {
-    const filledFields = Array.from(fields).filter(field => field.value.trim() !== '');
-    const progress = (filledFields.length / fields.length) * 100;
-    progressBar.style.width = `${progress}%`;
-}
-
-</script>
+<script src="../js/instrument-script.js"></script>
 
 {% endblock %}

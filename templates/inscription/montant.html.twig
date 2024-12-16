@@ -1,19 +1,126 @@
-{# templates/inscription/montant.html.twig #}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Montant à payer{% endblock %}
 
 {% block content %}
-    <h1>Liste des montants à payer</h1>
+<main class="montant-main">
+    <header class="montant-header">
+        <h1>Liste des montants à payer</h1>
+    </header>
 
-    {% for montant in montants %}
-        <p>{{ montant.eleve }} : {{ montant.montant }} €</p>
-    {% endfor %}
+    <section class="montant-section">
+        <div class="montant-container">
+            <table class="montant-table">
+                <thead>
+                    <tr>
+                        <th>Élève(s)</th>
+                        <th>Montant(s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for montant in montants %}
+                    <tr>
+                        <td>{{ montant.eleve }}</td>
+                        <td>{{ montant.montant }} €</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-    <hr>
-    <h2>Total à payer : {{ totalMontant }} €</h2>
+            <div class="montant-total">
+                <hr>
+                <h2>Total à payer : {{ totalMontant }} €</h2>
+            </div>
 
-    <a href="{{ path('inscription_lister') }}">Retour à la liste des inscriptions</a>
+            <div class="montant-return">
+                <a href="{{ path('inscription_lister') }}" class="btn retour-btn">
+                    Retour à la liste des inscriptions
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<style>
+.montant-main {
+    padding: 30px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.montant-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.montant-header h1 {
+    font-size: 2rem;
+    color: green;
+    font-weight: bold;
+}
+
+.montant-section {
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    background-color: #181B22; 
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.montant-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.montant-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.montant-table th, .montant-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid black;
+}
+
+.montant-table th {
+    color: white;
+}
+
+.montant-total {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.montant-total h2 {
+    font-size: 1.5rem;
+    color: white; 
+    font-weight: bold;
+}
+
+.montant-return {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.montant-return .btn {
+    padding: 10px 20px;
+    background-color: green; 
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.montant-return .btn:hover {
+    background-color: #45a049; 
+}
+</style>
 {% endblock %}
-
