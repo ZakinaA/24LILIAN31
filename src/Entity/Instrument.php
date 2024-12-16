@@ -28,7 +28,8 @@ class Instrument
     #[ORM\Column(length: 255)]
     private ?string $utilisation = null;
 
- 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cheminImage = null;
 
     #[ORM\Column(length: 255)]
     private ?string $couleur = null;

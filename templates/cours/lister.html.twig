@@ -8,7 +8,8 @@
 
     <section class="cours-container-filtre">
         <button class="cours-btn-filtre-toggle">
-            <img src="/path/to/filter-icon.png" alt="Filtrer" class="cours-icône-filtre">
+            <img src="https://example.com/path/to/filter-icon.png" alt="Filtrer" class="cours-icône-filtre">
+
             Filtrer
         </button>
         
@@ -43,7 +44,7 @@
     </section>
 
     <div class="cours-total">
-        <a href="http://172.20.177.77/lilian31/public/cours/ajouter" class="cours-btn-ajouter">Ajouter un Cours</a>
+        <a href="{{ path('gestionnaireCoursAjouter')}}" target="_blank" class="cours-btn-ajouter">Ajouter un Cours</a>
     </div>
 
     <section class="cours-container-liste">
@@ -72,7 +73,7 @@
                         </td>
                         <td>{{ e.jour.libelle }}</td>
                         <td>
-                            <a href="{{ path('app_coursModifier', {'id': e.id}) }}" class="cours-btn-modifier"><i class="fas fa-edit"></i></a>
+                            <a href="{{ path('gestionnaireCoursModifier', {'id': e.id}) }}" target="_blank" class="cours-btn-modifier"><i class="fas fa-edit"></i></a>
                             <a href="javascript:void(0)" class="cours-btn-supprimer" onclick="confirmDelete({{ e.id }})"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
@@ -107,7 +108,343 @@
 </div>
 <div class="timetable-link-section">
         <p>Consulter les cours sous forme d'emploi du temps :</p>
-        <a href="{{ path('edt-cours') }}" target="_blank" class="cours-btn-timetable-view">Voir l'Emploi du Temps</a>
+        <a href="{{ path('edt-cours') }} " class="cours-btn-timetable-view">Voir l'Emploi du Temps</a>
     </div>
-<script src="../js/cours-script.js"></script>
+<script>
+document.querySelectorAll('.cours-nom').forEach(course => {
+    course.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        const modal = document.getElementById('coursModal');
+        document.getElementById('cours-modal-libelle').textContent = event.target.getAttribute('data-libelle');
+        document.getElementById('cours-modal-jour').textContent = event.target.getAttribute('data-jour');
+        document.getElementById('cours-modal-heureDebut').textContent = event.target.getAttribute('data-heureDebut');
+        document.getElementById('cours-modal-heureFin').textContent = event.target.getAttribute('data-heureFin');
+        document.getElementById('cours-modal-typeCours').textContent = event.target.getAttribute('data-typeCours');
+        document.getElementById('cours-modal-typeInstrument').textContent = event.target.getAttribute('data-typeInstrument');
+
+        modal.style.display = 'block';
+    });
+});
+
+document.querySelector('.cours-close-btn').addEventListener('click', function() {
+    document.getElementById('coursModal').style.display = 'none';
+});
+
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('coursModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+
+function confirmDelete(courseId) {
+    const confirmDelete = confirm("Êtes-vous sûr de vouloir supprimer ce cours ?");
+    if (confirmDelete) {
+        window.location.href = `http://172.20.177.77/lilian31/public/cours/supprimer/${courseId}`;
+    }
+}
+
+document.querySelector('.cours-btn-filtre-toggle').addEventListener('click', function() {
+    var dropdown = document.querySelector('.cours-dropdown-filtre');
+    dropdown.classList.toggle('show');
+});
+
+document.getElementById('cours-recherche').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.cours-tableau tbody tr');
+
+    rows.forEach(row => {
+        const courseName = row.querySelector('.cours-nom').textContent.toLowerCase();
+        if (courseName.includes(query)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+
+let currentPage = 1;
+const rowsPerPage = 6;
+
+const rowsToDisplay = document.querySelectorAll('.cours-tableau tbody tr');
+const totalPages = Math.ceil(rowsToDisplay.length / rowsPerPage);
+
+function showPage(page) {
+    const startIndex = (page - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
+    rowsToDisplay.forEach((row, index) => {
+        if (index >= startIndex && index < endIndex) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+document.querySelector('.cours-btn-next').addEventListener('click', function() {
+    if (currentPage < totalPages) {
+        currentPage++;
+        showPage(currentPage);
+    }
+});
+
+document.querySelector('.cours-btn-prev').addEventListener('click', function() {
+    if (currentPage > 1) {
+        currentPage--;
+        showPage(currentPage);
+    }
+});
+
+showPage(currentPage);</script>
+
+<style>
+.cours-btn-ajouter {
+    display: block;
+    background-color: #181B22;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: max-content; 
+}
+
+
+
+.cours-container-liste {
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 20px;
+}
+
+.cours-tableau {
+    width: 80%; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    border-collapse: collapse;
+    border: 2px solid #181B22;
+    background-color: #181B22; 
+    border-radius: 10px;
+    overflow: hidden; 
+}
+
+.cours-container-recherche {
+    position: absolute;
+    top: 20px; 
+    margin-top:50px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+    margin-top: 75px;
+}
+
+.cours-input-recherche {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 15px;
+    border: 1px solid #181B22;
+    width: 250px;
+    background-color: #181B22;
+}
+
+.cours-input-recherche:hover{
+    background-color: #313237;
+}
+
+.cours-btn-recherche {
+    padding: 10px 20px;
+    background-color: #181B22;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cours-btn-recherche:hover {
+    background-color: #313237;
+}
+
+.cours-pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.cours-pagination button {
+    padding: 10px;
+    background-color: #181B22;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: background-color 0.3s;
+}
+
+.cours-pagination button:hover {
+    background-color: #313237;
+}
+
+.cours-tableau th, .cours-tableau td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.cours-tableau th {
+    background-color: #181B22;
+    color: white;
+    font-weight: bold;
+}
+
+.cours-tableau td {
+    background-color: #181B22;
+}
+
+.cours-btn-filtre-toggle {
+    display: flex;
+    align-items: center;
+    background-color: #181B22;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    position: absolute;
+    top: 70px; 
+    right: 20px;
+    transition: 0.3s;
+    z-index: 100;
+    margin-top: 75px;
+}
+
+.cours-btn-filtre-toggle:hover {
+    background-color: #313237;
+}
+
+.cours-icône-filtre {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.cours-dropdown-filtre {
+    display: none;
+    position: absolute;
+    top: 110px; 
+    right: 20px;
+    background-color: #181B22;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 10;
+}
+
+.cours-dropdown-filtre.show {
+    display: block;
+}
+
+.cours-dropdown-filtre form {
+    display: flex;
+    flex-direction: column;
+}
+
+.cours-dropdown-filtre label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.cours-dropdown-filtre select {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #313237 ;
+    border-radius: 4px;
+    background-color: #181B22;
+    color: white;
+}
+
+.cours-dropdown-filtre .cours-btn-filtre {
+    background-color: #181B22;
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid #313237;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cours-dropdown-filtre .cours-btn-filtre:hover {
+    background-color: #313237;
+}
+
+.cours-modal-table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.cours-modal-table td {
+    padding: 8px;
+}
+
+.cours-modal-image {
+    max-width: 100%;
+    height: auto;
+    margin-top: 20px;
+}
+
+.cours-pagination button {
+    margin: 5px;
+}
+
+a {
+    text-decoration: none;
+    color: #D0D2D1;
+}
+
+.cours-modal {
+    display: none; 
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); 
+    padding-top: 60px;
+}
+
+.cours-modal-content {
+    background-color: #181B22;
+    margin: 0;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+}
+
+.cours-close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.cours-close-btn:hover,
+.cours-close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+</style>
 {% endblock %}
