@@ -1,22 +1,68 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Accessoires{% endblock %}
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        margin: 0;
+        padding: 100px 0 0; 
+    }
+    a {
+        text-decoration: none;
+        color: green;
+        transition: color 0.3s ease;
+    }
+    a:hover {
+        color: #ff5733;
+    }
+</style>
 
-{% block body %}
-    <h1>Liste des Accessoires</h1>
-    <table>
-        {% for e in pAccessoires %}
+<div class="accessoire-h1">
+    <h1>Liste des accessoires</h1>
+</div>
+
+<table class="accessoire-table">
+    <thead>
         <tr>
-            <td>{{ e.libelle }}</td>
+            <th>Image</th>
+            <th>Détails</th>
+            <th>Actions</th>
         </tr>
+    </thead>
+    <tbody>
+        {% for accessoire in pAccessoires %}
+            <tr>
+                <td>
+                    <div class="accessoire-details">
+                        <div>
+                            <strong>libelle :</strong> {{ accessoire.libelle }}<br>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <a href="{{ path('accessoireConsulter', { id: accessoire.id }) }}" class="btn btn-small">Consulter</a>
+                    <a href="{{ path('accessoireModifier', { id: accessoire.id }) }}" class="btn btn-small">Modifier</a>
+
+                    <button type="submit" class="btn-trash" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet accessoire ?')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
         {% else %}
-        <tr>
-            <td>Aucun accessoire n'a été trouvé.</td>
-        </tr>
+            <tr>
+                <td colspan="3" style="text-align: center;">Aucun accessoire trouvé.</td>
+            </tr>
         {% endfor %}
-    </table>
+    </tbody>
+</table>
 
-    <div class="bouton">
-        <a href="{{ path('accessoireAjouter') }}" class="btn btn-primary">Ajouter un Accessoire</a>
-    </div>
+<div class="btn-add">
+    <a href="{{ path('accessoireAjouter') }}" class="btn">+ Ajouter un accessoire</a>
+</div>
+
+<script src="../js/accessoire-script.js"></script>
+
 {% endblock %}

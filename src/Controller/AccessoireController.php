@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\AccessoireType; 
 use App\Form\AccessoireModifierType;
+use Doctrine\ORM\EntityManagerInterface;
 
 class AccessoireController extends AbstractController
 {
@@ -31,6 +32,19 @@ class AccessoireController extends AbstractController
         ]);
     }
 
+    public function consulterAccessoire(ManagerRegistry $doctrine, int $id)
+    {
+        $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
+    
+        if (!$accessoire) {
+            throw $this->createNotFoundException('Aucun accessoire trouvé avec l id ' . $id);
+        }
+            
+        return $this->render('accessoire/consulter.html.twig', [
+            'accessoire' => $accessoire,
+        ]);
+    }
+
     public function listerAccessoire(ManagerRegistry $doctrine){
 
         $repository = $doctrine->getRepository(Accessoire::class);
@@ -40,35 +54,28 @@ class AccessoireController extends AbstractController
         'pAccessoires' => $accessoires,]);	
     }
 
-    public function modifierAccessoire(ManagerRegistry $doctrine, $id, Request $request)
-{
-    $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
+    public function modifierAccessoire(Request $request, ManagerRegistry $doctrine, int $id): Response
+    {
+        $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
 
-    if (!$accessoire) {
-        throw $this->createNotFoundException('Aucun accessoire trouvé avec l\'ID '.$id);
-    }
+        if (!$accessoire) {
+            throw $this->createNotFoundException('Aucun accessoire trouvée avec l\'ID ' . $id);
+        }
 
-    $form = $this->createForm(AccessoireModifierType::class, $accessoire);
-    $form->handleRequest($request);
+        $form = $this->createForm(AccessoireModifierType::class, $accessoire);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $accessoire = $form->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $doctrine->getManager();
+            $entityManager->flush(); // Mettre à jour l'accessoire
+            return $this->redirectToRoute('accessoireLister');
+        }
 
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($accessoire);
-        $entityManager->flush();
-
-        $accessoires = $doctrine->getRepository(Accessoire::class)->findAll();
-
-        return $this->render('accessoire/lister.html.twig', [
-            'pAccessoires' => $accessoires,
-        ]);
-    } else {
-        return $this->render('accessoire/ajouter.html.twig', [
+        return $this->render('accessoire/modifier.html.twig', [
             'form' => $form->createView(),
+            'accessoire' => $accessoire,
         ]);
     }
-}
 
 
     public function ajouterAccessoire(ManagerRegistry $doctrine,Request $request){
@@ -95,8 +102,7 @@ class AccessoireController extends AbstractController
     }
 }
 
-
-    public function supprimerAccessoire(ManagerRegistry $doctrine, int $id): Response
+public function supprimerAccessoire(ManagerRegistry $doctrine, int $id): Response
 {
     $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
 
