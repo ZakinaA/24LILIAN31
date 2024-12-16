@@ -34,6 +34,9 @@
     <tbody>
         {% for accessoire in pAccessoires %}
             <tr>
+            <td class="accessoire-image">
+                <img src="{{ asset('image/' ~ accessoire.cheminImage) }}" alt="Accessoire">
+            </td>
                 <td>
                     <div class="accessoire-details">
                         <div>

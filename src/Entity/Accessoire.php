@@ -19,6 +19,9 @@ class Accessoire
     #[ORM\ManyToOne(inversedBy: 'accessoires')]
     private ?Instrument $instrument = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $cheminImage = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Accessoire
     public function setInstrument(?Instrument $instrument): static
     {
         $this->instrument = $instrument;
+
+        return $this;
+    }
+
+    public function getCheminImage(): ?string
+    {
+        return $this->cheminImage;
+    }
+
+    public function setCheminImage(string $cheminImage): static
+    {
+        $this->cheminImage = $cheminImage;
 
         return $this;
     }
