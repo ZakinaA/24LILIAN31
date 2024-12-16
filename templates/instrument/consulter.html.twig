@@ -28,7 +28,7 @@
             <ul>
                 {% for intervention in interventions %}
                     <li>
-                        <a href="{{ path('intervention_consulter', {'id': intervention.id}) }}" class="intervention-link">
+                        <a href="{{ path('intervention_consulter', {'id': intervention.id}) }}" target = "_blank" class="intervention-link">
                             {{ intervention.descriptif }}
                         </a>
                     </li>
@@ -49,7 +49,7 @@
                             <ul>
                                 {% for pret in prets %}
                                     <li>
-                                        <a href="{{ path('pretConsulter', {'id': pret.id}) }}" class="pret-link">
+                                        <a href="{{ path('pret_consulter', {'id': pret.id}) }}" target = "_blank" class="pret-link">
                                             {{ pret.dateDebut|date('d/m/Y') }}
                                         </a>
                                     </li>

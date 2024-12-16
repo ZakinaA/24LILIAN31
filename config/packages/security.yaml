@@ -37,8 +37,7 @@ security:
     access_control:
          - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/gestionnaire, roles: ROLE_GESTIONNAIRE }
-         #- { path: ^/etudiant, roles: ROLE_ETUDIANT }
-         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/etudiant, roles: ROLE_ETUDIANT }
 
 when@test:
     security:

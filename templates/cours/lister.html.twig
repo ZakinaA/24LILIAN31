@@ -43,7 +43,9 @@
     </section>
 
     <div class="cours-total">
-    <a href="http://172.20.177.77/lilian31/public/cours/ajouter" class="cours-btn-ajouter">Ajouter un Cours</a>
+        <a href="http://172.20.177.77/lilian31/public/cours/ajouter" class="cours-btn-ajouter">Ajouter un Cours</a>
+    </div>
+
     <section class="cours-container-liste">
         <table class="cours-tableau">
             <thead>
@@ -82,7 +84,6 @@
             </tbody>
         </table>
     </section>
-    </div>
 
     <div class="cours-pagination">
         <button class="cours-btn-prev"><i class="fas fa-arrow-left"></i></button>
@@ -104,6 +105,9 @@
         </table>
     </div>
 </div>
-
+<div class="timetable-link-section">
+        <p>Consulter les cours sous forme d'emploi du temps :</p>
+        <a href="{{ path('edt-cours') }}" target="_blank" class="cours-btn-timetable-view">Voir l'Emploi du Temps</a>
+    </div>
 <script src="../js/cours-script.js"></script>
 {% endblock %}

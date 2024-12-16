@@ -11,7 +11,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\EleveType;
-use App\Form\eleveModifierType;
+use App\Form\EleveModifierType;
 
 class EleveController extends AbstractController
 {
@@ -31,7 +31,6 @@ class EleveController extends AbstractController
         ]);
     }
 
-    // Controller action for displaying the student's schedule
 public function consulterEleve(ManagerRegistry $doctrine, int $id)
 {
     $eleve = $doctrine->getRepository(Eleve::class)->find($id);
@@ -42,28 +41,30 @@ public function consulterEleve(ManagerRegistry $doctrine, int $id)
     
     $inscriptions = $eleve->getInscriptions();
     
-    // Initialize the schedule with empty values
     $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-    $heures = range(8, 20); // Example: 8 AM to 8 PM
+    $heures = range(8, 20);
     $planning = [];
 
-    // Initialize empty schedule
     foreach ($jours as $jour) {
         foreach ($heures as $heure) {
             $planning[$jour][$heure] = null;
         }
     }
 
-    // Populate the schedule with the enrolled courses
     foreach ($inscriptions as $inscription) {
-        $jour = $inscription->getCours()->getJour()->getLibelle(); // Example: 'Lundi'
-        $heureDebut = (int)$inscription->getCours()->getHeureDebut()->format('H');
-        $heureFin = (int)$inscription->getCours()->getHeureFin()->format('H');
-        
-        $coursNom = $inscription->getCours()->getLibelle(); // Replace with actual method to get course name or other details
-        
-        for ($heure = $heureDebut; $heure < $heureFin; $heure++) {
-            $planning[$jour][$heure] = $coursNom; // Store the course name or string
+        $cours = $inscription->getCours();
+    
+        if ($cours && $cours->getJour()) { 
+            $jour = $cours->getJour()->getLibelle(); 
+            $heureDebut = (int)$cours->getHeureDebut()->format('H');
+            $heureFin = (int)$cours->getHeureFin()->format('H');
+            
+            $coursNom = $cours->getLibelle(); 
+            
+            for ($heure = $heureDebut; $heure < $heureFin; $heure++) {
+                $planning[$jour][$heure] = $coursNom; 
+            }
+        } else {
         }
     }
 
@@ -85,21 +86,65 @@ public function consulterEleve(ManagerRegistry $doctrine, int $id)
         'eEleves' => $eleves,]);	
     }
 
-    public function modifiereleve(ManagerRegistry $doctrine, $id, Request $request)
+    
+    #[Route('/gestionnaire/eleve/modifier/{id}', name: 'gestionnaireModifierEleve')]
+public function modifiereleve(ManagerRegistry $doctrine, $id, Request $request): Response
 {
-    // Récupération de l'étudiant dont l'id est passé en paramètre
     $eleve = $doctrine->getRepository(Eleve::class)->find($id);
 
     if (!$eleve) {
-        throw $this->createNotFoundException('Aucun étudiant trouvé avec le numéro '.$id);
+        throw $this->createNotFoundException('Aucun étudiant trouvé avec le numéro ' . $id);
     }
 
     $form = $this->createForm(EleveModifierType::class, $eleve);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        $eleve = $form->getData();
-        $entityManager = $doctrine->getManager(); // Corrected this line
+        $uploadedFile = $form['cheminImage']->getData();
+
+        if ($uploadedFile) {
+            $destination = $this->getParameter('kernel.project_dir') . '/public/eleve';
+            $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+            $uploadedFile->move($destination, $newFilename);
+
+            $eleve->setCheminImage($newFilename);
+        }
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($eleve);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('gestionnaireListerEleve');
+    }
+
+    return $this->render('eleve/modifier.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+
+
+
+
+        
+    #[Route('/gestionnaire/eleve/ajouter', name: 'gestionnaireAjouterEleve')]
+    public function ajouterEleve(ManagerRegistry $doctrine, Request $request)
+{
+    $eleve = new Eleve();
+    $form = $this->createForm(EleveType::class, $eleve);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $uploadedFile = $form['cheminImage']->getData();
+
+        if ($uploadedFile) {
+            $destination = $this->getParameter('kernel.project_dir') . '/public/eleve';
+            $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+            $uploadedFile->move($destination, $newFilename);
+
+            $eleve->setCheminImage($newFilename);
+        }
+
+        $entityManager = $doctrine->getManager();
         $entityManager->persist($eleve);
         $entityManager->flush();
 
@@ -107,29 +152,6 @@ public function consulterEleve(ManagerRegistry $doctrine, int $id)
     } else {
         return $this->render('eleve/ajouter.html.twig', ['form' => $form->createView()]);
     }
-}
-
-
-
-    public function ajouterEleve(ManagerRegistry $doctrine,Request $request){
-        $eleve = new eleve();
-	    $form = $this->createForm(EleveType::class, $eleve);
-	    $form->handleRequest($request);
- 
-	if ($form->isSubmitted() && $form->isValid()) {
- 
-            $eleve = $form->getData();
- 
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($eleve);
-            $entityManager->flush();
- 
-	    return $this->render('eleve/consulter.html.twig', ['eleve' => $eleve,]);
-	}
-	else
-        {
-            return $this->render('eleve/ajouter.html.twig', array('form' => $form->createView(),));
-	}
 }
 
 
@@ -147,6 +169,26 @@ public function consulterEleve(ManagerRegistry $doctrine, int $id)
 
     return $this->redirectToRoute('eleveLister');
 }
+
+#[Route('/gestionnaire/eleve/lister', name: 'gestionnaireListerEleve')]
+public function listerEleveGestionnaire(ManagerRegistry $doctrine): Response
+{
+    $repository = $doctrine->getRepository(Eleve::class);
+    $eleves = $repository->findAll();
+
+    return $this->render('eleve/gestionnaireListerEleve.html.twig', [
+        'eEleves' => $eleves,
+    ]);
+}
+
+
+
+
+
+
+
+
+
           
     
 }

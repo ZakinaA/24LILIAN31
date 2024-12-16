@@ -9,6 +9,7 @@ use App\Repository\CoursRepository;
 use App\Repository\TarifRepository;
 use App\Repository\InscriptionRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Responsable;
 use App\Entity\Inscription;
 use App\Form\InscriptionType;
 use App\Form\InscriptionModifierType;
@@ -104,65 +105,83 @@ class InscriptionController extends AbstractController
         return $this->redirectToRoute('inscription_lister');
     }
 
-    #[Route('/inscription/{id}/montant', name: 'inscription_montant')]
-public function inscriptionMontant(
-    Request $request,
-    Inscription $inscription,
-    TarifRepository $tarifRepository,
-    CoursRepository $coursRepository
+    #[Route('/responsable/{id}/eleves', name: 'responsable_eleves')]
+public function listerElevesParResponsable(
+    $id,
+    ManagerRegistry $doctrine
 ): Response {
-    $eleve = $inscription->getEleve();
-    $responsable = $eleve->getResponsable();
+    $responsable = $doctrine->getRepository(Responsable::class)->find($id);
 
     if (!$responsable) {
-        throw $this->createNotFoundException('Responsable non trouvé pour cet élève.');
+        throw $this->createNotFoundException('Responsable non trouvé');
     }
 
     $quotientFamilial = $responsable->getQuotientFamilial();
-
     if (!$quotientFamilial) {
-        throw $this->createNotFoundException('Quotient familial non trouvé pour ce responsable.');
+        throw $this->createNotFoundException('Quotient familial non trouvé pour ce responsable');
     }
 
-    $totalMontant = 0;
-    $montants = [];
+    $eleves = $responsable->getEleves();
 
-    foreach ($responsable->getEleves() as $eleve) {
-        $quotientFamilial = $eleve->getResponsable()->getQuotientFamilial();
-        if (!$quotientFamilial) {
-            throw $this->createNotFoundException('Quotient familial non trouvé pour cet élève.');
+    $montantsParEleve = [];
+    $totalGlobal = 0;
+
+    foreach ($eleves as $eleve) {
+        $totalMontantEleve = 0;
+        $montants = [];
+
+        foreach ($eleve->getInscriptions() as $inscription) {
+
+            $cours = $inscription->getCours();
+            if (!$cours) {
+                throw $this->createNotFoundException('Cours non trouvé pour cette inscription');
+            }
+
+            $typeCours = $cours->getTypeCours(); 
+
+            $tarifs = $quotientFamilial->getTarifs();
+            $tarif = null;
+
+            foreach ($tarifs as $tarifItem) {
+                if ($tarifItem->getTypeCours()->getId() == $typeCours->getId()) {
+                    $tarif = $tarifItem;
+                    break;
+                }
+            }
+
+            if (!$tarif) {
+                throw $this->createNotFoundException('Aucun tarif trouvé pour ce type de cours et quotient familial');
+            }
+
+            $montants[] = [
+                'cours' => $cours->getLibelle(),
+                'montant' => $tarif->getMontant(),
+            ];
+            $totalMontantEleve += $tarif->getMontant();
         }
 
-        $tarifs = $quotientFamilial->getTarifs();
-        if (count($tarifs) === 0) {
-            throw $this->createNotFoundException('Aucun tarif trouvé pour ce quotient familial.');
-        }
-
-        $tarif = $tarifs->first(); 
-
-        if (!$tarif) {
-            throw $this->createNotFoundException('Tarif non trouvé dans la collection.');
-        }
-
-        $montants[] = [
-            'eleve' => $eleve->getNom(),
-            'montant' => $tarif->getMontant()
+        $montantsParEleve[] = [
+            'eleve' => $eleve,
+            'montants' => $montants,
+            'totalMontant' => $totalMontantEleve
         ];
-        $totalMontant += $tarif->getMontant();
+
+        $totalGlobal += $totalMontantEleve;
     }
 
     return $this->render('inscription/montant.html.twig', [
-        'inscription' => $inscription,
-        'montants' => $montants, 
-        'totalMontant' => $totalMontant, 
+        'responsable' => $responsable,
+        'montantsParEleve' => $montantsParEleve,
+        'totalGlobal' => $totalGlobal
     ]);
 }
-       
+
+    
+
     #[Route('/inscription/consulter/{id}', name: 'inscription_consulter')]
     
    public function consulterInscription($id, InscriptionRepository $inscriptionRepository)
    {
-       // Récupérer les données de l'inscription
        $inscription = $inscriptionRepository->find($id);
    
        if (!$inscription) {

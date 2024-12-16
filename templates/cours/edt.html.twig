@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.page-title {
+    text-align: center;
+    color: white;
+    font-size: 24px;
+    margin: 20px 0;
+}
+
+.timetable-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    max-width: 90%;
+}
+
+.timetable-header {
+    display: grid;
+    grid-template-columns: 150px repeat(6, 1fr);
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+}
+
+.timetable-header-cell {
+    padding: 10px;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.timetable-body {
+    display: flex;
+    flex-direction: column;
+    border-radius: 30px;
+}
+
+.timetable-row {
+    display: grid;
+    grid-template-columns: 150px repeat(6, 1fr);
+    border-bottom: 1px solid #ddd;
+}
+
+.timetable-time-cell {
+    background-color: #181B22;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.timetable-cell {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    background-color: #181B22;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.timetable-row:hover .timetable-cell {
+    background-color: #313237;
+}
+
+.courses-list {
+    margin: 0;
+}
+
+.course-name {
+    margin: 5px 0;
+    font-size: 12px;
+    color: white;
+}
+
+.no-course {
+    color: #888;
+    font-size: 14px;
+}
+
+</style>
+    <h1 class="page-title">Emploi du temps des cours</h1>
+
+    <div class="timetable-container">
+        <div class="timetable-header">
+            <div class="timetable-header-cell"></div> 
+            {% for jour in jours %}
+                <div class="timetable-header-cell">{{ jour }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="timetable-body">
+            {% for heure in heures %}
+                <div class="timetable-row">
+                    <div class="timetable-time-cell">{{ heure }}h</div>
+                    {% for jour in jours %}
+                        <div class="timetable-cell">
+                            {% set coursList = pCours[jour][heure] %}
+                            {% if coursList is not empty %}
+                                <div class="courses-list">
+                                    {% for cours in coursList %}
+                                        <p class="course-name">{{ cours.libelle }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="no-course">-</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

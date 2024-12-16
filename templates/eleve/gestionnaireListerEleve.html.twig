@@ -1,0 +1,347 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+<style>
+    a {
+        text-decoration: none;
+    }
+
+    h1 {
+        font-size: 40px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .eleve-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+    .eleve-item {
+        text-align: center;
+        color: white;
+        width: 200px;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        margin-bottom: 40px;
+        background-color: #313237;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .eleve-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .eleve-photo {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+    }
+
+    .eleve-item p {
+        margin-top: 15px;
+        font-size: 1.2rem;
+    }
+
+    /* Boutons */
+    .info-btn, .delete-btn, .action-btn {
+        display: block;
+        margin-top: 10px;
+        text-decoration: none;
+        color: #fff;
+        font-size: 1rem;
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .info-btn:hover, .delete-btn:hover, .action-btn:hover {
+        background-color: #313237;
+    }
+
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #313237;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 5px;
+    }
+
+    .dropdown-content a {
+        color: white;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #575757;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Popup Styles */
+    .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #181B22;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        border-radius: 10px;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+    }
+
+    .popup.open, .popup-overlay.open {
+        display: block;
+    }
+
+    /* Tab Styles */
+    .tabs {
+        margin-bottom: 10px;
+    }
+
+    .tab-button {
+        padding: 10px;
+        margin-right: 10px;
+        cursor: pointer;
+        background-color: #f1f1f1;
+        border: 1px solid #ddd;
+    }
+
+    .tab-button.active {
+        background-color: #181B22;
+        color: white;
+    }
+
+    .tab-panel {
+        display: none;
+    }
+
+    .tab-panel.active {
+        display: block;
+    }
+
+.action-btn {
+    display: inline-block;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block; 
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #313237;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 5px;
+    flex-direction: column;  
+    padding: 0; 
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #444; 
+}
+
+.dropdown-content a:hover {
+    background-color: #575757;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content i {
+    margin-right: 10px; 
+}
+
+.ajoutElevee button{
+    border-radius: 30px;
+    height: 35px;
+    background-color: green;
+}
+
+.ajoutElevee button:hover{
+    background-color: #313237;
+}
+.ajoutElevee a{
+    text-decoration: none;
+    color: white;
+}
+
+</style>
+
+<h1>Liste des élèves</h1>
+<div class="ajoutElevee">
+<button><a href="{{ path('gestionnaireAjouterEleve') }}" target="_blank" class="btn-ajouter">Ajouter un élève</a></button>
+</div>
+<div class="eleve-grid">
+    {% for e in eEleves %}
+    <div class="eleve-item">
+        <div class="eleve-photo" 
+            style="background-image: url('{{ asset('eleve/' ~ e.cheminImage) }}');"
+            data-id="{{ e.id }}"
+            data-nom="{{ e.nom }}"
+            data-prenom="{{ e.prenom }}"
+            data-tel="{{ e.tel }}"
+            data-mail="{{ e.mail }}"
+            data-numRue="{{ e.numRue }}"
+            data-rue="{{ e.rue }}"
+            data-copos="{{ e.copos }}"
+            data-ville="{{ e.ville }}"
+        ></div>
+        <p>{{ e.nom }} {{ e.prenom }}</p>
+
+       <div class="dropdown" style="position: relative;">
+    <a href="#" class="action-btn">Actions</a>
+    <div class="dropdown-content">
+        <a href="{{ path('eleveConsulter', { 'id': e.id }) }}">
+            <i class="fas fa-eye"></i> Consulter
+        </a>
+        <a href="{{ path('gestionnaireModifierEleve', { 'id': e.id }) }}" class="modify-btn" data-id="{{ e.id }}">
+            <i class="fas fa-edit"></i> Modifier
+        </a>
+
+        <a href="{{ path('eleveSupprimer', { 'id': e.id }) }}" class="delete-btn" data-id="{{ e.id }}">
+            <i class="fas fa-trash-alt"></i> Supprimer
+        </a>
+    </div>
+</div>
+
+    </div>
+{% endfor %}
+
+
+</div>
+
+<div class="popup-overlay"></div>
+<div class="popup">
+    <button class="close-btn">&times;</button>
+    <h2>Détails de l'élève</h2>
+    <div class="tabs">
+        <button class="tab-button active" data-target="eleve">Élève</button>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-panel active" id="eleve">
+            <table>
+                <tr><td>Nom :</td><td><span id="modal-nom"></span></td></tr>
+                <tr><td>Prénom :</td><td><span id="modal-prenom"></span></td></tr>
+                <tr><td>Téléphone :</td><td><span id="modal-tel"></span></td></tr>
+                <tr><td>Email :</td><td><span id="modal-mail"></span></td></tr>
+                <tr><td>Adresse :</td><td><span id="modal-adresse"></span></td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.querySelectorAll('.eleve-photo').forEach(photo => {
+        photo.addEventListener('click', function() {
+            const eleveId = this.dataset.id;
+
+            const eleve = document.querySelector(`[data-id="${eleveId}"]`);
+
+            document.getElementById('modal-nom').textContent = eleve.dataset.nom;
+            document.getElementById('modal-prenom').textContent = eleve.dataset.prenom;
+            document.getElementById('modal-tel').textContent = eleve.dataset.tel;
+            document.getElementById('modal-mail').textContent = eleve.dataset.mail;
+            document.getElementById('modal-adresse').textContent = eleve.dataset.numRue + ' ' + eleve.dataset.rue + ', ' + eleve.dataset.copos + ' ' + eleve.dataset.ville;
+
+            document.querySelector('.popup').classList.add('open');
+            document.querySelector('.popup-overlay').classList.add('open');
+        });
+    });
+
+    document.querySelector('.close-btn').addEventListener('click', function() {
+        document.querySelector('.popup').classList.remove('open');
+        document.querySelector('.popup-overlay').classList.remove('open');
+    });
+
+    document.querySelector('.popup-overlay').addEventListener('click', function() {
+        document.querySelector('.popup').classList.remove('open');
+        document.querySelector('.popup-overlay').classList.remove('open');
+    });
+
+        document.querySelectorAll('.modify-btn').forEach(button => {
+    button.addEventListener('click', function(event) {
+        event.preventDefault();
+        const eleveId = this.dataset.id; // ID récupéré depuis l'attribut data-id
+        if (eleveId) {
+            window.location.href = `{{ path('eleveModifier', { 'id': '__ID__' }) }}`.replace('__ID__', eleveId);
+        } else {
+            alert('ID de l\'élève manquant');
+        }
+        });
+    });
+
+
+
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function(event) {
+        event.preventDefault();
+        const eleveId = this.dataset.id;
+        // Vérification de l'ID avant de procéder
+        if (eleveId) {
+            window.location.href = `{{ path('eleveSupprimer', { 'id': '__ID__' }) }}`.replace('__ID__', eleveId);
+        } else {
+            alert('L\'ID de l\'élève est manquant.');
+        }
+    });
+});
+
+</script>
+{% endblock %}

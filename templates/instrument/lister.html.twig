@@ -18,8 +18,44 @@
     a:hover {
         color: #ff5733;
     }
+
+    
     
 </style>
+<section class="cours-container-filtre">
+    <button class="cours-btn-filtre-toggle">
+        <img src="/path/to/filter-icon.png" alt="Filtrer" class="cours-icône-filtre">
+        Filtrer
+    </button>
+
+    <div class="cours-dropdown-filtre">
+        <form method="get" action="{{ path('app_instrument') }}">
+            <label for="typeInstrument">Type d'Instrument:</label>
+            <select name="typeInstrument" id="cours-typeInstrument">
+                <option value="">Choisir...</option>
+                {% for typeInstrument in typeInstruments %}
+                    <option value="{{ typeInstrument.id }}" 
+                            {% if typeInstrument.id == app.request.query.get('typeInstrument') %} selected {% endif %}>
+                        {{ typeInstrument.libelle }}
+                    </option>
+                {% endfor %}
+            </select><br>
+
+            <label for="classeInstrument">Classe d'Instrument:</label>
+            <select name="classeInstrument" id="cours-classeInstrument">
+                <option value="">Choisir...</option>
+                {% for classeInstrument in classeInstruments %}
+                    <option value="{{ classeInstrument.id }}" 
+                            {% if classeInstrument.id == app.request.query.get('classeInstrument') %} selected {% endif %}>
+                        {{ classeInstrument.libelle }}
+                    </option>
+                {% endfor %}
+            </select><br>
+
+            <button type="submit" class="cours-btn-filtre">Appliquer les filtres</button>
+        </form>
+    </div>
+</section>
 
 <div class="instrument-h1">
     <h1>Liste des instruments</h1>
