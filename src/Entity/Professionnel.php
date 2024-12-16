@@ -159,4 +159,21 @@ class Professionnel
 
         return $this;
     }
+
+    #[ORM\Column(type: "string")]
+    private $cheminImage;
+
+    // Getter pour cheminImage
+    public function getCheminImage(): ?string
+    {
+        return $this->cheminImage;
+    }
+
+    // Setter pour cheminImage
+    public function setCheminImage(string $cheminImage): self
+    {
+        $this->cheminImage = $cheminImage;
+
+        return $this;
+    }
 }
