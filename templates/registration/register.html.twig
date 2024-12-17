@@ -1,35 +1,127 @@
-
-
-{% block title %}Register{% endblock %}
-
 {% block content %}
-    <h1>Register</h1>
+<link rel="stylesheet" href="{{ asset('styles.css') }}">
+<style>
+body, h1, h2, p, ul, li, a, img {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    {# Affiche les erreurs du formulaire principal #}
-    {{ form_errors(registrationForm) }}
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-    {# Démarre le formulaire #}
-    {{ form_start(registrationForm) }}
+.ajouter-title-primary {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    color: green;
+    margin-bottom: 20px;
+}
+
+.ajouter-formulaire-ajout {
+    background-color: #181B22;
+    border-radius: 20px;
+    padding: 20px;
+    width: 800px;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.ajouter-left-column,
+.ajouter-right-column {
+    flex: 1;
+}
+
+.ajouter-form-group {
+    margin-bottom: 15px;
+}
+
+.ajouter-form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #ccc;
+}
+
+.ajouter-form-group input,
+.ajouter-form-group select,
+.ajouter-form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #232323;
+    color: white;
+}
+
+.ajouter-form-group input:focus,
+.ajouter-form-group select:focus,
+.ajouter-form-group textarea:focus {
+    border-color: green;
+    outline: none;
+    box-shadow: 0 0 8px green;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+</style>
+
+<div class="ajouter-form-container">
+    <h1 class="ajouter-title-primary">Inscription</h1>
+    <div class="ajouter-formulaire-ajout">
+        <div class="ajouter-left-column">
+            {{ form_start(registrationForm) }}
+
+            <div class="ajouter-form-group">
+                {{ form_label(registrationForm.email) }}
+                {{ form_widget(registrationForm.email) }}
+            </div>
+
+            <div class="ajouter-form-group">
+                {{ form_label(registrationForm.plainPassword) }}
+                {{ form_widget(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="ajouter-form-group">
+                {{ form_label(registrationForm.responsable) }}
+                {{ form_widget(registrationForm.responsable) }}
+            </div>
+
+        </div>
+
+        <div class="ajouter-right-column">
+            <div class="ajouter-form-group">
+                {{ form_widget(registrationForm.enregistrer) }}
+            </div>
+        </div>
+
+        {{ form_end(registrationForm) }}
+    </div>
+</div>
+
+<script>
+function previewImage(event) {
+    const input = event.target;
+    const preview = document.getElementById('image-preview');
     
-        {# Champs pour l'utilisateur (User) #}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-       
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.src = '{{ asset('placeholder-image.png') }}';
+    }
+}
+</script>
 
-
-        {{ form_row(registrationForm.responsable.nom) }}
-        {{ form_row(registrationForm.responsable.prenom) }}
-        {{ form_row(registrationForm.responsable.tel) }}
-        {{ form_row(registrationForm.responsable.numRue) }}
-        {{ form_row(registrationForm.responsable.rue) }}
-        {{ form_row(registrationForm.responsable.copos) }}
-        {{ form_row(registrationForm.responsable.ville) }}
-        {{ form_row(registrationForm.responsable.cheminImage) }}
-         {{ form_row(registrationForm.agreeTerms) }}
-        {# Bouton pour soumettre le formulaire #}
-        <button type="submit" class="btn btn-primary">Register</button>
-
-    {{ form_end(registrationForm) }}
 {% endblock %}

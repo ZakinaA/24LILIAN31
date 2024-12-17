@@ -10,34 +10,6 @@ controllers:
 # Instrument
 # -----------------------------------------------------------------------------------------
 
-app_instrument:
-    path: /instrument
-    controller: App\Controller\InstrumentController::index
-
-app_instrument_accueil:
-    path: /instrument/accueil
-    controller: App\Controller\InstrumentController::accueil
-
-instrumentAjouter:
-    path: /instrument/ajouter
-    controller: App\Controller\InstrumentController::ajouterInstrument
-
-instrumentConsulter:
-    path: /instrument/consulter/{id}
-    controller: App\Controller\InstrumentController::consulterInstrument
-
-instrumentLister:
-    path: /instrument/lister
-    controller: App\Controller\InstrumentController::listerInstrument
-
-instrumentModifier:
-    path: /instrument/modifier/{id}
-    controller: App\Controller\InstrumentController::modifierInstrument
-
-instrumentSupprimer:
-    path: /instrument/supprimer/{id}
-    controller: App\Controller\InstrumentController::supprimerInstrument
-
 
 # -----------------------------------------------------------------------------------------
 # Accessoire
@@ -99,70 +71,7 @@ modeleSupprimer:
     path: /modele/supprimer/{id}
     controller: App\Controller\ModeleController::supprimerModele
 
-# -----------------------------------------------------------------------------------------
-# Cours
-# -----------------------------------------------------------------------------------------
 
-app_cours:
-    path: /cours
-    controller: App\Controller\CoursController::index
-
-app_accueilcours:
-    path: /cours/accueil
-    controller: App\Controller\CoursController::accueil
-
-app_ajouter:
-    path: /cours/ajouter
-    controller: App\Controller\CoursController::ajouter
-
-app_consulter:
-    path: /cours/consulter/{id}
-    controller: App\Controller\CoursController::consulterCours
-
-app_lister:
-    path: /cours/lister
-    controller: App\Controller\CoursController::listerCours
-
-app_cours_supprimer:
-    path: /cours/supprimer/{id}
-    controller: App\Controller\CoursController::supprimerCours
-    
-app_coursModifier:
-    path: /cours/modifier/{id}
-    controller: App\Controller\CoursController::modifierCours
-
-# -----------------------------------------------------------------------------------------
-# Eleve
-# -----------------------------------------------------------------------------------------
-
-app_eleve:
-    path: /eleve
-    controller: App\Controller\EleveController::index
-
-app_eleve_accueil:
-    path: /eleve/accueil
-    controller: App\Controller\EleveController::accueil
-
-eleveAjouter:
-    path: /eleve/ajouter
-    controller: App\Controller\EleveController::ajouterEleve
-
-eleveConsulter:
-    path: /eleve/consulter/{id}
-    controller: App\Controller\EleveController::consulterEleve
-
-eleveLister:
-    path: /eleve/lister
-    controller: App\Controller\EleveController::listerEleve
-
-eleveModifier:
-    path: /eleve/modifier/{id}
-    controller: App\Controller\EleveController::modifierEleve
-
-eleveSupprimer:
-    path: /eleve/supprimer/{id}
-    controller: App\Controller\EleveController::supprimerEleve
- 
 
 # -----------------------------------------------------------------------------------------
 # Pret
@@ -212,37 +121,8 @@ interventionSupprimer:
     path: /intervention/supprimer/{id}
     controller: App\Controller\InterventionController::supprimerIntervention
 
-# -----------------------------------------------------------------------------------------
-# Inscription
-# -----------------------------------------------------------------------------------------
 
-insc_inscription:
-    path: /inscription
-    controller: App\Controller\InscriptionController::index
 
-insc_accueilinscription:
-    path: /inscription/accueil
-    controller: App\Controller\InscriptionController::accueil
-
-insc_ajouter:
-    path: /inscription/ajouter
-    controller: App\Controller\InscriptionController::ajouter
-
-insc_consulter:
-    path: /inscription/consulter/{id}
-    controller: App\Controller\InscriptionController::consulterInscription
-
-insc_lister:
-    path: /inscription/lister
-    controller: App\Controller\InscriptionController::listerInscription
-
-insc_cours_supprimer:
-    path: /inscription/supprimer/{id}
-    controller: App\Controller\InscriptionController::supprimerInscription
-    
-insc_coursModifier:
-    path: /inscription/modifier/{id}
-    controller: App\Controller\InscriptionController::modifierInscription
 
 con_Modifier:
     path: /intervention/modifier/{id}

@@ -4,18 +4,112 @@
 <style>
     body {
         font-family: 'Arial', sans-serif;
-        background-color: #121212;
-        color: #ffffff;
+        background-color: #f4f4f4;
+        color: #333;
         margin: 0;
-        padding: 100px 0 0; 
+        padding: 50px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
-    a {
-        text-decoration: none;
+
+    .accessoire-h1 h1 {
+        font-size: 28px;
+        font-weight: bold;
+        text-align: center;
         color: green;
-        transition: color 0.3s ease;
+        margin-bottom: 30px;
     }
-    a:hover {
-        color: #ff5733;
+
+    /* Conteneur des accessoires */
+    .accessoire-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px; /* Espacement entre les cartes */
+        width: 80%;
+        max-width: 1300px; /* Augmenter la largeur totale */
+        margin-top: 20px;
+    }
+
+    /* Style de chaque carte accessoire */
+    .accessoire-card {
+        background-color: #181B22;
+        border: 1px solid #181B22;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        transition: box-shadow 0.3s ease;
+        min-height: 120px; /* Hauteur minimale pour plus d'espace */
+    }
+
+    .accessoire-card:hover {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .accessoire-image img {
+        max-width: 100px; /* Légèrement plus large */
+        height: auto;
+        border-radius: 8px;
+        margin-right: 20px; /* Espacement entre l'image et les détails */
+    }
+
+    .accessoire-details {
+        flex-grow: 1;
+    }
+
+    .accessoire-details div {
+        margin-bottom: 12px; /* Espacement entre les lignes */
+    }
+
+    .accessoire-details strong {
+        color: #2d3d48;
+    }
+
+    /* Menu déroulant */
+    .accessoire-actions select {
+        padding: 6px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: 1px solid #181B22;
+        cursor: pointer;
+    }
+
+    /* Style des liens et des boutons */
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        margin: 5px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-add {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .btn-add a {
+        background-color: #181B22;
+        color: white;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 30px;
+        text-decoration: none;
+    }
+
+    .btn-add a:hover {
+        background-color: #00a77e;
+    }
+    select{
+        background-color: #181B22;
+        color: white;
     }
 </style>
 
@@ -23,44 +117,30 @@
     <h1>Liste des accessoires</h1>
 </div>
 
-<table class="accessoire-table">
-    <thead>
-        <tr>
-            <th>Image</th>
-            <th>Détails</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for accessoire in pAccessoires %}
-            <tr>
-            <td class="accessoire-image">
-                <img src="{{ asset('image/' ~ accessoire.cheminImage) }}" alt="Accessoire">
-            </td>
-                <td>
-                    <div class="accessoire-details">
-                        <div>
-                            <strong>libelle :</strong> {{ accessoire.libelle }}<br>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <a href="{{ path('accessoireConsulter', { id: accessoire.id }) }}" class="btn btn-small">Consulter</a>
-                    <a href="{{ path('accessoireModifier', { id: accessoire.id }) }}" class="btn btn-small">Modifier</a>
-
-                    <button type="submit" class="btn-trash" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet accessoire ?')">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3" style="text-align: center;">Aucun accessoire trouvé.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="accessoire-container">
+    {% for accessoire in pAccessoires %}
+        <div class="accessoire-card">
+            <div class="accessoire-image">
+                <img src="{{ asset('accessoire/' ~ accessoire.cheminImage) }}" alt="Accessoire">
+            </div>
+            <div class="accessoire-details">
+                <div>
+                    <strong>Libelle :</strong> {{ accessoire.libelle }}
+                </div>
+            </div>
+            <div class="accessoire-actions">
+                <select onchange="window.location.href=this.value">
+                    <option value="#" disabled selected>Actions</option>
+                    <option value="{{ path('accessoireConsulter', { id: accessoire.id }) }}">Consulter</option>
+                    <option value="{{ path('accessoireModifier', { id: accessoire.id }) }}">Modifier</option>
+                    <option value="{{ path('accessoireSupprimer', { id: accessoire.id }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet accessoire ?')">Supprimer</option>
+                </select>
+            </div>
+        </div>
+    {% else %}
+        <div style="text-align: center; width: 100%;">Aucun accessoire trouvé.</div>
+    {% endfor %}
+</div>
 
 <div class="btn-add">
     <a href="{{ path('accessoireAjouter') }}" class="btn">+ Ajouter un accessoire</a>

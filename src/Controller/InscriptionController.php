@@ -29,7 +29,7 @@ class InscriptionController extends AbstractController
         ]);
     }
 
-    #[Route('/inscription/ajouter', name: 'inscription_ajouter')]
+    #[Route('gestionnaire/inscription/ajouter', name: 'inscription_ajouter')]
     public function ajouter(ManagerRegistry $doctrine, Request $request): Response
     {
         $inscription = new Inscription();
