@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Cours;
-use App\Repository\CoursRepository;  // Make sure this is included
+use App\Repository\CoursRepository; 
 use App\Entity\TypeCours;
 use App\Entity\TypeInstrument;
 use App\Form\CoursType;
@@ -31,6 +31,8 @@ class CoursController extends AbstractController
     }
 
     #[Route(path: '/edt-cours', name: 'edt-cours')]
+
+
 public function emploiDuTemps(): Response
 {
     $heures = range(8, 20);
@@ -64,7 +66,7 @@ private function organiserPlanning($cours)
     foreach ($cours as $coursItem) {
         $jour = $coursItem->getJour();
         if ($jour instanceof \App\Entity\Jour) {
-            $jour = $jour->getLibelle();  // Get the string name of the day
+            $jour = $jour->getLibelle(); 
         }
 
         $heure = $coursItem->getHeureDebut();
@@ -72,20 +74,18 @@ private function organiserPlanning($cours)
             $heure = $heure->format('H'); 
         }
 
-        // Add the course to the correct day and hour
         if (isset($planning[$jour][$heure])) {
-            $planning[$jour][$heure][] = $coursItem;  // Add multiple courses
+            $planning[$jour][$heure][] = $coursItem;  
         }
     }
 
-    // Debugging: Dump the planning array to check its content
-    dump($planning);  // This will output the structure for debugging
+    dump($planning);  
 
     return $planning;
 }
 
 
-
+    #[Route('/gestionnaire/cours/ajouter', name: 'gestionnaireCoursAjouter')]
     public function ajouter(ManagerRegistry $doctrine, Request $request)
     {
         $cours = new Cours();
@@ -105,6 +105,8 @@ private function organiserPlanning($cours)
         }
     }
 
+    
+    #[Route('/gestionnaire/cours/consulter/{id}', name: 'gestionnaireCoursConsulter')]
     public function consulterCours(ManagerRegistry $doctrine, int $id)
     {
         $cours = $doctrine->getRepository(Cours::class)->find($id);
@@ -116,6 +118,9 @@ private function organiserPlanning($cours)
         return $this->render('cours/consulter.html.twig', ['cours' => $cours]);
     }
 
+    
+    #[Route('/gestionnaire/cours/lister', name: 'gestionnaireCoursLister')]
+    #[Route('/etudiant/cours/lister', name: 'eleveCoursLister')]
     public function listerCours(ManagerRegistry $doctrine, Request $request)
     {
         $repository = $doctrine->getRepository(Cours::class);
@@ -141,6 +146,8 @@ private function organiserPlanning($cours)
         ]);
     }
 
+    
+    #[Route('/gestionnaire/cours/supprimer/{id}', name: 'gestionnaireCoursSupprimer')]
     public function supprimerCours(ManagerRegistry $doctrine, int $id): Response
     {
         $cours = $doctrine->getRepository(Cours::class)->find($id);
@@ -156,6 +163,8 @@ private function organiserPlanning($cours)
         return $this->redirectToRoute('app_lister');
     }
 
+    
+    #[Route('/gestionnaire/cours/modifier/{id}', name: 'gestionnaireCoursModifier')]
     public function modifierCours(ManagerRegistry $doctrine, $id, Request $request)
     {
         $cours = $doctrine->getRepository(Cours::class)->find($id);

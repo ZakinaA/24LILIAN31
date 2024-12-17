@@ -88,39 +88,39 @@ public function consulterEleve(ManagerRegistry $doctrine, int $id)
 
     
     #[Route('/gestionnaire/eleve/modifier/{id}', name: 'gestionnaireModifierEleve')]
-public function modifiereleve(ManagerRegistry $doctrine, $id, Request $request): Response
-{
-    $eleve = $doctrine->getRepository(Eleve::class)->find($id);
+    public function modifiereleve(ManagerRegistry $doctrine, $id, Request $request): Response
+    {
+        $eleve = $doctrine->getRepository(Eleve::class)->find($id);
 
-    if (!$eleve) {
-        throw $this->createNotFoundException('Aucun étudiant trouvé avec le numéro ' . $id);
-    }
-
-    $form = $this->createForm(EleveModifierType::class, $eleve);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        $uploadedFile = $form['cheminImage']->getData();
-
-        if ($uploadedFile) {
-            $destination = $this->getParameter('kernel.project_dir') . '/public/eleve';
-            $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
-            $uploadedFile->move($destination, $newFilename);
-
-            $eleve->setCheminImage($newFilename);
+        if (!$eleve) {
+            throw $this->createNotFoundException('Aucun étudiant trouvé avec le numéro ' . $id);
         }
 
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($eleve);
-        $entityManager->flush();
+        $form = $this->createForm(EleveModifierType::class, $eleve);
+        $form->handleRequest($request);
 
-        return $this->redirectToRoute('gestionnaireListerEleve');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedFile = $form['cheminImage']->getData();
+
+            if ($uploadedFile) {
+                $destination = $this->getParameter('kernel.project_dir') . '/public/eleve';
+                $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+                $uploadedFile->move($destination, $newFilename);
+
+                $eleve->setCheminImage($newFilename);
+            }
+
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($eleve);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('gestionnaireListerEleve');
+        }
+
+        return $this->render('eleve/modifier.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
-
-    return $this->render('eleve/modifier.html.twig', [
-        'form' => $form->createView(),
-    ]);
-}
 
 
 
@@ -154,7 +154,8 @@ public function modifiereleve(ManagerRegistry $doctrine, $id, Request $request):
     }
 }
 
-
+    
+    #[Route('/gestionnaire/eleve/supprimer/{id}', name: 'gestionnaireSupprimerEleve')]
     public function supprimerEleve(ManagerRegistry $doctrine, int $id): Response
 {
     $eleve = $doctrine->getRepository(Eleve::class)->find($id);
@@ -167,7 +168,7 @@ public function modifiereleve(ManagerRegistry $doctrine, $id, Request $request):
     $entityManager->remove($eleve); 
     $entityManager->flush();
 
-    return $this->redirectToRoute('eleveLister');
+    return $this->redirectToRoute('gestionnaireListerEleve');
 }
 
 #[Route('/gestionnaire/eleve/lister', name: 'gestionnaireListerEleve')]

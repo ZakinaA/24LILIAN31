@@ -51,7 +51,6 @@ class InscriptionController extends AbstractController
 
     public function modifierInscription(Request $request, $id, InscriptionRepository $inscriptionRepository, EntityManagerInterface $entityManager)
     {
-        // Récupérer l'inscription à modifier
         $inscription = $inscriptionRepository->find($id);
 
         if (!$inscription) {
@@ -77,7 +76,7 @@ class InscriptionController extends AbstractController
         ]);
     }
 
-    #[Route('/inscription/lister', name: 'inscription_lister')]
+    #[Route('/gestionnaire/inscription/lister', name: 'inscription_lister')]
     public function listerInscription(ManagerRegistry $doctrine): Response
     {
         $inscriptions = $doctrine->getRepository(Inscription::class)->findAll();
@@ -87,7 +86,7 @@ class InscriptionController extends AbstractController
         ]);
     }
 
-    #[Route('/inscription/supprimer/{id}', name: 'inscription_supprimer', methods: ['POST'])]
+    #[Route('/gestionnaire/inscription/supprimer/{id}', name: 'inscription_supprimer', methods: ['POST'])]
     public function supprimerInscription(ManagerRegistry $doctrine, int $id, Request $request): Response
     {
         $inscription = $doctrine->getRepository(Inscription::class)->find($id);
@@ -105,12 +104,12 @@ class InscriptionController extends AbstractController
         return $this->redirectToRoute('inscription_lister');
     }
 
-    #[Route('/responsable/{id}/eleves', name: 'responsable_eleves')]
-public function listerElevesParResponsable(
-    $id,
-    ManagerRegistry $doctrine
-): Response {
-    $responsable = $doctrine->getRepository(Responsable::class)->find($id);
+    #[Route('gestionnaire/responsable/{id}/eleves', name: 'responsable_eleves')]
+    public function listerElevesParResponsable(
+        $id,
+        ManagerRegistry $doctrine
+    ): Response {
+        $responsable = $doctrine->getRepository(Responsable::class)->find($id);
 
     if (!$responsable) {
         throw $this->createNotFoundException('Responsable non trouvé');
@@ -178,7 +177,7 @@ public function listerElevesParResponsable(
 
     
 
-    #[Route('/inscription/consulter/{id}', name: 'inscription_consulter')]
+    #[Route('gestionnaire/inscription/consulter/{id}', name: 'inscription_consulter')]
     
    public function consulterInscription($id, InscriptionRepository $inscriptionRepository)
    {

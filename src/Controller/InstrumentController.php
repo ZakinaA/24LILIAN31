@@ -60,25 +60,20 @@ public function listerInstrument(ManagerRegistry $doctrine, Request $request)
 {
     $repository = $doctrine->getRepository(Instrument::class);
     
-    // Créez le QueryBuilder
     $queryBuilder = $repository->createQueryBuilder('i');
 
-    // Application du filtre par type d'instrument
     if ($request->query->get('typeInstrument')) {
         $queryBuilder->andWhere('i.typeInstrument = :typeInstrument')
                      ->setParameter('typeInstrument', $request->query->get('typeInstrument'));
     }
 
-    // Application du filtre par classe d'instrument
     if ($request->query->get('classeInstrument')) {
         $queryBuilder->andWhere('i.typeInstrument.classeInstrument = :classeInstrument')
                      ->setParameter('classeInstrument', $request->query->get('classeInstrument'));
     }
 
-    // Récupérer les résultats
     $instruments = $queryBuilder->getQuery()->getResult();
 
-    // Récupérer les types et les classes d'instruments pour le formulaire de filtrage
     $typeInstruments = $doctrine->getRepository(TypeInstrument::class)->findAll();
     $classeInstruments = $doctrine->getRepository(ClasseInstrument::class)->findAll();
 
