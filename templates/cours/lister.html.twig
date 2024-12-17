@@ -14,7 +14,7 @@
         </button>
         
         <div class="cours-dropdown-filtre">
-            <form method="get" action="{{ path('app_lister') }}">
+            <form method="get" action="{{ path('gestionnaireCoursLister') }}">
                 <label for="cours-typeCours">Type de Cours:</label>
                 <select name="typeCours" id="cours-typeCours">
                     <option value="">Choisir...</option>
@@ -37,7 +37,7 @@
     </section>
 
     <section class="cours-container-recherche">
-        <form method="GET" action="{{ path('app_lister') }}">
+        <form method="GET" action="{{ path('gestionnaireCoursLister') }}">
             <input type="text" name="search" id="cours-recherche" placeholder="Rechercher un cours..." class="cours-input-recherche">
             <button type="submit" class="cours-btn-recherche">Rechercher</button>
         </form>
@@ -338,7 +338,7 @@ showPage(currentPage);</script>
 .cours-dropdown-filtre {
     display: none;
     position: absolute;
-    top: 110px; 
+    top: 190px; 
     right: 20px;
     background-color: #181B22;
     border-radius: 5px;

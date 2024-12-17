@@ -160,7 +160,7 @@ private function organiserPlanning($cours)
         $entityManager->remove($cours); 
         $entityManager->flush();
     
-        return $this->redirectToRoute('app_lister');
+        return $this->redirectToRoute('gestionnaireCoursLister');
     }
 
     

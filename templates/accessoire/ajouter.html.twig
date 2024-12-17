@@ -111,6 +111,7 @@ body {
     transition: width 0.3s ease;
 }
 </style>
+
 <div class="ajouter-form-container">
     <h1 class="ajouter-title-primary">Ajout d'un Accessoire</h1>
     <div class="ajouter-formulaire-ajout">
@@ -121,13 +122,23 @@ body {
                 {{ form_label(form.libelle) }}
                 {{ form_widget(form.libelle) }}
             </div>
-        </div>
 
             <div class="ajouter-form-group">
-                {{ form_widget(form.enregistrer) }}
+                {{ form_label(form.cheminImage) }}
+                {{ form_widget(form.cheminImage) }}
             </div>
 
-            
+            <div class="ajouter-image-container" id="imagePreviewContainer">
+                {% if form.cheminImage.vars.data is not empty %}
+                    <img id="imagePreview" src="{{ asset('/accessoire/' ~ form.cheminImage.vars.data) }}" alt="Image Preview" />
+                {% else %}
+                    <img id="imagePreview" src="#" alt="Image Preview" style="display:none;" />
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="ajouter-form-group">
+            {{ form_widget(form.enregistrer) }}
         </div>
 
         {{ form_end(form) }}
@@ -139,5 +150,27 @@ body {
 </div>
 
 <script src="../js/accessoire-script.js"></script>
+
+<script>
+    // JS to handle the image preview
+    const imageInput = document.querySelector('input[type="file"][name="accessoire[cheminImage]"]');
+    const imagePreview = document.getElementById('imagePreview');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+
+    imageInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                imagePreview.src = reader.result;
+                imagePreview.style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 
 {% endblock %}

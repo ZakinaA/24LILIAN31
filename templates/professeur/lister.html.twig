@@ -8,12 +8,15 @@
 
     h1 {
         font-size: 40px;
+        text-align: center;
+        margin-bottom: 30px;
     }
 
     .professeur-grid {
         display: flex;
         flex-wrap: wrap;
         gap: 40px;
+        justify-content: center;
         margin-top: 40px;
     }
 
@@ -23,13 +26,15 @@
         width: 200px;
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
         margin-bottom: 40px;
+        background-color: #313237;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     .professeur-item:hover {
         transform: scale(1.05);
         box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
-        background-color: #313237;
-        border-radius: 10px;
     }
 
     .professeur-photo {
@@ -40,6 +45,7 @@
         background-size: cover;
         background-position: center;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
     }
 
     .professeur-item p {
@@ -47,34 +53,49 @@
         font-size: 1.2rem;
     }
 
-    .info-btn {
+    .action-btn {
         display: block;
         margin-top: 10px;
         text-decoration: none;
         color: #fff;
         font-size: 1rem;
-        background-color: green;
         padding: 5px 10px;
         border-radius: 5px;
         text-align: center;
     }
 
-    .info-btn:hover {
-        background-color: #313237;
+    .action-btn:hover {
+        background-color: #575757;
     }
 
-    /* Delete button styles */
-    .delete-btn {
+    .dropdown {
+        position: relative;
         display: inline-block;
-        margin-top: 10px;
-        font-size: 1rem;
-        color: red;
-        cursor: pointer;
-        text-align: center;
     }
 
-    .delete-btn:hover {
-        color: #f1f1f1;
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #313237;
+        min-width: 160px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 5px;
+    }
+
+    .dropdown-content a {
+        color: white;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #575757;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
     }
 
     /* Popup Styles */
@@ -88,6 +109,9 @@
         padding: 20px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         z-index: 999;
+        border-radius: 10px;
+        max-width: 400px;
+        width: 100%;
     }
 
     .popup-overlay {
@@ -104,100 +128,71 @@
     .popup.open, .popup-overlay.open {
         display: block;
     }
-
-    /* Tab Styles */
-    .tabs {
-        margin-bottom: 10px;
-    }
-
-    .tab-button {
-        padding: 10px;
-        margin-right: 10px;
-        cursor: pointer;
-        background-color: #f1f1f1;
-        border: 1px solid #ddd;
-    }
-
-    .tab-button.active {
-        background-color: #181B22;
-        color: white;
-    }
-
-    .tab-panel {
-        display: none;
-    }
-
-    .tab-panel.active {
-        display: block;
-    }
 </style>
 
 <h1>Liste des professeurs</h1>
 
 <div class="professeur-grid">
     {% for p in pProfesseurs %}
-        <div class="professeur-item">
-            <a href="{{ path('professeurConsulter', { 'id': p.id }) }}">
-                <div class="professeur-photo" style="background-image: url('{{ asset('professeur/' ~ p.cheminImage) }}');"></div>
-            </a>
-            <p>{{ p.nom }} {{ p.prenom }}</p>
-            <a href="#" class="info-btn" data-id="{{ p.id }}"
-               data-nom="{{ p.nom }}"
-               data-prenom="{{ p.prenom }}"
-               data-tel="{{ p.tel }}"
-               data-mail="{{ p.mail }}"
-               data-numRue="{{ p.numRue }}"
-               data-rue="{{ p.rue }}"
-               data-copos="{{ p.copos }}"
-               data-ville="{{ p.ville }}">
-                + d'infos
-            </a>
-            <!-- Delete Button -->
-            <a href="#" class="delete-btn" data-id="{{ p.id }}" onclick="confirmDelete(event, {{ p.id }})">
-                <i class="fa fa-trash"></i> Supprimer
-            </a>
+    <div class="professeur-item">
+        <div class="professeur-photo" 
+            style="background-image: url('{{ asset('professeur/' ~ p.cheminImage) }}');"
+            data-id="{{ p.id }}"
+            data-nom="{{ p.nom }}"
+            data-prenom="{{ p.prenom }}"
+            data-tel="{{ p.tel }}"
+            data-mail="{{ p.mail }}"
+            data-numRue="{{ p.numRue }}"
+            data-rue="{{ p.rue }}"
+            data-copos="{{ p.copos }}"
+            data-ville="{{ p.ville }}"
+        ></div>
+        <p>{{ p.nom }} {{ p.prenom }}</p>
+
+        <div class="dropdown">
+            <a href="#" class="action-btn">Actions</a>
+            <div class="dropdown-content">
+                <a href="{{ path('professeurConsulter', { 'id': p.id }) }}">
+                    <i class="fas fa-eye"></i> Consulter
+                </a>
+                <a href="{{ path('professeurModifier', { 'id': p.id }) }}" class="modify-btn" data-id="{{ p.id }}">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                <a href="{{ path('professeurSupprimer', { 'id': p.id }) }}" class="delete-btn" data-id="{{ p.id }}">
+                    <i class="fas fa-trash-alt"></i> Supprimer
+                </a>
+            </div>
         </div>
-    {% else %}
-        <p>Aucun professeur trouvé.</p>
+    </div>
     {% endfor %}
 </div>
 
-<!-- Popup Modal -->
 <div class="popup-overlay"></div>
 <div class="popup">
     <button class="close-btn">&times;</button>
     <h2>Détails du professeur</h2>
-    <div class="tabs">
-        <button class="tab-button active" data-target="professeur">Professeur</button>
-    </div>
-
-    <div class="tab-content">
-        <div class="tab-panel active" id="professeur">
-            <table>
-                <tr><td>Nom :</td><td><span id="modal-nom"></span></td></tr>
-                <tr><td>Prénom :</td><td><span id="modal-prenom"></span></td></tr>
-                <tr><td>Téléphone :</td><td><span id="modal-tel"></span></td></tr>
-                <tr><td>Email :</td><td><span id="modal-mail"></span></td></tr>
-                <tr><td>Adresse :</td><td><span id="modal-adresse"></span></td></tr>
-            </table>
-        </div>
-    </div>
+    <table>
+        <tr><td>Nom :</td><td><span id="modal-nom"></span></td></tr>
+        <tr><td>Prénom :</td><td><span id="modal-prenom"></span></td></tr>
+        <tr><td>Téléphone :</td><td><span id="modal-tel"></span></td></tr>
+        <tr><td>Email :</td><td><span id="modal-mail"></span></td></tr>
+        <tr><td>Adresse :</td><td><span id="modal-adresse"></span></td></tr>
+    </table>
 </div>
 
 <script>
-    // Ouvrir la popup et charger les données du professeur
-    document.querySelectorAll('.info-btn').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
+    document.querySelectorAll('.professeur-photo').forEach(photo => {
+        photo.addEventListener('click', function() {
+            const profId = this.dataset.id;
 
-            // Charger les informations dans la popup
-            document.getElementById('modal-nom').textContent = this.dataset.nom;
-            document.getElementById('modal-prenom').textContent = this.dataset.prenom;
-            document.getElementById('modal-tel').textContent = this.dataset.tel;
-            document.getElementById('modal-mail').textContent = this.dataset.mail;
-            document.getElementById('modal-adresse').textContent = this.dataset.numRue + ' ' + this.dataset.rue + ', ' + this.dataset.copos + ' ' + this.dataset.ville;
+            const prof = document.querySelector(`[data-id="${profId}"]`);
 
-            // Afficher la popup
+            document.getElementById('modal-nom').textContent = prof.dataset.nom;
+            document.getElementById('modal-prenom').textContent = prof.dataset.prenom;
+            document.getElementById('modal-tel').textContent = prof.dataset.tel;
+            document.getElementById('modal-mail').textContent = prof.dataset.mail;
+            document.getElementById('modal-adresse').textContent = prof.dataset.numRue + ' ' + prof.dataset.rue + ', ' + prof.dataset.copos + ' ' + prof.dataset.ville;
+
             document.querySelector('.popup').classList.add('open');
             document.querySelector('.popup-overlay').classList.add('open');
         });
@@ -213,13 +208,14 @@
         document.querySelector('.popup-overlay').classList.remove('open');
     });
 
-    // Function to confirm deletion
-    function confirmDelete(event, professorId) {
-        event.preventDefault();
-        if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
-            window.location.href = 'http://172.20.177.77/lilian31/public/professeur/supprimer/' + professorId;
-        }
-    }
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
+                const profId = this.dataset.id;
+                window.location.href = '{{ path('professeurSupprimer', { 'id': '__ID__' }) }}'.replace('__ID__', profId);
+            }
+        });
+    });
 </script>
-
 {% endblock %}

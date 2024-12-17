@@ -13,95 +13,124 @@
     .professionnel-grid {
         display: flex;
         flex-wrap: wrap;
-        gap: 40px;
+        gap: 20px;
         margin-top: 40px;
+        justify-content: space-between;
     }
 
     .professionnel-item {
-        text-align: center;
-        color: white;
-        width: 200px;
+        display: flex;
+        width: calc(50% - 20px); /* 2 items per row */
+        background-color: #313237;
+        border-radius: 10px;
+        overflow: hidden;
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-        margin-bottom: 40px;
+        margin-bottom: 20px;
+        color: white;
+        position: relative; /* To position the dropdown menu */
     }
 
     .professionnel-item:hover {
         transform: scale(1.05);
         box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
-        background-color: #313237;
-        border-radius: 10px;
     }
 
     .professionnel-photo {
         width: 120px;
         height: 120px;
-        margin: 0 auto;
-        border-radius: 50%;
+        border-radius: 10px;
         background-size: cover;
         background-position: center;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
-    .professionnel-item p {
-        margin-top: 15px;
+    .professionnel-info {
+        padding: 10px;
+        flex-grow: 1;
+    }
+
+    .professionnel-info p {
+        margin: 0;
         font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .professionnel-info .metier {
+        font-size: 1rem;
+        color: #ccc;
+    }
+
+    .actions-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #181B22;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .actions-dropdown {
+        display: none;
+        position: absolute;
+        top: 30px;
+        right: 10px;
+        background-color: #313237;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        padding: 5px 0;
+        min-width: 150px;
+        z-index: 100;
+    }
+
+    .actions-dropdown a {
+        display: block;
+        padding: 10px;
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+    }
+
+    .actions-dropdown a:hover {
+        background-color: #313237;
     }
 
     .info-btn {
-        display: block;
+        display: inline-block;
         margin-top: 10px;
         text-decoration: none;
-        color: #fff;
         font-size: 1rem;
-        background-color: green;
-        padding: 5px 10px;
         border-radius: 5px;
         text-align: center;
+        padding: 5px 10px;
+        transition: background-color 0.3s;
+        background-color: green;
+        color: white;
     }
 
     .info-btn:hover {
         background-color: #313237;
     }
 
-    /* New delete button styles */
     .delete-btn {
-        display: block;
-        margin-top: 10px;
-        text-decoration: none;
-        color: #fff;
-        font-size: 1.2rem;
-        background-color: red;
-        padding: 5px 10px;
-        border-radius: 5px;
-        text-align: center;
+        background-color: #181B22;
+        color: white;
     }
 
     .delete-btn:hover {
-        background-color: #b23131;
+        background-color: #313237;
     }
 
-    .delete-btn i {
-        margin-right: 5px;
-    }
-
-    /* New modify button styles */
     .modify-btn {
-        display: block;
-        margin-top: 10px;
-        text-decoration: none;
-        color: #fff;
-        font-size: 1.2rem;
-        background-color: #007bff;
-        padding: 5px 10px;
-        border-radius: 5px;
-        text-align: center;
+        background-color: #181B22;
+        color: white;
     }
 
     .modify-btn:hover {
-        background-color: #0056b3;
+        background-color: #313237;
     }
 
-    /* Popup Styles */
     .popup {
         display: none;
         position: fixed;
@@ -129,7 +158,6 @@
         display: block;
     }
 
-    /* Tab Styles */
     .tabs {
         margin-bottom: 10px;
     }
@@ -154,38 +182,68 @@
     .tab-panel.active {
         display: block;
     }
+
+    .btn-lister {
+        background-color: #181B22;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+    }
+
+    .btn-lister:hover {
+        background-color: #313237;
+    }
 </style>
 
 <h1>Liste des professionnels</h1>
 
+<a href="{{ path('professionnel_ajouter') }}" class="btn-lister">Ajouter un professionnel</a>
+
 <div class="professionnel-grid">
     {% for p in pProfessionnels %}
         <div class="professionnel-item">
-            <a href="{{ path('professionnel_consulter', { 'id': p.id }) }}">
-                <div class="professionnel-photo" style="background-image: url('{{ asset('professionnel/' ~ p.cheminImage) }}');"></div>
-            </a>
-            <p>{{ p.nom }}</p>
-            <a href="#" class="info-btn" data-id="{{ p.id }}"
-               data-nom="{{ p.nom }}"
-               data-tel="{{ p.tel }}"
-               data-mail="{{ p.mail }}"
-               data-numRue="{{ p.numRue }}"
-               data-rue="{{ p.rue }}"
-               data-copos="{{ p.copos }}"
-               data-ville="{{ p.ville }}"
-               data-metiers="{{ p.metiers|map(m => m.libelle)|join(', ') }}">
-                + d'infos
-            </a>
-            
-            <!-- New Delete Button -->
-            <a href="#" class="delete-btn" data-id="{{ p.id }}">
-                <i class="fas fa-trash-alt"></i> Supprimer
-            </a>
+            <div class="professionnel-photo" style="background-image: url('{{ asset('professionnel/' ~ p.cheminImage) }}');"></div>
+            <div class="professionnel-info">
+                <p>{{ p.nom }}</p>
+                <p class="metier">{{ p.metiers|map(m => m.libelle)|join(', ') }}</p>
 
-            <!-- New Modify Button -->
-            <a href="{{ path('professionnel_modifier', { 'id': p.id }) }}" class="modify-btn">
-                <i class="fas fa-edit"></i> Modifier
-            </a>
+                <a href="#" class="info-btn" data-id="{{ p.id }}"
+                   data-nom="{{ p.nom }} "
+                   data-tel="{{ p.tel }}"
+                   data-mail="{{ p.mail }}"
+                   data-numRue="{{ p.numRue }}"
+                   data-rue="{{ p.rue }}"
+                   data-copos="{{ p.copos }}"
+                   data-ville="{{ p.ville }}"
+                   data-metiers="{{ p.metiers|map(m => m.libelle)|join(', ') }}">
+                    + d'infos
+                </a>
+            </div>
+
+            <!-- Actions Dropdown -->
+            <div class="actions-btn">Actions</div>
+            <div class="actions-dropdown">
+                <a href="#" class="delete-btn" data-id="{{ p.id }}">
+                    <i class="fas fa-trash-alt"></i> Supprimer
+                </a>
+                <a href="{{ path('professionnel_modifier', { 'id': p.id }) }}" class="modify-btn">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                <a href="#" class="info-btn" data-id="{{ p.id }}"
+                   data-nom="{{ p.nom }}"
+                   data-tel="{{ p.tel }}"
+                   data-mail="{{ p.mail }}"
+                   data-numRue="{{ p.numRue }}"
+                   data-rue="{{ p.rue }}"
+                   data-copos="{{ p.copos }}"
+                   data-ville="{{ p.ville }}"
+                   data-metiers="{{ p.metiers|map(m => m.libelle)|join(', ') }}">
+                    + d'infos
+                </a>
+            </div>
         </div>
     {% else %}
         <p>Aucun professionnel trouvé.</p>
@@ -244,19 +302,22 @@
         document.querySelector('.popup-overlay').classList.remove('open');
     });
 
-    // Confirmation de suppression
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            const professionnelId = this.dataset.id;
-            const confirmation = confirm('Êtes-vous sûr de vouloir supprimer ce professionnel ?');
-            
-            if (confirmation) {
-                window.location.href = `http://172.20.177.77/lilian31/public/professionnel/supprimer/${professionnelId}`;
-            }
+    // Gérer le menu déroulant des actions
+    document.querySelectorAll('.actions-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const dropdown = this.nextElementSibling;
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         });
     });
 
+    // Fermer le menu déroulant si on clique ailleurs
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.professionnel-item')) {
+            document.querySelectorAll('.actions-dropdown').forEach(dropdown => {
+                dropdown.style.display = 'none';
+            });
+        }
+    });
 </script>
+
 {% endblock %}

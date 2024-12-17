@@ -32,12 +32,10 @@ class ProfessionnelController extends AbstractController
         ]);
     }
 
-    // Route pour consulter une professionnel spécifique
-    #[Route('/professionnel/{id}', name: 'professionnel_consulter', requirements: ['id' => '\d+'])]
+    #[Route('gestionnaire/professionnel/{id}', name: 'professionnel_consulter', requirements: ['id' => '\d+'])]
     public function consulterProfessionnel(ManagerRegistry $doctrine, int $id): Response
 
     {
-        // Récupérer l'professionnel en fonction de son ID
         $professionnel = $doctrine->getRepository(Professionnel::class)->find($id);
 
         if (!$professionnel) {
@@ -51,8 +49,7 @@ class ProfessionnelController extends AbstractController
         ]);
     }
 
-    // Route pour lister toutes les professionnels
-    #[Route('/professionnel/lister', name: 'professionnel_lister')]
+    #[Route('gestionnaire/professionnel/lister', name: 'professionnel_lister')]
     public function listerProfessionnel(ManagerRegistry $doctrine): Response
     {
         $repository = $doctrine->getRepository(Professionnel::class);
@@ -63,32 +60,49 @@ class ProfessionnelController extends AbstractController
         ]);
     }
 
-    // Route pour ajouter une nouvelle professionnel
-    #[Route('/professionnel/ajouter', name: 'professionnel_ajouter')]
+    #[Route('gestionnaire/professionnel/ajouter', name: 'professionnel_ajouter')]
     public function ajouterProfessionnel(Request $request, ManagerRegistry $doctrine): Response
     {
         $professionnel = new Professionnel();
         $form = $this->createForm(ProfessionnelType::class, $professionnel);
 
-        // Gérer la soumission du formulaire
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $imageFile = $form->get('cheminImage')->getData();
+
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('professionnel_images_directory'), 
+                        $newFilename
+                    );
+
+                    $professionnel->setCheminImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
+                    return $this->redirectToRoute('professionnel_ajouter');
+                }
+            }
+
             $entityManager = $doctrine->getManager();
             $entityManager->persist($professionnel);
             $entityManager->flush();
 
-            // Rediriger après l'ajout
             return $this->redirectToRoute('professionnel_lister');
         }
+
 
         return $this->render('professionnel/ajouter.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    // Route pour modifier une professionnel existante
-    #[Route('/professionnel/modifier/{id}/', name: 'professionnel_modifier')]
+
+    #[Route('gestionnaire/professionnel/modifier/{id}/', name: 'professionnel_modifier')]
     public function modifierProfessionnel(Request $request, ManagerRegistry $doctrine, int $id): Response
     {
         $professionnel = $doctrine->getRepository(Professionnel::class)->find($id);
@@ -102,7 +116,7 @@ class ProfessionnelController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $doctrine->getManager();
-            $entityManager->flush(); // Mettre à jour l'professionnel
+            $entityManager->flush();
             return $this->redirectToRoute('professionnel_lister');
         }
 
@@ -112,8 +126,7 @@ class ProfessionnelController extends AbstractController
         ]);
     }
 
-    // Route pour supprimer une professionnel
-    #[Route('/professionnel/{id}/delete', name: 'professionnel_supprimer', methods: ['POST'])]
+    #[Route('gestionnaire/professionnel/{id}/delete', name: 'professionnel_supprimer', methods: ['POST'])]
     public function supprimerProfessionnel(Request $request, ManagerRegistry $doctrine, int $id): Response
     {
         $professionnel = $doctrine->getRepository(Professionnel::class)->find($id);
@@ -122,7 +135,6 @@ class ProfessionnelController extends AbstractController
             throw $this->createNotFoundException('Aucune professionnel trouvée avec l\'ID ' . $id);
         }
 
-        // Vérification du token CSRF pour la sécurité
         if ($this->isCsrfTokenValid('delete' . $professionnel->getId(), $request->request->get('_token'))) {
             $entityManager = $doctrine->getManager();
             $entityManager->remove($professionnel);

@@ -7,6 +7,11 @@ parameters:
     images_directory: '%kernel.project_dir%/public/image'
     responsable_directory: '%kernel.project_dir%/public/responsable'
     professeur_directory: '%kernel.project_dir%/public/professeur'
+    professionnel_images_directory: '%kernel.project_dir%/public/professionnel'
+    accessoire_images_directory: '%kernel.project_dir%/public/accessoire'
+
+
+    
 services:
     # default configuration for services in *this* file
     _defaults:

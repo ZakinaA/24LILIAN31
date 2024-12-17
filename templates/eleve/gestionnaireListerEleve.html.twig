@@ -246,14 +246,14 @@
        <div class="dropdown" style="position: relative;">
     <a href="#" class="action-btn">Actions</a>
     <div class="dropdown-content">
-        <a href="{{ path('eleveConsulter', { 'id': e.id }) }}">
+        <a href="{{ path('gestionnaireConsulterEleve', { 'id': e.id }) }}">
             <i class="fas fa-eye"></i> Consulter
         </a>
         <a href="{{ path('gestionnaireModifierEleve', { 'id': e.id }) }}" class="modify-btn" data-id="{{ e.id }}">
             <i class="fas fa-edit"></i> Modifier
         </a>
 
-        <a href="{{ path('eleveSupprimer', { 'id': e.id }) }}" class="delete-btn" data-id="{{ e.id }}">
+        <a href="{{ path('gestionnaireSupprimerEleve', { 'id': e.id }) }}" class="delete-btn" data-id="{{ e.id }}">
             <i class="fas fa-trash-alt"></i> Supprimer
         </a>
     </div>
@@ -320,7 +320,7 @@
         event.preventDefault();
         const eleveId = this.dataset.id; // ID récupéré depuis l'attribut data-id
         if (eleveId) {
-            window.location.href = `{{ path('eleveModifier', { 'id': '__ID__' }) }}`.replace('__ID__', eleveId);
+            window.location.href = `{{ path('gestionnaireModifierEleve', { 'id': '__ID__' }) }}`.replace('__ID__', eleveId);
         } else {
             alert('ID de l\'élève manquant');
         }
@@ -336,7 +336,7 @@
         const eleveId = this.dataset.id;
         // Vérification de l'ID avant de procéder
         if (eleveId) {
-            window.location.href = `{{ path('eleveSupprimer', { 'id': '__ID__' }) }}`.replace('__ID__', eleveId);
+            window.location.href = `{{ path('gestionnaireSupprimerEleve', { 'id': '__ID__' }) }}`.replace('__ID__', eleveId);
         } else {
             alert('L\'ID de l\'élève est manquant.');
         }

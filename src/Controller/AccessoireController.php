@@ -55,52 +55,82 @@ class AccessoireController extends AbstractController
     }
 
     public function modifierAccessoire(Request $request, ManagerRegistry $doctrine, int $id): Response
-    {
-        $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
+{
+    $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
 
-        if (!$accessoire) {
-            throw $this->createNotFoundException('Aucun accessoire trouvée avec l\'ID ' . $id);
-        }
-
-        $form = $this->createForm(AccessoireModifierType::class, $accessoire);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $doctrine->getManager();
-            $entityManager->flush(); // Mettre à jour l'accessoire
-            return $this->redirectToRoute('accessoireLister');
-        }
-
-        return $this->render('accessoire/modifier.html.twig', [
-            'form' => $form->createView(),
-            'accessoire' => $accessoire,
-        ]);
+    if (!$accessoire) {
+        throw $this->createNotFoundException('Aucun accessoire trouvé avec l\'ID ' . $id);
     }
 
+    $form = $this->createForm(AccessoireModifierType::class, $accessoire);
+    $form->handleRequest($request);
 
-    public function ajouterAccessoire(ManagerRegistry $doctrine,Request $request){
-        $accessoire = new accessoire();
-	    $form = $this->createForm(AccessoireType::class, $accessoire);
-	    $form->handleRequest($request);
- 
-	if ($form->isSubmitted() && $form->isValid()) {
- 
-            $accessoire = $form->getData();
- 
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($accessoire);
-            $entityManager->flush();
- 
-            $accessoires = $doctrine->getRepository(Accessoire::class)->findAll();
-        return $this->render('accessoire/lister.html.twig', [
-            'pAccessoires' => $accessoires,
-        ]);
-    } else {
-        return $this->render('accessoire/ajouter.html.twig', [
-            'form' => $form->createView(),
-        ]);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $imageFile = $form->get('cheminImage')->getData();
+
+        if ($imageFile) {
+            $newFilename = uniqid().'.'.$imageFile->guessExtension();
+
+            try {
+                $imageFile->move(
+                    $this->getParameter('accessoire_images_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+            }
+
+            $accessoire->setImage($newFilename);
+        }
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->flush();
+
+        return $this->redirectToRoute('accessoireLister');
     }
+
+    return $this->render('accessoire/modifier.html.twig', [
+        'form' => $form->createView(),
+        'accessoire' => $accessoire,
+    ]);
 }
+
+
+
+    public function ajouterAccessoire(ManagerRegistry $doctrine, Request $request)
+{
+    $accessoire = new Accessoire();
+    $form = $this->createForm(AccessoireType::class, $accessoire);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $imageFile = $form->get('cheminImage')->getData();
+
+        if ($imageFile) {
+            $newFilename = uniqid().'.'.$imageFile->guessExtension();
+
+            try {
+                $imageFile->move(
+                    $this->getParameter('accessoire_images_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+            }
+
+            $accessoire->setCheminImage($newFilename);
+        }
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($accessoire);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('accessoireLister');
+    }
+
+    return $this->render('accessoire/ajouter.html.twig', [
+        'form' => $form->createView(),
+    ]);
+    }
+
 
 public function supprimerAccessoire(ManagerRegistry $doctrine, int $id): Response
 {

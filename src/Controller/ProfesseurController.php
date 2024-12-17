@@ -163,7 +163,7 @@ class ProfesseurController extends AbstractController
 
 
     
-    #[Route(':gestionnaire/professeur/supprimer/{id}', name: 'professeurSupprimer')]
+    #[Route('gestionnaire/professeur/supprimer/{id}', name: 'professeurSupprimer')]
     public function supprimerProfesseur(ManagerRegistry $doctrine, $id)
     {
         $em = $doctrine->getManager(); 

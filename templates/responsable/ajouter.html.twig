@@ -113,14 +113,58 @@ body {
 </style>
 
 <div class="ajouter-form-container">
-    <h1 class="ajouter-title-primary">Modification d'un Accessoire</h1>
+    <h1 class="ajouter-title-primary">Ajouter un Responsable</h1>
     <div class="ajouter-formulaire-ajout">
         <div class="ajouter-left-column">
             {{ form_start(form) }}
 
             <div class="ajouter-form-group">
-                {{ form_label(form.libelle) }}
-                {{ form_widget(form.libelle) }}
+                {{ form_label(form.nom) }}
+                {{ form_widget(form.nom) }}
+            </div>
+
+            <div class="ajouter-form-group">
+                {{ form_label(form.prenom) }}
+                {{ form_widget(form.prenom) }}
+            </div>
+
+            <div class="ajouter-form-group">
+                {{ form_label(form.numRue) }}
+                {{ form_widget(form.numRue) }}
+            </div>
+
+            <div class="ajouter-form-group">
+                {{ form_label(form.rue) }}
+                {{ form_widget(form.rue) }}
+            </div>
+
+            <div class="ajouter-form-group">
+                {{ form_label(form.copos) }}
+                {{ form_widget(form.copos) }}
+            </div>
+
+            <div class="ajouter-form-group">
+                {{ form_label(form.ville) }}
+                {{ form_widget(form.ville) }}
+            </div>
+
+            <div class="ajouter-form-group">
+                {{ form_label(form.tel) }}
+                {{ form_widget(form.tel) }}
+            </div>
+
+        </div>
+
+        <div class="ajouter-right-column">
+            
+            <div class="ajouter-form-group">
+                {{ form_label(form.quotientFamilial) }}
+                {{ form_widget(form.quotientFamilial) }}
+            </div>
+
+            <div class="ajouter-form-group">
+                {{ form_label(form.compte) }}
+                {{ form_widget(form.compte) }}
             </div>
 
             <div class="ajouter-form-group">
@@ -128,17 +172,13 @@ body {
                 {{ form_widget(form.cheminImage) }}
             </div>
 
-            <div class="ajouter-image-container" id="imagePreviewContainer">
-                {% if form.cheminImage.vars.data is not empty %}
-                    <img id="imagePreview" src="{{ asset('/accessoire/' ~ form.cheminImage.vars.data) }}" alt="Image Preview" />
-                {% else %}
-                    <img id="imagePreview" src="#" alt="Image Preview" style="display:none;" />
-                {% endif %}
+            <div class="ajouter-image-container">
+                <img id="image-preview" src="{{ asset('placeholder-image.png') }}" alt="Prévisualisation">
             </div>
-        </div>
 
-        <div class="ajouter-form-group">
-            {{ form_widget(form.enregistrer) }}
+            <div class="ajouter-form-group">
+                {{ form_widget(form.enregistrer) }}
+            </div>
         </div>
 
         {{ form_end(form) }}
@@ -149,28 +189,34 @@ body {
     </div>
 </div>
 
-<script src="../js/accessoire-script.js"></script>
-
 <script>
-    // JS to handle the image preview
-    const imageInput = document.querySelector('input[type="file"][name="accessoire[cheminImage]"]');
-    const imagePreview = document.getElementById('imagePreview');
-    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    document.querySelector('#responsable_cheminImage').addEventListener('change', function(event) {
+        const input = event.target;
+        const preview = document.getElementById('image-preview');
 
-    imageInput.addEventListener('change', function (event) {
-        const file = event.target.files[0];
-
-        if (file) {
+        if (input.files && input.files[0]) {
             const reader = new FileReader();
 
-            reader.onload = function () {
-                imagePreview.src = reader.result;
-                imagePreview.style.display = 'block';
+            reader.onload = function(e) {
+                preview.src = e.target.result;
             };
 
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(input.files[0]);
         }
     });
+
+    const fields = document.querySelectorAll('.ajouter-form-group input, .ajouter-form-group select, .ajouter-form-group textarea');
+    const progressBar = document.querySelector('.ajouter-progress-bar');
+
+    fields.forEach(field => {
+        field.addEventListener('input', updateProgress);
+    });
+
+    function updateProgress() {
+        const filledFields = Array.from(fields).filter(field => field.value.trim() !== '');
+        const progress = (filledFields.length / fields.length) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
 </script>
 
 {% endblock %}

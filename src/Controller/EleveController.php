@@ -31,6 +31,9 @@ class EleveController extends AbstractController
         ]);
     }
 
+    
+#[Route('/gestionnaire/eleve/consulter/{id}', name: 'gestionnaireConsulterEleve')]
+#[Route('/etudiant/eleve/consulter/{id}', name: 'eleveConsulterEleve')]
 public function consulterEleve(ManagerRegistry $doctrine, int $id)
 {
     $eleve = $doctrine->getRepository(Eleve::class)->find($id);
@@ -77,6 +80,7 @@ public function consulterEleve(ManagerRegistry $doctrine, int $id)
 }
 
 
+    #[Route('etudiant/eleve/lister', name: 'etudiantListerEleve')]
     public function listereleve(ManagerRegistry $doctrine){
 
         $repository = $doctrine->getRepository(Eleve::class);

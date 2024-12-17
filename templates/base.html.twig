@@ -18,19 +18,25 @@
         <div class="brand">
         <img src="{{ asset('image/logo.png') }}?v={{ random() }}" alt="Logo">
     </div>
-        <ul>
-            <li><a href="#" class="active"><i class="fas fa-home"></i>&nbsp&nbsp Accueil</a></li>
-            <li><a href="http://localhost/24lilian31/public/instrument/lister"><i class="fas fa-keyboard"></i>&nbsp&nbsp Instrument</a></li>
-            <li><a href="http://localhost/24lilian31/public/cours/lister"><i class="fas fa-book"></i>&nbsp&nbsp Cours</a></li>
-            <li><a href="http://localhost/24lilian31/public/inscription/lister"><i class="fas fa-user-plus"></i>&nbsp&nbsp Inscription</a></li>
-            <li><a href="http://localhost/24lilian31/public/eleve/lister"><i class="fas fa-child"></i>&nbsp&nbsp Eleve</a></li>
-            <li><a href="http://localhost/24lilian31/public/professeur/lister"><i class="fas fa-chalkboard-teacher"></i>&nbsp&nbsp Professeur</a></li>
-            <li><a href="http://localhost/24lilian31/public/intervention/lister"><i class="fas fa-wrench"></i>&nbsp&nbsp Intervention</a></li>
-            <li><a href="http://localhost/24lilian31/public/professionnel/lister"><i class="fas fa-user-tie"></i>&nbsp;&nbsp; Professionnel</a></li>
-            <li><a href="http://localhost/24lilian31/public/accessoire/lister"><i class="fas fa-cogs"></i>&nbsp;&nbsp; Accessoire</a></li>
-
-
-        </ul>
+        {% if is_granted('ROLE_GESTIONNAIRE') %}
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-home"></i>&nbsp&nbsp Accueil</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/gestionnaire/instrument/lister"><i class="fas fa-keyboard"></i>&nbsp&nbsp Instrument</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/gestionnaire/cours/lister"><i class="fas fa-book"></i>&nbsp&nbsp Cours</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/gestionnaire/inscription/lister"><i class="fas fa-user-plus"></i>&nbsp&nbsp Inscription</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/gestionnaire/eleve/lister"><i class="fas fa-child"></i>&nbsp&nbsp Eleve</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/gestionnaire/professeur/lister"><i class="fas fa-chalkboard-teacher"></i>&nbsp&nbsp Professeur</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/gestionnaire/intervention/lister"><i class="fas fa-wrench"></i>&nbsp&nbsp Intervention</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/gestionnaire/professionnel/lister"><i class="fas fa-user-tie"></i>&nbsp;&nbsp; Professionnel</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/gestionnaire/accessoire/lister"><i class="fas fa-cogs"></i>&nbsp;&nbsp; Accessoire</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/gestionnaire/responsable/lister"><i class="fas fa-users-cog"></i>&nbsp;&nbsp; Responsable</a></li>
+                </ul>
+            {% elseif is_granted('ROLE_ETUDIANT') %}
+                <ul>
+                    <li><a href="http://localhost/test/25lilian31/public/etudiant/eleve/lister"><i class="fas fa-child"></i>&nbsp&nbsp Eleve</a></li>
+                    <li><a href="http://localhost/test/25lilian31/public/etudiant/cours/lister"><i class="fas fa-book"></i>&nbsp&nbsp Cours</a></li>
+                </ul>
+            {% endif %}
     
   
 {% if app.user %}
@@ -43,13 +49,19 @@
     </div>
 
     <div class="menu-vertical" id="menuVertical">
-    <button class="close-menu" onclick="closeMenu()">&#8592;</button> <!-- Flèche de fermeture -->
+    <button class="close-menu" onclick="closeMenu()">&#8592;</button> 
     <div class="menu-content">
 
         <div class="user-info-card">
             <div class="profile-photo" style="background-image: url('{{ asset('responsable/' ~ app.user.responsable.cheminImage) }}');"></div>
             <h2>{{ app.user.responsable.nom }} {{ app.user.responsable.prenom }}</h2>
-            <p class="role">Responsable</p>
+              <div class="user-role">
+            {% if 'ROLE_ETUDIANT' in app.user.roles %}
+                <p>Rôle: Étudiant</p>
+            {% elseif 'ROLE_GESTIONNAIRE' in app.user.roles %}
+                <p>Rôle: Gestionnaire</p>
+            {% endif %}
+        </div>
         </div>
         
         <div class="info-table">

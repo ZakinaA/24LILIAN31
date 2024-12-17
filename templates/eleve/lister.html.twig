@@ -144,7 +144,7 @@
 <div class="eleve-grid">
     {% for e in eEleves %}
         <div class="eleve-item">
-            <a href="{{ path('eleveConsulter', { 'id': e.id }) }}">
+            <a href="{{ path('gestionnaireConsulterEleve', { 'id': e.id }) }}">
                 <div class="eleve-photo" style="background-image: url('{{ asset('eleve/' ~ e.cheminImage) }}');"></div>
             </a>
             <p>{{ e.nom }} {{ e.prenom }}</p>
@@ -160,10 +160,7 @@
                 + d'infos
             </a>
             
-            <!-- New Delete Button -->
-            <a href="#" class="delete-btn" data-id="{{ e.id }}">
-                <i class="fas fa-trash-alt"></i> Supprimer
-            </a>
+            
         </div>
     {% else %}
         <p>Aucun élève trouvé.</p>
@@ -220,19 +217,7 @@
         document.querySelector('.popup-overlay').classList.remove('open');
     });
 
-    // Confirmation de suppression
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
 
-            const eleveId = this.dataset.id;
-            const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cet élève ?');
-            
-            if (confirmation) {
-                window.location.href = `http://172.20.177.77/lilian31/public/eleve/supprimer/${eleveId}`;
-            }
-        });
-    });
 
 </script>
 {% endblock %}

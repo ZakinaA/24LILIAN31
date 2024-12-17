@@ -1,8 +1,110 @@
 {# templates/etudiant/modifier.html.twig #}
-{{ form_start(form) }}
+{% extends 'base.html.twig' %}
 
-{{ form_widget(form) }}
+{% block content %}
+<style>
+    body {
+        background-color: #181B22;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
 
-<button type="submit" class="btn btn-success">Valider</button>
+    h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #fff;
+    }
 
-{{ form_end(form) }}
+    form {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #313237;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #f1f1f1;
+    }
+
+    input, textarea, select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #222327;
+        color: #fff;
+    }
+
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        box-shadow: 0 0 5px #00ff7f;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        background-color: green;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #00a550;
+    }
+</style>
+
+<h1>Modifier l'intervention</h1>
+
+<form id="intervention-form" method="post" action="{{ path('intervention_modifier', {'id': intervention.id}) }}">
+    {{ form_start(form, {'method': 'POST'}) }}
+
+    <div class="form-group">
+        {{ form_label(form.dateDebut) }}
+        {{ form_widget(form.dateDebut) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.dateFin) }}
+        {{ form_widget(form.dateFin) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.descriptif) }}
+        {{ form_widget(form.descriptif) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.prix) }}
+        {{ form_widget(form.prix) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.quotite) }}
+        {{ form_widget(form.quotite) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.instrument) }}
+        {{ form_widget(form.instrument) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_widget(form.enregistrer, {'attr': {'class': 'btn btn-success'}}) }}
+    </div>
+
+    {{ form_end(form) }}
+</form>
+
+
+{% endblock %}

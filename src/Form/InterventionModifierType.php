@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Instrument;
 use App\Entity\Intervention;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,8 +26,9 @@ class InterventionModifierType extends AbstractType
             ->add('quotite')
             ->add('instrument', EntityType::class, [
                 'class' => Instrument::class,
-                'choice_label' => 'id',
+                'choice_label' => 'numSerie',
             ])
+            ->add('enregistrer', SubmitType::class, array('label' => 'nouveau'))
         ;
     }
 
