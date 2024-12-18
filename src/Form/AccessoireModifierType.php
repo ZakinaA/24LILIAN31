@@ -19,12 +19,9 @@ class AccessoireModifierType extends AbstractType
         $builder
             ->add('libelle', TextType::class)
             ->add('cheminImage', FileType::class, [
-                'label' => 'Image de l\'accessoire',
-                'mapped' => false,  
+                'label' => 'Image (JPG, PNG)',
                 'required' => false,
-                'attr' => [
-                    'accept' => 'image/*'
-                ]
+                'attr' => ['accept' => 'image/*'],
             ])
             ->add('enregistrer', SubmitType::class, ['label' => 'Modifier']);
     }

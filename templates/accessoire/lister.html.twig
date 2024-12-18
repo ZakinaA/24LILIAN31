@@ -39,10 +39,10 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         padding: 20px;
         display: flex;
-        flex-direction: row;
-        align-items: center;
+        flex-direction: column; /* Changer pour une disposition en colonne */
+        align-items: flex-start;
         transition: box-shadow 0.3s ease;
-        min-height: 120px; /* Hauteur minimale pour plus d'espace */
+        min-height: 180px; /* Hauteur minimale pour plus d'espace */
     }
 
     .accessoire-card:hover {
@@ -50,14 +50,15 @@
     }
 
     .accessoire-image img {
-        max-width: 100px; /* Légèrement plus large */
+        max-width: 120px;
         height: auto;
         border-radius: 8px;
-        margin-right: 20px; /* Espacement entre l'image et les détails */
+        margin-bottom: 15px;
     }
 
     .accessoire-details {
         flex-grow: 1;
+        width: 100%; /* Laisser la section des détails occuper tout l'espace */
     }
 
     .accessoire-details div {
@@ -69,7 +70,13 @@
     }
 
     /* Menu déroulant */
+    .accessoire-actions {
+        width: 100%;
+        margin-top: 10px;
+    }
+
     .accessoire-actions select {
+        width: 100%; /* Le bouton prend toute la largeur de la carte */
         padding: 6px;
         font-size: 14px;
         border-radius: 5px;
@@ -107,11 +114,13 @@
     .btn-add a:hover {
         background-color: #00a77e;
     }
+
     select{
         background-color: #181B22;
         color: white;
     }
 </style>
+
 
 <div class="accessoire-h1">
     <h1>Liste des accessoires</h1>

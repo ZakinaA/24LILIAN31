@@ -32,7 +32,7 @@ class EleveModifierType extends AbstractType
             ])
             ->add('responsable', EntityType::class, [
                 'class' => Responsable::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
             
             ->add('enregistrer', SubmitType::Class, array('label' => 'Enregistrer'))

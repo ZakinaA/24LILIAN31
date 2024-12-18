@@ -12,38 +12,6 @@ controllers:
 
 
 # -----------------------------------------------------------------------------------------
-# Accessoire
-# -----------------------------------------------------------------------------------------
-
-app_accessoire:
-    path: /accessoire
-    controller: App\Controller\AccessoireController::index
-
-app_accessoire_accueil:
-    path: /accessoire/accueil
-    controller: App\Controller\AccessoireController::accueil
-
-accessoireAjouter:
-    path: /accessoire/ajouter
-    controller: App\Controller\AccessoireController::ajouterAccessoire
-
-accessoireLister:
-    path: /accessoire/lister
-    controller: App\Controller\AccessoireController::listerAccessoire
-
-accessoireConsulter:
-    path: /accessoire/consulter/{id}
-    controller: App\Controller\AccessoireController::consulterAccessoire
-
-accessoireModifier:
-    path: /accessoire/modifier/{id}
-    controller: App\Controller\AccessoireController::modifierAccessoire
-
-accessoireSupprimer:
-    path: /accessoire/supprimer/{id}
-    controller: App\Controller\AccessoireController::supprimerAccessoire
-    
-# -----------------------------------------------------------------------------------------
 # Modele
 # -----------------------------------------------------------------------------------------
 
