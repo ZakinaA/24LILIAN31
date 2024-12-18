@@ -119,7 +119,7 @@
             <img src="{{ asset('eleve/' ~ inscription.eleve.cheminImage) }}" alt="Image Élève" class="profile-image">
         {% endif %}
         <div>
-            <a href="{{ path('eleveConsulter', {'id': inscription.eleve.id}) }}" class="inscription-name-link">
+            <a href="{{ path('inscription_consulter', {'id': inscription.eleve.id}) }}" class="inscription-name-link">
                 {{ inscription.eleve.nom }} {{ inscription.eleve.prenom }}
             </a>
             <p style="color: #6c757d; margin: 5px 0;">Cours: {{ inscription.cours.libelle }}</p>

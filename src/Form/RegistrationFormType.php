@@ -7,7 +7,7 @@ use App\Entity\Responsable;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;  // Pour la sélection d'un responsable
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;  
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -22,7 +22,6 @@ class RegistrationFormType extends AbstractType
 {
     private $entityManager;
 
-    // Injecte l'EntityManager dans le formulaire
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -58,8 +57,8 @@ class RegistrationFormType extends AbstractType
 
             ->add('responsable', EntityType::class, [
                 'class' => Responsable::class,
-                'choice_label' => 'nom', // Affichez le nom du responsable dans le champ
-                'required' => false, // Le champ peut être vide
+                'choice_label' => 'nom',
+                'required' => false, 
             ])
             ->add('enregistrer', SubmitType::class, ['label' => 'Créer'])
         ;
@@ -72,7 +71,6 @@ class RegistrationFormType extends AbstractType
         ]);
     }
 
-    // Récupère les responsables depuis la base de données et les formatte
     private function getResponsablesChoices(): array
     {
         $responsables = $this->entityManager->getRepository(Responsable::class)->findAll();

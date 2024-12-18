@@ -13,7 +13,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProfessionnelController extends AbstractController
 {
-    // Route pour afficher la liste des professionnels
     #[Route('/professionnel', name: 'app_professionnel')]
     public function index(): Response
     {
@@ -22,7 +21,6 @@ class ProfessionnelController extends AbstractController
         ]);
     }
 
-    // Route pour afficher la page d'accueil avec l'année
     #[Route('/accueil', name: 'professionnel_accueil')]
     public function accueil(): Response
     {

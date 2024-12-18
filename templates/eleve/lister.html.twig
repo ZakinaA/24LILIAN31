@@ -63,7 +63,6 @@
         background-color: #313237;
     }
 
-    /* New delete button styles */
     .delete-btn {
         display: block;
         margin-top: 10px;
@@ -84,7 +83,6 @@
         margin-right: 5px;
     }
 
-    /* Popup Styles */
     .popup {
         display: none;
         position: fixed;
@@ -112,7 +110,6 @@
         display: block;
     }
 
-    /* Tab Styles */
     .tabs {
         margin-bottom: 10px;
     }
@@ -167,7 +164,6 @@
     {% endfor %}
 </div>
 
-<!-- Popup Modal -->
 <div class="popup-overlay"></div>
 <div class="popup">
     <button class="close-btn">&times;</button>
@@ -190,12 +186,10 @@
 </div>
 
 <script>
-    // Ouvrir la popup et charger les données de l'élève
     document.querySelectorAll('.info-btn').forEach(button => {
         button.addEventListener('click', function(event) {
             event.preventDefault();
 
-            // Récupérer les informations et les afficher dans le modal
             document.getElementById('modal-nom').textContent = this.dataset.nom;
             document.getElementById('modal-prenom').textContent = this.dataset.prenom;
             document.getElementById('modal-tel').textContent = this.dataset.tel;

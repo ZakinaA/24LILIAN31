@@ -20,14 +20,14 @@
 
     .professionnel-item {
         display: flex;
-        width: calc(50% - 20px); /* 2 items per row */
+        width: calc(50% - 20px);
         background-color: #313237;
         border-radius: 10px;
         overflow: hidden;
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
         margin-bottom: 20px;
         color: white;
-        position: relative; /* To position the dropdown menu */
+        position: relative; 
     }
 
     .professionnel-item:hover {
@@ -223,7 +223,6 @@
                 </a>
             </div>
 
-            <!-- Actions Dropdown -->
             <div class="actions-btn">Actions</div>
             <div class="actions-dropdown">
                 <a href="#" class="delete-btn" data-id="{{ p.id }}">
@@ -250,7 +249,6 @@
     {% endfor %}
 </div>
 
-<!-- Popup Modal -->
 <div class="popup-overlay"></div>
 <div class="popup">
     <button class="close-btn">&times;</button>
@@ -266,25 +264,22 @@
                 <tr><td>Téléphone :</td><td><span id="modal-tel"></span></td></tr>
                 <tr><td>Email :</td><td><span id="modal-mail"></span></td></tr>
                 <tr><td>Adresse :</td><td><span id="modal-adresse"></span></td></tr>
-                <tr><td>Métiers :</td><td><span id="modal-metiers"></span></td></tr> <!-- Ajouter la ligne métiers -->
+                <tr><td>Métiers :</td><td><span id="modal-metiers"></span></td></tr> 
             </table>
         </div>
     </div>
 </div>
 
 <script>
-    // Ouvrir la popup et charger les données du professionnel
     document.querySelectorAll('.info-btn').forEach(button => {
         button.addEventListener('click', function(event) {
             event.preventDefault();
 
-            // Récupérer les informations et les afficher dans le modal
             document.getElementById('modal-nom').textContent = this.dataset.nom;
             document.getElementById('modal-tel').textContent = this.dataset.tel;
             document.getElementById('modal-mail').textContent = this.dataset.mail;
             document.getElementById('modal-adresse').textContent = this.dataset.numRue + ' ' + this.dataset.rue + ', ' + this.dataset.copos + ' ' + this.dataset.ville;
 
-            // Afficher les métiers dans la popup
             document.getElementById('modal-metiers').textContent = this.dataset.metiers;
 
             document.querySelector('.popup').classList.add('open');
@@ -302,7 +297,6 @@
         document.querySelector('.popup-overlay').classList.remove('open');
     });
 
-    // Gérer le menu déroulant des actions
     document.querySelectorAll('.actions-btn').forEach(button => {
         button.addEventListener('click', function() {
             const dropdown = this.nextElementSibling;
@@ -310,7 +304,6 @@
         });
     });
 
-    // Fermer le menu déroulant si on clique ailleurs
     document.addEventListener('click', function(event) {
         if (!event.target.closest('.professionnel-item')) {
             document.querySelectorAll('.actions-dropdown').forEach(dropdown => {

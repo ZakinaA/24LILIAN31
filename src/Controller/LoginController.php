@@ -14,13 +14,11 @@ class LoginController extends AbstractController
     public function index(AuthenticationUtils $authenticationUtils): Response
 {
     try {
-        // Logique normale
         $user = $this->getUser();
         if ($user === null || !$this->isGranted('ROLE_ELEVE')) {
             throw new AccessDeniedException('You do not have the required role');
         }
 
-        // Si l'utilisateur a le bon rôle, continuer
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -29,7 +27,6 @@ class LoginController extends AbstractController
             'error'         => $error,
         ]);
     } catch (AccessDeniedException $e) {
-        // Gestion des erreurs d'accès : rediriger vers la page de login, ou afficher un message d'erreur personnalisé
         return $this->redirectToRoute('app_login');
     }
 }

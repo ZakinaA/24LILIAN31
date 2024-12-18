@@ -49,6 +49,8 @@ class InscriptionController extends AbstractController
         ]);
     }
 
+    
+    #[Route('gestionnaire/inscription/modifier/{id}', name: 'inscription_modifier')]
     public function modifierInscription(Request $request, $id, InscriptionRepository $inscriptionRepository, EntityManagerInterface $entityManager)
     {
         $inscription = $inscriptionRepository->find($id);
@@ -57,19 +59,16 @@ class InscriptionController extends AbstractController
             throw $this->createNotFoundException('Inscription non trouvée');
         }
 
-        // Création du formulaire pour modifier l'inscription
         $form = $this->createForm(InscriptionType::class, $inscription);
         $form->handleRequest($request);
 
-        // Si le formulaire est soumis et valide, on met à jour
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();  // Enregistre les modifications en base de données
+            $entityManager->flush(); 
 
             $this->addFlash('success', 'Inscription mise à jour avec succès!');
-            return $this->redirectToRoute('inscription_consulter', ['id' => $id]);  // Redirige vers la page consulter après modification
+            return $this->redirectToRoute('inscription_consulter', ['id' => $id]); 
         }
 
-        // Afficher le formulaire pour modifier les données
         return $this->render('inscription/modifier.html.twig', [
             'form' => $form->createView(),
             'inscription' => $inscription,
@@ -187,7 +186,6 @@ class InscriptionController extends AbstractController
            throw $this->createNotFoundException('Inscription non trouvée');
        }
    
-       // Rendu du template de consultation
        return $this->render('inscription/consulter.html.twig', [
            'inscription' => $inscription
        ]);

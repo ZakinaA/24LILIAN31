@@ -38,7 +38,6 @@ class PretController extends AbstractController
         ]);
     }
 
-    // Route pour consulter un prêt spécifique
     #[Route('/pret/{id}', name: 'pret_consulter', requirements: ['id' => '\d+'])]
     public function consulterPret(ManagerRegistry $doctrine, int $id): Response
     {
@@ -55,14 +54,12 @@ class PretController extends AbstractController
         ]);
     }
 
-    // Route pour ajouter un nouveau prêt
     #[Route('/pret/new', name: 'pret_ajouter')]
     public function ajouterPret(Request $request, ManagerRegistry $doctrine): Response
     {
         $pret = new Pret();
         $form = $this->createForm(PretType::class, $pret);
 
-        // Gérer la soumission du formulaire
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -70,7 +67,6 @@ class PretController extends AbstractController
             $entityManager->persist($pret);
             $entityManager->flush();
 
-            // Rediriger après l'ajout
             return $this->redirectToRoute('pret_lister');
         }
 
@@ -79,7 +75,6 @@ class PretController extends AbstractController
         ]);
     }
 
-    // Route pour modifier un prêt existant
     #[Route('/pret/{id}/edit', name: 'pret_modifier')]
     public function modifierPret(Request $request, ManagerRegistry $doctrine, int $id): Response
     {
@@ -94,7 +89,7 @@ class PretController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $doctrine->getManager();
-            $entityManager->flush(); // Mettre à jour le prêt
+            $entityManager->flush(); 
             return $this->redirectToRoute('pret_lister');
         }
 
@@ -104,7 +99,6 @@ class PretController extends AbstractController
         ]);
     }
 
-    // Route pour supprimer un prêt
     #[Route('/pret/{id}/delete', name: 'pret_supprimer', methods: ['POST'])]
     public function supprimerPret(Request $request, ManagerRegistry $doctrine, int $id): Response
     {
@@ -114,7 +108,6 @@ class PretController extends AbstractController
             throw $this->createNotFoundException('Aucun prêt trouvé avec l\'ID ' . $id);
         }
 
-        // Vérification du token CSRF pour la sécurité
         if ($this->isCsrfTokenValid('delete' . $pret->getId(), $request->request->get('_token'))) {
             $entityManager = $doctrine->getManager();
             $entityManager->remove($pret);

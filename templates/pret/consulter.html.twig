@@ -3,7 +3,6 @@
 {% block content %}
 <h1>Consulter le prêt {{ pret.id }}</h1>
 
-<!-- Bouton de retour en haut à gauche -->
 <div class="back-button">
     <a href="{{ path('pret_lister_eleve') }}" class="btn-back">
         <i class="fas fa-arrow-left"></i> Retour à la liste des prêts
@@ -36,12 +35,8 @@
     </div>
 </div>
 
-<script>
-    // Si nécessaire pour d'autres interactions JavaScript
-</script>
 
 <style>
-    /* Style global */
     body {
         font-family: 'Arial', sans-serif;
         background-color: #121212;
@@ -53,11 +48,10 @@
     h1 {
         font-size: 36px;
         text-align: center;
-        color: #1DB954; /* Vert Spotify */
+        color: #1DB954; 
         margin-bottom: 30px;
     }
 
-    /* Bouton de retour */
     .back-button {
         margin-left: 20px;
         margin-bottom: 20px;
@@ -81,7 +75,6 @@
         background-color: #333;
     }
 
-    /* Container Layout */
     .container {
         display: flex;
         justify-content: center;
@@ -97,7 +90,6 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
 
-    /* Instrument Info */
     .info-container .info-item {
         background-color: #232323;
         margin-bottom: 15px;
@@ -111,7 +103,6 @@
         transform: scale(1.05);
     }
 
-    /* Title for Sections */
     .title {
         font-size: 22px;
         color: #1DB954;
