@@ -32,6 +32,7 @@ class AccessoireController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/accessoire/consulter/{id}', name: 'accessoireConsulter')] 
     public function consulterAccessoire(ManagerRegistry $doctrine, int $id)
     {
         $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
@@ -45,6 +46,7 @@ class AccessoireController extends AbstractController
         ]);
     }
 
+    #[Route('/gestionnaire/accessoire/lister', name: 'accessoireLister')] 
     public function listerAccessoire(ManagerRegistry $doctrine){
 
         $repository = $doctrine->getRepository(Accessoire::class);
@@ -54,6 +56,7 @@ class AccessoireController extends AbstractController
         'pAccessoires' => $accessoires,]);	
     }
 
+    #[Route('/gestionnaire/accessoire/modifier/{id}', name: 'accessoireModifier')] 
     public function modifierAccessoire(Request $request, ManagerRegistry $doctrine, int $id): Response
 {
     $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
@@ -79,7 +82,7 @@ class AccessoireController extends AbstractController
             } catch (FileException $e) {
             }
 
-            $accessoire->setImage($newFilename);
+            $accessoire->setCheminImage($newFilename);
         }
 
         $entityManager = $doctrine->getManager();
@@ -94,8 +97,7 @@ class AccessoireController extends AbstractController
     ]);
 }
 
-
-
+    #[Route('/gestionnaire/accessoire/ajouter', name: 'accessoireAjouter')]
     public function ajouterAccessoire(ManagerRegistry $doctrine, Request $request)
 {
     $accessoire = new Accessoire();
@@ -131,7 +133,7 @@ class AccessoireController extends AbstractController
     ]);
     }
 
-
+    #[Route('/gestionnaire/accessoire/supprimer/{id}', name: 'accessoireSupprimer')]
 public function supprimerAccessoire(ManagerRegistry $doctrine, int $id): Response
 {
     $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);

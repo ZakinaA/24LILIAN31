@@ -10,6 +10,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Professeur;
 use App\Form\ProfesseurType;
 use App\Form\ProfesseurModifierType;
@@ -85,7 +86,6 @@ class ProfesseurController extends AbstractController
     if ($form->isSubmitted() && $form->isValid()) {
         $professeur = $form->getData();
         
-        // Handle the uploaded image (if any)
         $imageFile = $form->get('cheminImage')->getData();
         if ($imageFile) {
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -94,13 +94,13 @@ class ProfesseurController extends AbstractController
 
             try {
                 $imageFile->move(
-                    $this->getParameter('professeur_directory'), // destination directory
+                    $this->getParameter('professeur_directory'),
                     $newFilename
                 );
 
                 $professeur->setCheminImage('professeur/' . $newFilename);
             } catch (FileException $e) {
-                // Handle the error if the file upload fails
+
                 $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');
             }
         }
@@ -117,49 +117,54 @@ class ProfesseurController extends AbstractController
 
 
     #[Route('/gestionnaire/professeur/ajouter', name: 'professeurAjouter')]
-    public function ajouterProfesseur(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger)
+    public function ajouterProfesseur(Request $request): Response
     {
-    $professeur = new Professeur();
-    $form = $this->createForm(ProfesseurType::class, $professeur);
-    $form->handleRequest($request);
+        $professeur = new Professeur();
+        $form = $this->createForm(ProfesseurType::class, $professeur);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Récupérer l'image téléchargée
-        $imageFile = $form->get('cheminImage')->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Récupérer le fichier de l'image
+            $imageFile = $form->get('cheminImage')->getData();
 
-        if ($imageFile) {
-            // Créer un nom unique pour l'image
-            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+            if ($imageFile) {
+                try {
+                    // Créer un nom unique pour l'image
+                    $newFilename = uniqid() . '.' . $imageFile->getClientOriginalExtension();
 
-            try {
-                // Déplacer l'image dans le répertoire public/professeur/
-                $imageFile->move(
-                    $this->getParameter('professeur_directory'), // Répertoire de destination
-                    $newFilename
-                );
+                    // Déplacer l'image dans le répertoire 'public/professeur'
+                    $imageFile->move(
+                        $this->getParameter('professeur_directory'), // Répertoire public/professeur
+                        $newFilename
+                    );
 
-                // Mettre à jour le chemin de l'image dans l'entité Professeur
-                $professeur->setCheminImage('professeur/'.$newFilename);
-            } catch (FileException $e) {
-                // Gérer l'erreur si le téléchargement échoue
-                $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');
+                    // Définir le chemin d'image dans l'entité Professeur
+                    $professeur->setCheminImage('professeur/' . $newFilename);
+                } catch (FileException $e) {
+                    // Si une erreur survient lors du téléchargement, afficher un message
+                    $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');
+                    return $this->redirectToRoute('professeur_list'); // ou votre route après l'erreur
+                }
             }
+
+            // Persister l'entité professeur dans la base de données
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($professeur);
+            $entityManager->flush();
+
+            // Message de succès
+            $this->addFlash('success', 'Le professeur a été ajouté avec succès.');
+
+            // Rediriger vers la liste des professeurs après l'ajout
+            return $this->redirectToRoute('professeur_list');
         }
 
-        // Enregistrer l'entité Professeur
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($professeur);
-        $entityManager->flush();
-
-        // Redirection ou affichage d'une vue de confirmation
-        return $this->render('professeur/consulter.html.twig', ['professeur' => $professeur]);
+        // Rendre la vue du formulaire pour ajouter un professeur
+        return $this->render('professeur/ajouter.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
-    // Si le formulaire n'est pas soumis ou n'est pas valide, afficher le formulaire
-    return $this->render('professeur/ajouter.html.twig', ['form' => $form->createView()]);
-}
 
 
     

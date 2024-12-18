@@ -11,12 +11,21 @@ body {
     font-family: 'Arial', sans-serif;
     background-color: #121212;
     color: #ffffff;
-    margin: 0;
-    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
+}
+
+.ajouter-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Assure que le contenu est empilé verticalement */
+    width: 100%;
+    max-width: 900px; /* Limite la largeur maximale de la div */
+    padding: 20px;
 }
 
 .ajouter-title-primary {
@@ -31,8 +40,11 @@ body {
     background-color: #181B22;
     border-radius: 20px;
     padding: 20px;
-    width: 800px;
+    width: 100%; /* Prend toute la largeur disponible de la div parente */
+    max-width: 800px; /* Largeur maximale du formulaire */
     display: flex;
+    flex-wrap: wrap; /* Permet l'adaptation du formulaire sur plusieurs lignes si nécessaire */
+    justify-content: center; /* Centre le contenu dans la div du formulaire */
     gap: 40px;
     align-items: flex-start;
 }
@@ -77,7 +89,6 @@ body {
 <div class="ajouter-form-container">
     <h1 class="ajouter-title-primary">Inscription</h1>
     <div class="ajouter-formulaire-ajout">
-        <div class="ajouter-left-column">
             {{ form_start(registrationForm) }}
 
             <div class="ajouter-form-group">
@@ -95,13 +106,15 @@ body {
                 {{ form_widget(registrationForm.responsable) }}
             </div>
 
-        </div>
+            <div class="ajouter-form-group">
+                {{ form_label(registrationForm.agreeTerms) }}
+                {{ form_widget(registrationForm.agreeTerms) }}
+            </div>
 
-        <div class="ajouter-right-column">
             <div class="ajouter-form-group">
                 {{ form_widget(registrationForm.enregistrer) }}
             </div>
-        </div>
+  
 
         {{ form_end(registrationForm) }}
     </div>
