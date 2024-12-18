@@ -110,17 +110,14 @@
     </tbody>
 </table>
 
-<!-- Ajouter un prêt sous la table, aligné à gauche -->
 <div class="btn-add">
     <a href="{{ path('pret_ajouter') }}" class="btn">+ Ajouter un prêt</a>
 </div>
 
 <script>
-    // Fonction pour confirmer la suppression
     function confirmDelete(titre, pretId) {
         const confirmMessage = `Êtes-vous sûr de vouloir supprimer le prêt intitulé : ${titre} ?`;
         if (confirm(confirmMessage)) {
-            // Redirection vers la route de suppression du prêt
             window.location.href = `/lilian31/public/pret/supprimer/${pretId}`;
         }
     }

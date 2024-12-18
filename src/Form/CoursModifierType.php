@@ -24,19 +24,19 @@ class CoursModifierType extends AbstractType
             ->add('heureFin')
             ->add('jour', EntityType::class, [
                 'class' => Jour::class,
-'choice_label' => 'id',
+'choice_label' => 'libelle',
             ])
             ->add('typeCours', EntityType::class, [
                 'class' => TypeCours::class,
-'choice_label' => 'id',
+'choice_label' => 'libelle',
             ])
             ->add('professeur', EntityType::class, [
                 'class' => Professeur::class,
-'choice_label' => 'id',
+'choice_label' => 'nom',
             ])
             ->add('typeInstrument', EntityType::class, [
                 'class' => TypeInstrument::class,
-'choice_label' => 'id',
+'choice_label' => 'libelle',
             ])
             ->add('enregistrer', SubmitType::Class, array('label' => 'Modifier'))
         ;

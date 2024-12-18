@@ -124,42 +124,33 @@ class ProfesseurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupérer le fichier de l'image
             $imageFile = $form->get('cheminImage')->getData();
 
             if ($imageFile) {
                 try {
-                    // Créer un nom unique pour l'image
                     $newFilename = uniqid() . '.' . $imageFile->getClientOriginalExtension();
 
-                    // Déplacer l'image dans le répertoire 'public/professeur'
                     $imageFile->move(
-                        $this->getParameter('professeur_directory'), // Répertoire public/professeur
+                        $this->getParameter('professeur_directory'),
                         $newFilename
                     );
 
-                    // Définir le chemin d'image dans l'entité Professeur
                     $professeur->setCheminImage('professeur/' . $newFilename);
                 } catch (FileException $e) {
-                    // Si une erreur survient lors du téléchargement, afficher un message
                     $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image.');
-                    return $this->redirectToRoute('professeur_list'); // ou votre route après l'erreur
+                    return $this->redirectToRoute('professeur_list'); 
                 }
             }
 
-            // Persister l'entité professeur dans la base de données
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($professeur);
             $entityManager->flush();
 
-            // Message de succès
             $this->addFlash('success', 'Le professeur a été ajouté avec succès.');
 
-            // Rediriger vers la liste des professeurs après l'ajout
             return $this->redirectToRoute('professeur_list');
         }
 
-        // Rendre la vue du formulaire pour ajouter un professeur
         return $this->render('professeur/ajouter.html.twig', [
             'form' => $form->createView(),
         ]);

@@ -30,11 +30,13 @@
                     <li><a href="http://172.20.177.77/lilian31/public/gestionnaire/professionnel/lister"><i class="fas fa-user-tie"></i>&nbsp;&nbsp; Professionnel</a></li>
                     <li><a href="http://172.20.177.77/lilian31/public/gestionnaire/accessoire/lister"><i class="fas fa-cogs"></i>&nbsp;&nbsp; Accessoire</a></li>
                     <li><a href="http://172.20.177.77/lilian31/public/gestionnaire/responsable/lister"><i class="fas fa-users-cog"></i>&nbsp;&nbsp; Responsable</a></li>
+                    <li><a href="http://172.20.177.77/lilian31/public/tarifs"><i class="fas fa-calculator"></i>&nbsp;&nbsp; Tarifs</a></li>
                 </ul>
             {% elseif is_granted('ROLE_ETUDIANT') %}
                 <ul>
                     <li><a href="http://172.20.177.77/lilian31/public/etudiant/eleve/lister"><i class="fas fa-child"></i>&nbsp&nbsp Eleve</a></li>
                     <li><a href="http://172.20.177.77/lilian31/public/etudiant/cours/lister"><i class="fas fa-book"></i>&nbsp&nbsp Cours</a></li>
+                    <li><a href="http://172.20.177.77/lilian31/public/tarifs"><i class="fas fa-calculator"></i>&nbsp;&nbsp; Tarifs</a></li>
                 </ul>
             {% endif %}
     
@@ -228,7 +230,6 @@ function closeMenu() {
     overflow-y: auto;
 }
 
-/* Profil */
 .user-info {
     display: flex;
     align-items: center;
@@ -251,12 +252,10 @@ function closeMenu() {
     color: white;
 }
 
-/* Contenu du menu */
 .menu-content {
     padding-top: 20px;
 }
 
-/* Card du profil */
 .user-info-card {
     display: flex;
     flex-direction: column;
@@ -284,7 +283,6 @@ h2 {
     color: green;
 }
 
-/* Table des informations */
 .info-table table {
     width: 100%;
     border-collapse: collapse;
@@ -307,7 +305,6 @@ h2 {
     font-size: 14px;
 }
 
-/* Bouton de fermeture du menu */
 .close-menu {
     position: absolute;
     top: 10px;
@@ -319,7 +316,6 @@ h2 {
     cursor: pointer;
 }
 
-/* Animation du menu */
 @keyframes slideIn {
     0% {
         right: -350px;

@@ -26,6 +26,7 @@
         font-size: 16px;
         text-align: center;
     }
+    a{text-decoration: none;}
 
     .inscription-bouton-ajout:hover {
         background-color: #218838;
@@ -118,30 +119,34 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for inscription in inscriptions %}
-                    <tr>
-                        <td>
-                            <a href="#" class="inscription-nom"
-                               data-id="{{ inscription.id }}"
-                               data-eleve="{{ inscription.eleve ? inscription.eleve.nom : 'Nom non disponible' }}" 
-                               data-elevee="{{ inscription.eleve ? inscription.eleve.prenom : 'Prenom non disponible' }}" 
-                               data-date="{{ inscription.dateInscription|date('d/m/Y') }}">
-                                {{ inscription.eleve ? inscription.eleve.nom : 'Nom non disponible' }}
-                            </a>
-                        </td>
-                        <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
-                        <td>
-                            <a href="{{ path('inscription_consulter', {'id': inscription.id}) }}" class="inscription-bouton-action">Voir Détails</a>
+           <tbody>
+    {% for inscription in inscriptions %}
+        <tr>
+            <td>
+                <a href="#" class="inscription-nom"
+                   data-id="{{ inscription.id }}"
+                   data-eleve="{{ inscription.eleve ? inscription.eleve.nom : 'Nom non disponible' }}" 
+                   data-elevee="{{ inscription.eleve ? inscription.eleve.prenom : 'Prenom non disponible' }}" 
+                   data-cours="{{ inscription.eleve ? inscription.eleve.prenom : 'Prenom non disponible' }}" 
+                   data-date="{{ inscription.dateInscription|date('d/m/Y') }}">
+                    {{ inscription.eleve ? inscription.eleve.nom : 'Nom non disponible' }}
+                </a>
+            </td>
+            <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
+            <td>
+                <a href="{{ path('inscription_consulter', {'id': inscription.id}) }}" class="inscription-bouton-action">Voir Détails</a>
+                
+                <a href="{{ path('inscription_modifier', {'id': inscription.id}) }}" class="inscription-bouton-action">Modifier</a>
 
-                            <form action="{{ path('inscription_supprimer', {'id': inscription.id}) }}" method="post" style="display:inline;">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ inscription.id) }}">
-                                <button type="submit" class="inscription-bouton-action" onclick="return confirmDelete();"><i class="fas fa-trash"></i></button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
+                <form action="{{ path('inscription_supprimer', {'id': inscription.id}) }}" method="post" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ inscription.id) }}">
+                    <button type="submit" class="inscription-bouton-action" onclick="return confirmDelete();"><i class="fas fa-trash"></i></button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>
+
         </table>
     {% endif %}
 </main>
@@ -153,6 +158,7 @@
         <table>
             <tr><td>Nom de l'Élève : </td><td id="inscription-modal-eleve"></td></tr>
             <tr><td>Prénom de l'Élève : </td><td id="inscription-modal-elevee"></td></tr>
+            <tr><td>Cours de l'Élève : </td><td id="inscription-modal-cours"></td></tr>
             <tr><td>Date d'Inscription : </td><td id="inscription-modal-date"></td></tr>
         </table>
     </div>
@@ -168,10 +174,12 @@
 
             const eleveNom = this.getAttribute("data-eleve");
             const elevePrenom = this.getAttribute("data-elevee");
+            const elevePrenom = this.getAttribute("data-cours");
             const dateInscription = this.getAttribute("data-date");
 
             document.getElementById("inscription-modal-eleve").innerText = eleveNom;
             document.getElementById("inscription-modal-elevee").innerText = elevePrenom;
+            document.getElementById("inscription-modal-cours").innerText = eleveCours;
             document.getElementById("inscription-modal-date").innerText = dateInscription;
 
             modal.style.display = "block";

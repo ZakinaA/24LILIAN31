@@ -20,8 +20,8 @@
             {% for tarif in tarifs %}
                 <tr>
                     <td>{{ tarif.montant }} €</td>
-                    <td>{{ tarif.typeCours.libelle }}</td> {# Assurez-vous que 'libelle' est un attribut de 'TypeCours' #}
-                    <td>{{ tarif.quotientFamilial.libelle }}</td> {# Assurez-vous que 'libelle' est un attribut de 'QuotientFamilial' #}
+                    <td>{{ tarif.typeCours.libelle }}</td> 
+                    <td>{{ tarif.quotientFamilial.libelle }}</td> 
                     <td>
                         <a href="{{ path('tarif_consulter', {'id': tarif.id}) }}">Consulter</a>
                     </td>
