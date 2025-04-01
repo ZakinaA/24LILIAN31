@@ -60,7 +60,7 @@ class RegistrationFormType extends AbstractType
                 'choice_label' => 'nom',
                 'required' => false, 
             ])
-            ->add('enregistrer', SubmitType::class, ['label' => 'Créer'])
+           
         ;
     }
 

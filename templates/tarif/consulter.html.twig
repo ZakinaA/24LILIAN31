@@ -1,28 +1,257 @@
-{# templates/tarif/consulter.html.twig #}
-
 {% extends 'base.html.twig' %}
 
-{% block title %}Consulter le tarif{% endblock %}
+{% block title %}Détail du tarif - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            padding: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .btnContour {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btnContour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .carteTarif {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+        }
+        
+        .enTeteCarte {
+            padding: 1.5rem;
+            background-color: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .corpsCarte {
+            padding: 2rem;
+        }
+        
+        .grilleInfo {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .element {
+            margin-bottom: 1.5rem;
+        }
+        
+        .etiquette {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .valeur {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+        
+        .valeurMontant {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .badgeTypeCours {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+        }
+        
+        .badgeQuotient {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent-light);
+        }
+        
+        .sectionExplication {
+            background-color: var(--sidebar-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            border: 1px solid var(--border-light);
+        }
+        
+        .titreExplication {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .texteExplication {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        
+        .actionsPied {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: flex-start;
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .grilleInfo {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .valeurMontant {
+                font-size: 2rem;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    <h1>Consulter le tarif</h1>
-
-    <table>
-        <tr>
-            <th>Montant</th>
-            <td>{{ tarif.montant }} €</td>
-        </tr>
-        <tr>
-            <th>Type de cours</th>
-            <td>{{ tarif.typeCours.libelle }}</td> 
-        </tr>
-        <tr>
-            <th>Quotient familial</th>
-            <td>{{ tarif.quotientFamilial.quotienMini }}</td>
-        </tr>
-    </table>
-
-    <br>
-
-    <a href="{{ path('tarif_lister') }}">Retour à la liste des tarifs</a>
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">Détail du tarif</h1>
+            <div class="actionsTitre">
+                <a href="{{ path('tarif_lister') }}" class="btnAction btnContour">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
+        
+        <div class="carteTarif">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-tag" style="color: var(--primary-color);"></i>
+                    Informations du tarif
+                </h2>
+            </div>
+            
+            <div class="corpsCarte">
+                <div class="grilleInfo">
+                    <div>
+                        <div class="element">
+                            <div class="etiquette">Montant</div>
+                            <div class="valeurMontant">{{ tarif.montant }} €</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="element">
+                            <div class="etiquette">Type de cours</div>
+                            <div class="valeur">
+                                <span class="badge badgeTypeCours">
+                                    <i class="fas fa-music" style="margin-right: 0.5rem;"></i>
+                                    {{ tarif.typeCours.libelle }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="element">
+                            <div class="etiquette">Quotient familial</div>
+                            <div class="valeur">
+                                <span class="badge badgeQuotient">
+                                    <i class="fas fa-calculator" style="margin-right: 0.5rem;"></i>
+                                    {{ tarif.quotientFamilial.libelle }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="element">
+                            <div class="etiquette">Plage du quotient</div>
+                            <div class="valeur">{{ tarif.quotientFamilial.quotienMini }} minimum</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sectionExplication">
+            <h3 class="titreExplication">
+                <i class="fas fa-info-circle" style="color: var(--primary-color);"></i>
+                Comment sont calculés les tarifs?
+            </h3>
+            <p class="texteExplication">
+                Les tarifs sont déterminés en fonction du type de cours choisi et du quotient familial applicable. 
+                Le montant affiché correspond au tarif trimestriel. Pour toute question concernant les tarifs ou 
+                pour discuter des options de paiement, veuillez contacter l'administration de l'école.
+            </p>
+        </div>
+        
+        <div class="actionsPied">
+            <a href="{{ path('tarif_lister') }}" class="btnAction btnContour">
+                <i class="fas fa-arrow-left"></i>
+                Retour à la liste des tarifs
+            </a>
+        </div>
+    </div>
 {% endblock %}

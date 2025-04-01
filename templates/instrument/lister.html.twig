@@ -1,460 +1,413 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Liste des instruments - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAjouter {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+        }
+        
+        .btnAjouter:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .tableauInstruments {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        
+        .tableauInstruments th {
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            font-weight: 600;
+            text-align: left;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .tableauInstruments td {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+        }
+        
+        .tableauInstruments tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tableauInstruments tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        
+        .colonneImage {
+            width: 120px;
+        }
+        
+        .colonneActions {
+            width: 200px;
+            text-align: right;
+        }
+        
+        .imageInstrument {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .imageInstrument:hover {
+            transform: scale(1.05);
+            box-shadow: var(--glow-primary);
+        }
+        
+        .detailsInstrument {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .detailsInstrument strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .actionsInstrument {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            background-color: var(--input-bg);
+            color: var(--text-light);
+            text-decoration: none;
+            border: 1px solid var(--border-light);
+        }
+        
+        .btnConsulter {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent-light);
+        }
+        
+        .btnConsulter:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--glow-accent);
+        }
+        
+        .btnModifier {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+        }
+        
+        .btnModifier:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--glow-primary);
+        }
+        
+        .btnSupprimer {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btnSupprimer:hover {
+            background-color: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .messageVide {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .messageVide i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+        
+        .fondModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+        }
+        
+        .titreModal {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .contenuModal {
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+        }
+        
+        .piedModal {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .btnFermer {
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            background-color: var(--input-bg);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .btnFermer:hover {
+            background-color: var(--card-hover);
+        }
+        
+        .btnConfirmer {
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .btnConfirmer:hover {
+            background-color: #c0392b;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .tableauInstruments th:nth-child(1),
+            .tableauInstruments td:nth-child(1) {
+                display: none;
+            }
+            
+            .tableauInstruments th,
+            .tableauInstruments td {
+                padding: 1rem;
+            }
+            
+            .actionsInstrument {
+                flex-direction: column;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<style>
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">Liste des instruments</h1>
+            <div class="actionsTitre">
+                <a href="{{ path('instrumentAjouter') }}" class="btnAjouter">
+                    <i class="fas fa-plus"></i>
+                    Ajouter un instrument
+                </a>
+            </div>
+        </div>
 
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #121212;
-        color: #ffffff;
-        margin: 0;
-        padding: 100px 0 0; 
-    } 
-    a {
-        text-decoration: none;
-        color: green;
-        transition: color 0.3s ease;
-    }
-    a:hover {
-        color: #ff5733;
-    }
+        <table class="tableauInstruments">
+            <thead>
+                <tr>
+                    <th class="colonneImage">Image</th>
+                    <th>Détails</th>
+                    <th class="colonneActions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for instrument in pInstruments %}
+                    <tr>
+                        <td class="colonneImage">
+                            <img src="{{ asset('image/' ~ instrument.cheminImage) }}" alt="{{ instrument.typeInstrument.libelle }}" class="imageInstrument">
+                        </td>
+                        <td>
+                            <div class="detailsInstrument">
+                                <div><strong>Numéro de série :</strong> {{ instrument.numSerie }}</div>
+                                <div><strong>Type :</strong> {{ instrument.typeInstrument.libelle }}</div>
+                                <div><strong>Couleur :</strong> {{ instrument.couleur }}</div>
+                                <div><strong>Date d'achat :</strong> {{ instrument.dateAchat|date('d/m/Y') }}</div>
+                            </div>
+                        </td>
+                        <td class="colonneActions">
+                            <div class="actionsInstrument">
+                                <a href="{{ path('instrumentConsulter', { id: instrument.id }) }}" class="btnAction btnConsulter" title="Consulter">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ path('instrumentModifier', { id: instrument.id }) }}" class="btnAction btnModifier" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="btnAction btnSupprimer" title="Supprimer" onclick="confirmerSuppression('{{ instrument.numSerie }}', {{ instrument.id }})">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="messageVide">
+                            <i class="fas fa-guitar"></i>
+                            <p>Aucun instrument trouvé.</p>
+                            <a href="{{ path('instrumentAjouter') }}" class="btnAjouter" style="margin-top: 1rem;">
+                                <i class="fas fa-plus"></i>
+                                Ajouter un instrument
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    
-    
-</style>
+    <!-- Modal de confirmation de suppression -->
+    <div class="fondModal" id="modalSuppression"></div>
+    <div class="modal" id="confirmationModal">
+        <h2 class="titreModal">Confirmer la suppression</h2>
+        <div class="contenuModal">
+            Êtes-vous sûr de vouloir supprimer l'instrument avec le numéro de série <strong id="numSerieConfirmation"></strong> ?
+            Cette action est irréversible.
+        </div>
+        <div class="piedModal">
+            <button class="btnFermer" id="annulerSuppression">Annuler</button>
+            <button class="btnConfirmer" id="confirmerSuppression">Supprimer</button>
+        </div>
+    </div>
+{% endblock %}
 
-<div class="instrument-h1">
-    <h1>Liste des instruments</h1>
-</div>
-
-<table class="instrument-table">
-    <thead>
-        <tr>
-            <th>Image</th>
-            <th>Détails</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for instrument in pInstruments %}
-            <tr>
-                <td class="instrument-image">
-                    <img src="{{ asset('image/' ~ instrument.cheminImage) }}" alt="Instrument">
-                </td>
-                <td>
-                    <div class="instrument-details">
-                        <div>
-                            <strong>Numéro de série :</strong> {{ instrument.numSerie }}<br>
-                            <strong>Type :</strong> {{ instrument.typeInstrument.libelle }}<br>
-                            <strong>Couleur :</strong> {{ instrument.couleur }}<br>
-                            <strong>Date d'achat :</strong> {{ instrument.dateAchat|date('d/m/Y') }}
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <a href="{{ path('instrumentConsulter', { id: instrument.id }) }}" class="btn btn-small">Consulter</a>
-                    <a href="{{ path('instrumentModifier', { id: instrument.id }) }}" class="btn btn-small">Modifier</a>
-                    
-                    <button class="btn-trash" onclick="confirmDelete('{{ instrument.numSerie }}', {{ instrument.id }})">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3" style="text-align: center;">Aucun instrument trouvé.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<div class="btn-add">
-    <a href="{{ path('instrumentAjouter') }}" class="btn">+ Ajouter un instrument</a>
-</div>
-
-
-<style>
-
-.instrument-h1 {
-    font-weight: bold;
-    margin: 20px 0;
-    color: green;
-}
-
-
-.instrument-table {
-    margin: 20px auto;
-    width: 100%;
-    border-collapse: collapse;
-}
-.instrument-table thead th {
-    font-size: 18px;
-    background-color: #232323;
-    padding: 15px;
-    text-align: left;
-    color: green;
-}
-.instrument-table tbody tr {
-    border-bottom: 1px solid #444;
-    transition: background-color 0.3s ease;
-}
-.instrument-table tbody tr:hover {
-    background-color: #313237;
-}
-.instrument-table td {
-    padding: 15px;
-}
-.instrument-details {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-.instrument-image img {
-    width: 120px;
-    height: auto;
-    border-radius: 10px;
-    border: 2px solid green;
-}
-
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    background-color: green;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-.btn:hover {
-    background-color: #313237;
-    color: white;
-}
-.btn-add {
-    display: inline-block;
-    margin-top: 20px;
-}
-.btn-small {
-    font-size: 14px;
-    padding: 5px 10px;
-}
-.btn-trash {
-    font-size: 16px;
-    cursor: pointer;
-}
-.btn-trash:hover {
-    color: #e74c3c;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
-}
-.modal-content {
-    background-color: #232323;
-    padding: 20px;
-    border-radius: 10px;
-    width: 50%;
-    position: relative;
-    color: #ffffff;
-}
-.modal-content h2 {
-    color: green;
-}
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    color: #ffffff;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.btn-add {
-    margin-top: 20px;
-    text-align: left;
-}
-
-/*AJOUTER INSTRUMENT MATHEO*/
-
-.ajouter-title-primary {
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
-    color: green;
-    margin-bottom: 20px;
-}
-
-.ajouter-formulaire-ajout {
-    background-color: #181B22;
-    border-radius: 20px;
-    padding: 20px;
-    width: 800px;
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-}
-
-.ajouter-left-column,
-.ajouter-right-column {
-    flex: 1;
-}
-
-.ajouter-image-container {
-    width: 100%;
-    height: 200px;
-    border: 2px solid #444;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #232323;
-    margin-bottom: 15px;
-}
-
-.ajouter-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.ajouter-form-group {
-    margin-bottom: 15px;
-}
-
-.ajouter-form-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #ccc;
-}
-
-.ajouter-form-group input,
-.ajouter-form-group select,
-.ajouter-form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background-color: #232323;
-    color: white;
-}
-
-.ajouter-form-group input:focus,
-.ajouter-form-group select:focus,
-.ajouter-form-group textarea:focus {
-    border-color: green;
-    outline: none;
-    box-shadow: 0 0 8px green;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.ajouter-progress-container {
-    width: 100%;
-    background-color: #ddd;
-    border-radius: 20px;
-    margin-top: 20px;
-    height: 10px;
-    overflow: hidden;
-}
-
-.ajouter-progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: green;
-    transition: width 0.3s ease;
-}
-
-.ajouter-title-primary {
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
-    color: green;
-    margin-bottom: 20px;
-}
-
-.ajouter-formulaire-ajout {
-    background-color: #181B22;
-    border-radius: 20px;
-    padding: 20px;
-    width: 800px;
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-}
-
-.ajouter-left-column,
-.ajouter-right-column {
-    flex: 1;
-}
-
-.ajouter-image-container {
-    width: 100%;
-    height: 200px;
-    border: 2px solid #444;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #232323;
-    margin-bottom: 15px;
-}
-
-.ajouter-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.ajouter-form-group {
-    margin-bottom: 15px;
-}
-
-.ajouter-form-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #ccc;
-}
-
-.ajouter-form-group input,
-.ajouter-form-group select,
-.ajouter-form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background-color: #232323;
-    color: white;
-}
-
-.ajouter-form-group input:focus,
-.ajouter-form-group select:focus,
-.ajouter-form-group textarea:focus {
-    border-color: green;
-    outline: none;
-    box-shadow: 0 0 8px green;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.ajouter-progress-container {
-    width: 100%;
-    background-color: #ddd;
-    border-radius: 20px;
-    margin-top: 20px;
-    height: 10px;
-    overflow: hidden;
-}
-
-.ajouter-progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: green;
-    transition: width 0.3s ease;
-}
-
-.ajouter-cours-title-primary {
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
-    color: #4CAF50;
-    margin-bottom: 20px;
-}
-
-.ajouter-cours-formulaire-ajout {
-    background-color: #181B22;
-    border-radius: 20px;
-    padding: 20px;
-    width: 800px;
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-}
-
-.ajouter-cours-left-column,
-.ajouter-cours-right-column {
-    flex: 1;
-}
-
-.ajouter-cours-image-container {
-    width: 100%;
-    height: 200px;
-    border: 2px solid #444;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #232323;
-    margin-bottom: 15px;
-}
-
-.ajouter-cours-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.ajouter-cours-form-group {
-    margin-bottom: 15px;
-}
-
-.ajouter-cours-form-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #ccc;
-}
-
-.ajouter-cours-form-group input,
-.ajouter-cours-form-group select,
-.ajouter-cours-form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background-color: #232323;
-    color: white;
-}
-
-.ajouter-cours-form-group input:focus,
-.ajouter-cours-form-group select:focus,
-.ajouter-cours-form-group textarea:focus {
-    border-color: #4CAF50;
-    outline: none;
-    box-shadow: 0 0 8px #4CAF50;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-#ajouter-cours-progress-container {
-    width: 100%;
-    background-color: #ddd;
-    border-radius: 20px;
-    margin-top: 20px;
-    height: 10px;
-    overflow: hidden;
-}
-
-#ajouter-cours-progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: #4CAF50;
-    transition: width 0.3s ease;
-}
-</style>
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        let instrumentIdToDelete = null;
+        
+        function confirmerSuppression(numSerie, id) {
+            instrumentIdToDelete = id;
+            
+            document.getElementById('numSerieConfirmation').textContent = numSerie;
+            document.getElementById('modalSuppression').style.display = 'block';
+            document.getElementById('confirmationModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        document.getElementById('annulerSuppression').addEventListener('click', function() {
+            fermerModal();
+        });
+        
+        document.getElementById('modalSuppression').addEventListener('click', function() {
+            fermerModal();
+        });
+        
+        document.getElementById('confirmerSuppression').addEventListener('click', function() {
+            if (instrumentIdToDelete) {
+                window.location.href = "{{ path('instrumentSupprimer', { id: 'ID_PLACEHOLDER' }) }}".replace('ID_PLACEHOLDER', instrumentIdToDelete);
+            }
+        });
+        
+        function fermerModal() {
+            document.getElementById('modalSuppression').style.display = 'none';
+            document.getElementById('confirmationModal').style.display = 'none';
+            document.body.style.overflow = '';
+            instrumentIdToDelete = null;
+        }
+        
+        // Fermer la modal avec la touche Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                fermerModal();
+            }
+        });
+    </script>
 {% endblock %}

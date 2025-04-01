@@ -1,141 +1,342 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Modifier une inscription - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .enTetePage {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .carteFormulaire {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 650px;
+        }
+        
+        .enTeteCarte {
+            background-color: var(--sidebar-bg);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .badge {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .corpsCarte {
+            padding: 2rem;
+        }
+        
+        .groupeChamp {
+            margin-bottom: 1.8rem;
+        }
+        
+        .groupeChamp:last-child {
+            margin-bottom: 0;
+        }
+        
+        .groupeChamp label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .groupeChamp label i {
+            color: var(--primary-color);
+        }
+        
+        .groupeChamp input,
+        .groupeChamp select,
+        .groupeChamp textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .groupeChamp input:focus,
+        .groupeChamp select:focus,
+        .groupeChamp textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-transparent);
+            outline: none;
+        }
+        
+        .btnEnregistrer {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btnEnregistrer:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .infoPanel {
+            background-color: var(--primary-transparent);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .infoPanel p {
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .infoPanel i {
+            color: var(--primary-color);
+        }
+        
+        .lienRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            align-self: center;
+        }
+        
+        .lienRetour:hover {
+            color: var(--text-light);
+        }
+        
+        .champRequis {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        .champDescription {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .actionsTitre {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+            
+            .corpsCarte {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<main class="inscription-modifier-main">
-    <header class="inscription-modifier-header">
-        <h1>Modifier une Inscription</h1>
-    </header>
-
-    <section class="inscription-modifier-form">
-        <div class="inscription-modifier-form-container">
-            <h2>Veuillez mettre à jour les informations suivantes :</h2>
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-edit"></i>
+                Modifier une inscription
+            </h1>
             
-            {{ form_start(form) }}
-
-            <div class="inscription-modifier-form-group">
-                {{ form_label(form.dateInscription) }}
-                {{ form_widget(form.dateInscription) }}
+            <div class="actionsTitre">
+                <a href="{{ path('inscription_lister') }}" class="btnRetour">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
             </div>
-
-            <div class="inscription-modifier-form-group">
-                {{ form_label(form.eleve) }}
-                {{ form_widget(form.eleve) }}
-            </div>
-
-            <div class="inscription-modifier-form-group">
-                {{ form_label(form.cours) }}
-                {{ form_widget(form.cours) }}
-            </div>
-
-            
-
-            <div class="inscription-modifier-form-group">
-                {{ form_widget(form.enregistrer) }}
-            </div>
-
-            {{ form_end(form) }}
         </div>
-    </section>
-</main>
+        
+        <div class="carteFormulaire">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-user-plus"></i>
+                    Détails de l'inscription
+                </h2>
+                
+                <span class="badge">Modifié le {{ "now"|date("d/m/Y") }}</span>
+            </div>
+            
+            <div class="corpsCarte">
+                <div class="infoPanel">
+                    <p><i class="fas fa-info-circle"></i> Vous pouvez modifier les informations de cette inscription. Tous les champs sont obligatoires.</p>
+                </div>
+                
+                {{ form_start(form) }}
+                
+                <div class="groupeChamp">
+                    <label for="{{ form.dateInscription.vars.id }}">
+                        <i class="fas fa-calendar-alt"></i>
+                        Date d'inscription<span class="champRequis">*</span>
+                    </label>
+                    {{ form_widget(form.dateInscription) }}
+                    <span class="champDescription">La date à laquelle l'élève est inscrit au cours.</span>
+                </div>
+                
+                <div class="groupeChamp">
+                    <label for="{{ form.eleve.vars.id }}">
+                        <i class="fas fa-user-graduate"></i>
+                        Élève<span class="champRequis">*</span>
+                    </label>
+                    {{ form_widget(form.eleve) }}
+                    <span class="champDescription">L'élève concerné par cette inscription.</span>
+                </div>
+                
+                <div class="groupeChamp">
+                    <label for="{{ form.cours.vars.id }}">
+                        <i class="fas fa-book"></i>
+                        Cours<span class="champRequis">*</span>
+                    </label>
+                    {{ form_widget(form.cours) }}
+                    <span class="champDescription">Le cours auquel l'élève est inscrit.</span>
+                </div>
+                
+                <div class="groupeChamp">
+                    {{ form_widget(form.enregistrer, {'attr': {'class': 'btnEnregistrer'}}) }}
+                </div>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+        
+        <a href="{{ path('inscription_consulter', {'id': app.request.get('id')}) }}" class="lienRetour">
+            <i class="fas fa-eye"></i>
+            Voir les détails de l'inscription
+        </a>
+    </div>
+{% endblock %}
 
-<style>
-.inscription-modifier-main {
-    padding: 30px;
-    min-height: 100vh;
-}
-
-.inscription-modifier-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.inscription-modifier-header h1 {
-    font-size: 2rem;
-    color: green;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-.inscription-modifier-form {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #181B22;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
-.inscription-modifier-form-container h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: white;
-    text-align: center;
-}
-
-.inscription-modifier-form-group {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.inscription-modifier-form-group label {
-    font-size: 1rem;
-    font-weight: bold;
-    color: white;
-}
-
-.inscription-modifier-form-group input, 
-.inscription-modifier-form-group select, 
-.inscription-modifier-form-group textarea {
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid black;
-    border-radius: 5px;
-    color: white;
-    background-color: #181B22;
-    transition: border-color 0.3s ease;
-}
-
-.inscription-modifier-form-group input:focus, 
-.inscription-modifier-form-group select:focus, 
-.inscription-modifier-form-group textarea:focus {
-    border-color: green;
-    outline: none;
-}
-
-.inscription-modifier-form-group button {
-    padding: 10px 20px;
-    background-color: green;
-    color: black;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.inscription-modifier-form-group button:hover {
-    background-color: green;
-}
-
-.inscription-modifier-form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.inscription-modifier-form-container h2 {
-    font-size: 1.5rem;
-    color: white;
-    margin-bottom: 20px;
-}
-
-.inscription-modifier-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-</style>
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitButton = document.querySelector('.btnEnregistrer');
+            if (submitButton) {
+                submitButton.innerHTML = '<i class="fas fa-save"></i> Enregistrer les modifications';
+                
+                submitButton.addEventListener('mouseenter', function() {
+                    this.innerHTML = '<i class="fas fa-check"></i> Valider les modifications';
+                });
+                
+                submitButton.addEventListener('mouseleave', function() {
+                    this.innerHTML = '<i class="fas fa-save"></i> Enregistrer les modifications';
+                });
+            }
+        });
+    </script>
 {% endblock %}

@@ -1,191 +1,334 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Ajout d'un cours - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .enTetePage {
+            margin-bottom: 2rem;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .sousTitrePage {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+        
+        .carteFormulaire {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .enTeteCarte {
+            background-color: var(--sidebar-bg);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .corpsCarte {
+            padding: 2rem;
+        }
+        
+        .grilleFormulaire {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .groupeChamp {
+            margin-bottom: 1.5rem;
+        }
+        
+        .groupeChamp label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .groupeChamp label i {
+            color: var(--primary-color);
+        }
+        
+        .groupeChamp input,
+        .groupeChamp select,
+        .groupeChamp textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .groupeChamp input:focus,
+        .groupeChamp select:focus,
+        .groupeChamp textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-transparent);
+            outline: none;
+        }
+        
+        .btnEnregistrer {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btnEnregistrer:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .barreProgression {
+            height: 6px;
+            background-color: var(--sidebar-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1.5rem;
+        }
+        
+        .indicateurProgression {
+            height: 100%;
+            width: 0;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .lienRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            align-self: center;
+        }
+        
+        .lienRetour:hover {
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .grilleFormulaire {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+            
+            .corpsCarte {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<link rel="stylesheet" href="{{ asset('style-cours.css') }}">
-<style>
-body, h1, h2, p, ul, li, a, img {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #121212;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.ajouter-cours-title-primary {
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
-    color: #4CAF50; 
-    margin-bottom: 20px;
-}
-
-.ajouter-cours-formulaire-ajout {
-    background-color: #181B22;
-    border-radius: 20px;
-    padding: 20px;
-    width: 800px;
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-}
-
-.ajouter-cours-left-column,
-.ajouter-cours-right-column {
-    flex: 1;
-}
-
-.ajouter-cours-image-container {
-    width: 100%;
-    height: 200px;
-    border: 2px solid #444;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #232323;
-    margin-bottom: 15px;
-}
-
-.ajouter-cours-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.ajouter-cours-form-group {
-    margin-bottom: 15px;
-}
-
-.ajouter-cours-form-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #ccc;
-}
-
-.ajouter-cours-form-group input,
-.ajouter-cours-form-group select,
-.ajouter-cours-form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background-color: #232323;
-    color: white;
-}
-
-.ajouter-cours-form-group input:focus,
-.ajouter-cours-form-group select:focus,
-.ajouter-cours-form-group textarea:focus {
-    border-color: #4CAF50;
-    outline: none;
-    box-shadow: 0 0 8px #4CAF50;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-#ajouter-cours-progress-container {
-    width: 100%;
-    background-color: #ddd;
-    border-radius: 20px;
-    margin-top: 20px;
-    height: 10px;
-    overflow: hidden;
-}
-
-#ajouter-cours-progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: #4CAF50;
-    transition: width 0.3s ease;
-}
-</style>
-
-<div class="ajouter-cours-form-container">
-    <h1 class="ajouter-cours-title-primary">Ajout d'un Cours</h1>
-    <div class="ajouter-cours-formulaire-ajout">
-        <div class="ajouter-cours-left-column">
-            {{ form_start(form) }}
-
-            <div class="ajouter-cours-form-group">
-                {{ form_label(form.libelle) }}
-                {{ form_widget(form.libelle) }}
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-book"></i>
+                Ajout d'un cours
+            </h1>
+            <p class="sousTitrePage">Remplissez le formulaire pour créer un nouveau cours</p>
+        </div>
+        
+        <div class="carteFormulaire">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-info-circle"></i>
+                    Informations du cours
+                </h2>
             </div>
-
-            <div class="ajouter-cours-form-group">
-                {{ form_label(form.ageMini) }}
-                {{ form_widget(form.ageMini) }}
-            </div>
-
-            <div class="ajouter-cours-form-group">
-                {{ form_label(form.heureDebut) }}
-                {{ form_widget(form.heureDebut) }}
-            </div>
-
-            <div class="ajouter-cours-form-group">
-                {{ form_label(form.heureFin) }}
-                {{ form_widget(form.heureFin) }}
-            </div>
-
-            <div class="ajouter-cours-form-group">
-                {{ form_label(form.jour) }}
-                {{ form_widget(form.jour) }}
-            </div>
-
-            <div class="ajouter-cours-form-group">
-                {{ form_label(form.typeCours) }}
-                {{ form_widget(form.typeCours) }}
+            
+            <div class="corpsCarte">
+                {{ form_start(form) }}
+                
+                <div class="grilleFormulaire">
+                    <div>
+                        <div class="groupeChamp">
+                            <label for="{{ form.libelle.vars.id }}">
+                                <i class="fas fa-tag"></i>
+                                {{ form.libelle.vars.label }}
+                            </label>
+                            {{ form_widget(form.libelle, {'attr': {'placeholder': 'Nom du cours'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.ageMini.vars.id }}">
+                                <i class="fas fa-child"></i>
+                                {{ form.ageMini.vars.label }}
+                            </label>
+                            {{ form_widget(form.ageMini, {'attr': {'placeholder': 'Âge minimum requis'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.heureDebut.vars.id }}">
+                                <i class="fas fa-clock"></i>
+                                {{ form.heureDebut.vars.label }}
+                            </label>
+                            {{ form_widget(form.heureDebut) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.heureFin.vars.id }}">
+                                <i class="fas fa-clock"></i>
+                                {{ form.heureFin.vars.label }}
+                            </label>
+                            {{ form_widget(form.heureFin) }}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="groupeChamp">
+                            <label for="{{ form.jour.vars.id }}">
+                                <i class="fas fa-calendar-day"></i>
+                                {{ form.jour.vars.label }}
+                            </label>
+                            {{ form_widget(form.jour) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.typeCours.vars.id }}">
+                                <i class="fas fa-list-alt"></i>
+                                {{ form.typeCours.vars.label }}
+                            </label>
+                            {{ form_widget(form.typeCours) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.typeInstrument.vars.id }}">
+                                <i class="fas fa-guitar"></i>
+                                {{ form.typeInstrument.vars.label }}
+                            </label>
+                            {{ form_widget(form.typeInstrument) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.professeur.vars.id }}">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                {{ form.professeur.vars.label }}
+                            </label>
+                            {{ form_widget(form.professeur) }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="groupeChamp" style="margin-top: 1rem;">
+                    {{ form_widget(form.enregistrer, {'attr': {'class': 'btnEnregistrer'}}) }}
+                </div>
+                
+                {{ form_end(form) }}
+                
+                <div class="barreProgression">
+                    <div class="indicateurProgression" id="barre-progression"></div>
+                </div>
             </div>
         </div>
-
-        <div class="ajouter-cours-right-column">
-            <div class="ajouter-cours-form-group">
-                {{ form_label(form.typeInstrument) }}
-                {{ form_widget(form.typeInstrument) }}
-            </div>
-
-            <div class="ajouter-cours-form-group">
-                {{ form_label(form.professeur) }}
-                {{ form_widget(form.professeur) }}
-            </div>
-
-            <div class="ajouter-cours-form-group">
-                {{ form_widget(form.enregistrer) }}
-            </div>
-        </div>
-
-        {{ form_end(form) }}
+        
+        <a href="{{ path('gestionnaireCoursLister') }}" class="lienRetour">
+            <i class="fas fa-arrow-left"></i>
+            Retour à la liste des cours
+        </a>
     </div>
+{% endblock %}
 
-    <div id="ajouter-cours-progress-container">
-        <div id="ajouter-cours-progress-bar"></div>
-    </div>
-</div>
-
-<script>
-const fields = document.querySelectorAll('.ajouter-cours-form-group input, .ajouter-cours-form-group select, .ajouter-cours-form-group textarea');
-const progressBar = document.getElementById('ajouter-cours-progress-bar');
-fields.forEach(field => {
-    field.addEventListener('input', updateProgress);
-});
-
-function updateProgress() {
-    const filledFields = Array.from(fields).filter(field => field.value.trim() !== '');
-    const progress = (filledFields.length / fields.length) * 100;
-    progressBar.style.width = `${progress}%`;
-}
-</script>
-
-
-
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const champs = document.querySelectorAll('.groupeChamp input, .groupeChamp select, .groupeChamp textarea');
+            const barreProgression = document.getElementById('barre-progression');
+            
+            function miseAJourProgression() {
+                const champsRemplis = Array.from(champs).filter(champ => {
+                    if (champ.type === 'submit') return true;
+                    return champ.value.trim() !== '';
+                });
+                
+                const progres = (champsRemplis.length / champs.length) * 100;
+                barreProgression.style.width = `${progres}%`;
+            }
+            
+            champs.forEach(champ => {
+                champ.addEventListener('input', miseAJourProgression);
+                champ.addEventListener('change', miseAJourProgression);
+            });
+            
+            miseAJourProgression();
+        });
+    </script>
 {% endblock %}

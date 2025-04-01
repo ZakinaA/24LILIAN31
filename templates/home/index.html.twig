@@ -1,0 +1,621 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .hero-section {
+            min-height: calc(100vh - 100px);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(130deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 55%, rgba(46,204,113,0.4) 100%);
+            z-index: 1;
+        }
+        
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ asset('image/music-background.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            filter: blur(2px);
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .hero-text {
+            flex: 1;
+            min-width: 320px;
+            max-width: 600px;
+            margin-right: 2rem;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+            line-height: 1.2;
+        }
+        
+        .hero-title span {
+            color: var(--primary-color);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .hero-cta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .btn-hero {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            min-width: 180px;
+        }
+        
+        .btn-hero-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-hero-primary:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-3px);
+        }
+        
+        .btn-hero-outline {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .btn-hero-outline:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .hero-card {
+            flex: 0 0 auto;
+            width: 380px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            margin-top: 2rem;
+        }
+        
+        .hero-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            text-align: center;
+        }
+        
+        .hero-card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .hero-card-content {
+            padding: 1.5rem;
+        }
+        
+        .features-section {
+            padding: 5rem 2rem;
+            background-color: var(--card-bg);
+        }
+        
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: var(--sidebar-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--border-light);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--primary-transparent);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        .feature-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .testimonials-section {
+            padding: 5rem 2rem;
+            background-color: var(--dark-bg);
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .testimonial-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+        
+        .testimonial-quote {
+            font-size: 4rem;
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            color: var(--primary-transparent);
+            opacity: 0.5;
+        }
+        
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 1rem;
+            background-color: var(--primary-transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.2rem;
+        }
+        
+        .author-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .cta-section {
+            padding: 4rem 2rem;
+            background-color: var(--sidebar-bg);
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-text {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Loading animation */
+        .loading-dots {
+            display: inline-flex;
+            align-items: center;
+            height: 1em;
+        }
+        
+        .loading-dots span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: currentColor;
+            margin: 0 3px;
+            animation: dot-flashing 1s infinite alternate;
+        }
+        
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes dot-flashing {
+            0% {
+                opacity: 0.2;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .hero-text {
+                margin-right: 0;
+                margin-bottom: 2rem;
+            }
+            
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-cta {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .hero-card {
+                width: 100%;
+            }
+            
+            .btn-hero {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Bienvenue sur <span>Emusic</span></h1>
+                <p class="hero-subtitle">La plateforme qui vous accompagne dans votre parcours musical. Découvrez nos cours, réservez des instruments et rejoignez notre communauté passionnée de musique.</p>
+                <div class="hero-cta">
+                    {% if app.user %}
+                        {% if is_granted('ROLE_GESTIONNAIRE') %}
+                            <a href="{{ path('instrumentLister') }}" class="btn-hero btn-hero-primary">
+                                <i class="fas fa-clipboard-list" style="margin-right: 0.5rem;"></i>
+                                Tableau de bord
+                            </a>
+                        {% elseif is_granted('ROLE_ETUDIANT') %}
+                            <a href="{{ path('etudiantCoursLister') }}" class="btn-hero btn-hero-primary">
+                                <i class="fas fa-book" style="margin-right: 0.5rem;"></i>
+                                Mes cours
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn-hero btn-hero-primary">
+                            <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                            Se connecter
+                        </a>
+                        <a href="{{ path('app_register') }}" class="btn-hero btn-hero-outline">
+                            <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>
+                            S'inscrire
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if not app.user %}
+                <div class="hero-card">
+                    <div class="hero-card-header">
+                        <h3 class="hero-card-title">Accès rapide</h3>
+                    </div>
+                    <div class="hero-card-content">
+                        <form method="post" action="{{ path('app_login') }}">
+                            <div class="form-group">
+                                <label for="username" class="form-label">Adresse e-mail</label>
+                                <div style="position: relative;">
+                                    <i class="fas fa-envelope" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                                    <input type="email" id="username" name="_username" class="form-control" placeholder="exemple@email.com" style="padding-left: 2.8rem;" required autofocus>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <div style="position: relative;">
+                                    <i class="fas fa-lock" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                                    <input type="password" id="password" name="_password" class="form-control" placeholder="••••••••" style="padding-left: 2.8rem;" required>
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <div style="display: flex; align-items: center;">
+                                    <input type="checkbox" id="remember_me" name="_remember_me" checked style="margin-right: 0.5rem;">
+                                    <label for="remember_me" style="color: var(--text-muted); font-size: 0.9rem;">Se souvenir de moi</label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                                Connexion
+                            </button>
+                            
+                            <div style="text-align: center; margin-top: 1rem;">
+                                <a href="{{ path('app_register') }}" style="color: var(--primary-color); font-size: 0.9rem; text-decoration: none;">
+                                    Pas de compte ? Inscrivez-vous
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-container">
+            <div class="section-header">
+                <h2 class="section-title">Nos Services</h2>
+                <p class="section-subtitle">Découvrez tout ce que notre école de musique peut vous offrir pour développer vos compétences musicales.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-guitar"></i>
+                    </div>
+                    <h3 class="feature-title">Emprunts d'instruments</h3>
+                    <p class="feature-desc">Accédez à une large gamme d'instruments de qualité pour vos cours et pratiques personnelles.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3 class="feature-title">Cours personnalisés</h3>
+                    <p class="feature-desc">Des cours adaptés à votre niveau et à vos objectifs, dispensés par des professeurs qualifiés.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Inscriptions en ligne</h3>
+                    <p class="feature-desc">Inscrivez-vous aux cours et réservez des instruments directement depuis notre plateforme.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="features-container">
+            <div class="section-header">
+                <h2 class="section-title">Témoignages</h2>
+                <p class="section-subtitle">Ce que nos élèves disent de leur expérience chez Emusic</p>
+            </div>
+            
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-quote"><i class="fas fa-quote-right"></i></div>
+                    <p class="testimonial-content">Emusic a transformé ma passion pour la musique en véritable talent. Les professeurs sont attentifs et la plateforme très pratique pour organiser mes cours.</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">L</div>
+                        <div>
+                            <div class="author-name">Laura M.</div>
+                            <div class="author-title">Élève en piano - Niveau avancé</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-quote"><i class="fas fa-quote-right"></i></div>
+                    <p class="testimonial-content">Pouvoir emprunter des instruments de qualité a été un vrai plus pour mon apprentissage. Le service est impeccable et le personnel toujours disponible.</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">T</div>
+                        <div>
+                            <div class="author-name">Thomas R.</div>
+                            <div class="author-title">Élève en guitare - Niveau intermédiaire</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-quote"><i class="fas fa-quote-right"></i></div>
+                    <p class="testimonial-content">En tant que parent, je suis ravi de la facilité avec laquelle nous pouvons suivre les progrès de notre enfant et organiser ses cours grâce à la plateforme.</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">S</div>
+                        <div>
+                            <div class="author-name">Sophie D.</div>
+                            <div class="author-title">Parent d'un élève</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Prêt à commencer votre voyage musical ?</h2>
+            <p class="cta-text">Rejoignez notre école de musique et découvrez tout ce que nous pouvons vous offrir pour développer votre talent musical.</p>
+            <div class="cta-buttons">
+                {% if app.user %}
+                    {% if is_granted('ROLE_GESTIONNAIRE') %}
+                        <a href="{{ path('instrumentLister') }}" class="btn-hero btn-hero-primary">
+                            <i class="fas fa-clipboard-list" style="margin-right: 0.5rem;"></i>
+                            Accéder au tableau de bord
+                        </a>
+                    {% elseif is_granted('ROLE_ETUDIANT') %}
+                        <a href="{{ path('etudiantCoursLister') }}" class="btn-hero btn-hero-primary">
+                            <i class="fas fa-book" style="margin-right: 0.5rem;"></i>
+                            Voir mes cours
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ path('app_register') }}" class="btn-hero btn-hero-primary">
+                        <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>
+                        S'inscrire maintenant
+                    </a>
+                    <a href="{{ path('app_login') }}" class="btn-hero btn-hero-outline">
+                        <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                        Se connecter
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Auto redirect based on user role after a small delay
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if app.user %}
+                const redirectTimer = setTimeout(function() {
+                    {% if is_granted('ROLE_GESTIONNAIRE') %}
+                        window.location.href = "{{ path('instrumentLister') }}";
+                    {% elseif is_granted('ROLE_ETUDIANT') %}
+                        window.location.href = "{{ path('etudiantCoursLister') }}";
+                    {% endif %}
+                }, 3000); // 3 seconds delay
+                
+                // Allow user to cancel the redirect by interacting with the page
+                document.addEventListener('click', function() {
+                    clearTimeout(redirectTimer);
+                });
+            {% endif %}
+        });
+    </script>
+{% endblock %}

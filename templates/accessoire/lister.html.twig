@@ -1,156 +1,223 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Liste des accessoires - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .grilleAccessoires {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .carteAccessoire {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            padding: 1.5rem;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .carteAccessoire:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .imageAccessoire {
+            margin-bottom: 1rem;
+        }
+        
+        .imageAccessoire img {
+            max-width: 120px;
+            height: auto;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--primary-transparent);
+            transition: transform 0.3s ease;
+        }
+        
+        .carteAccessoire:hover .imageAccessoire img {
+            transform: scale(1.05);
+            border-color: var(--primary-color);
+            box-shadow: var(--glow-primary);
+        }
+        
+        .detailsAccessoire {
+            flex-grow: 1;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .detailsAccessoire div {
+            margin-bottom: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .detailsAccessoire strong {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .actionsAccessoire {
+            width: 100%;
+            margin-top: auto;
+        }
+        
+        .actionsAccessoire select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .actionsAccessoire select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-transparent);
+        }
+        
+        .actionsAccessoire select option {
+            background-color: var(--card-bg);
+            color: var(--text-light);
+        }
+        
+        .btnAjouter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            margin-top: 2rem;
+            border: none;
+        }
+        
+        .btnAjouter:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .centrerBouton {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .messageVide {
+            text-align: center;
+            padding: 3rem;
+            width: 100%;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        
+        @media (max-width: 992px) {
+            .grilleAccessoires {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .grilleAccessoires {
+                grid-template-columns: 1fr;
+            }
+            
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
-        margin: 0;
-        padding: 50px 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .accessoire-h1 h1 {
-        font-size: 28px;
-        font-weight: bold;
-        text-align: center;
-        color: green;
-        margin-bottom: 30px;
-    }
-
-    .accessoire-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 30px; 
-        width: 80%;
-        max-width: 1300px; 
-        margin-top: 20px;
-    }
-
-    .accessoire-card {
-        background-color: #181B22;
-        border: 1px solid #181B22;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        display: flex;
-        flex-direction: column; 
-        align-items: flex-start;
-        transition: box-shadow 0.3s ease;
-        min-height: 180px; 
-    }
-
-    .accessoire-card:hover {
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .accessoire-image img {
-        max-width: 120px;
-        height: auto;
-        border-radius: 8px;
-        margin-bottom: 15px;
-    }
-
-    .accessoire-details {
-        flex-grow: 1;
-        width: 100%; 
-    }
-
-    .accessoire-details div {
-        margin-bottom: 12px; 
-    }
-
-    .accessoire-details strong {
-        color: #2d3d48;
-    }
-
-    .accessoire-actions {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    .accessoire-actions select {
-        width: 100%; 
-        padding: 6px;
-        font-size: 14px;
-        border-radius: 5px;
-        border: 1px solid #181B22;
-        cursor: pointer;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 8px 16px;
-        margin: 5px;
-        text-align: center;
-        font-size: 14px;
-        font-weight: bold;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .btn-add {
-        text-align: center;
-        margin-top: 30px;
-    }
-
-    .btn-add a {
-        background-color: #181B22;
-        color: white;
-        padding: 12px 24px;
-        font-size: 16px;
-        font-weight: bold;
-        border-radius: 30px;
-        text-decoration: none;
-    }
-
-    .btn-add a:hover {
-        background-color: #00a77e;
-    }
-
-    select{
-        background-color: #181B22;
-        color: white;
-    }
-</style>
-
-
-<div class="accessoire-h1">
-    <h1>Liste des accessoires</h1>
-</div>
-
-<div class="accessoire-container">
-    {% for accessoire in pAccessoires %}
-        <div class="accessoire-card">
-            <div class="accessoire-image">
-                <img src="{{ asset('accessoire/' ~ accessoire.cheminImage) }}" alt="Accessoire">
-            </div>
-            <div class="accessoire-details">
-                <div>
-                    <strong>Libelle :</strong> {{ accessoire.libelle }}
-                </div>
-            </div>
-            <div class="accessoire-actions">
-                <select onchange="window.location.href=this.value">
-                    <option value="#" disabled selected>Actions</option>
-                    <option value="{{ path('accessoireConsulter', { id: accessoire.id }) }}">Consulter</option>
-                    <option value="{{ path('accessoireModifier', { id: accessoire.id }) }}">Modifier</option>
-                    <option value="{{ path('accessoireSupprimer', { id: accessoire.id }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet accessoire ?')">Supprimer</option>
-                </select>
-            </div>
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-puzzle-piece"></i>
+                Liste des accessoires
+            </h1>
         </div>
-    {% else %}
-        <div style="text-align: center; width: 100%;">Aucun accessoire trouvé.</div>
-    {% endfor %}
-</div>
-
-<div class="btn-add">
-    <a href="{{ path('accessoireAjouter') }}" class="btn">+ Ajouter un accessoire</a>
-</div>
-
-<script src="../js/accessoire-script.js"></script>
-
+        
+        <div class="grilleAccessoires">
+            {% for accessoire in pAccessoires %}
+                <div class="carteAccessoire">
+                    <div class="imageAccessoire">
+                        <img src="{{ asset('accessoire/' ~ accessoire.cheminImage) }}" alt="Accessoire">
+                    </div>
+                    <div class="detailsAccessoire">
+                        <div>
+                            <strong>Libelle :</strong> {{ accessoire.libelle }}
+                        </div>
+                    </div>
+                    <div class="actionsAccessoire">
+                        <select onchange="window.location.href=this.value">
+                            <option value="#" disabled selected>Actions</option>
+                            <option value="{{ path('accessoireConsulter', { id: accessoire.id }) }}">Consulter</option>
+                            <option value="{{ path('accessoireModifier', { id: accessoire.id }) }}">Modifier</option>
+                            <option value="{{ path('accessoireSupprimer', { id: accessoire.id }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet accessoire ?')">Supprimer</option>
+                        </select>
+                    </div>
+                </div>
+            {% else %}
+                <div class="messageVide">Aucun accessoire trouvé.</div>
+            {% endfor %}
+        </div>
+        
+        <div class="centrerBouton">
+            <a href="{{ path('accessoireAjouter') }}" class="btnAjouter">
+                <i class="fas fa-plus"></i>
+                Ajouter un accessoire
+            </a>
+        </div>
+    </div>
 {% endblock %}

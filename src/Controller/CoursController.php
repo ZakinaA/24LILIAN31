@@ -120,7 +120,7 @@ private function organiserPlanning($cours)
 
     
     #[Route('/gestionnaire/cours/lister', name: 'gestionnaireCoursLister')]
-    #[Route('/etudiant/cours/lister', name: 'eleveCoursLister')]
+    #[Route('/etudiant/cours/lister', name: 'etudiantCoursLister')]
     public function listerCours(ManagerRegistry $doctrine, Request $request)
     {
         $repository = $doctrine->getRepository(Cours::class);

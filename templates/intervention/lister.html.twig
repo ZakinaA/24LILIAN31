@@ -1,299 +1,595 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Liste des interventions - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAjouter {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+        }
+        
+        .btnAjouter:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .tableauInterventions {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        
+        .tableauInterventions th {
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            font-weight: 600;
+            text-align: left;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .tableauInterventions td {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+        }
+        
+        .tableauInterventions tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tableauInterventions tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        
+        .colonneActions {
+            width: 220px;
+            text-align: right;
+        }
+        
+        .lienIntervention {
+            color: var(--primary-color);
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .lienIntervention:hover {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        .actionsIntervention {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btnModifier {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .btnModifier:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--glow-primary);
+        }
+        
+        .btnSupprimer {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+        
+        .btnSupprimer:hover {
+            background-color: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .messageVide {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .messageVide i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+        
+        .fondModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 600px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            animation: modalFadeIn 0.3s ease-out forwards;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .enTeteModal {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .titreModal {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreModal i {
+            color: var(--primary-color);
+        }
+        
+        .btnFermer {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .btnFermer:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+        
+        .corpsModal {
+            padding: 1.5rem;
+        }
+        
+        .tableauInfos {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: var(--sidebar-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .tableauInfos tr:not(:last-child) {
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .tableauInfos td {
+            padding: 1rem 1.5rem;
+        }
+        
+        .tableauInfos td:first-child {
+            width: 35%;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .tableauInfos td:last-child {
+            color: var(--text-light);
+        }
+        
+        .piedModal {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .badgeType {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+        }
+        
+        .badgeDate {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent-light);
+        }
+        
+        .badgePrix {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .tableauInterventions th, 
+            .tableauInterventions td {
+                padding: 1rem;
+            }
+            
+            .actionsIntervention {
+                flex-direction: column;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+            
+            .colonneActions {
+                width: auto;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<style>
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f7fc;
-    margin: 0;
-    padding: 0;
-}
-
-a {
-    color: white;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-.document-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.document-table th, .document-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.document-table th {
-    background-color: green;
-    color: white;
-}
-
-.document-table tr:hover {
-    background-color: #313237;
-}
-
-.btn {
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-.btn-primary {
-    background-color: green;
-    color: white;
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-}
-
-.btn-danger {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-}
-
-.btn-danger:hover {
-    background-color: #c82333;
-}
-
-#interventionModal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 60%;
-    max-width: 800px;
-    position: relative;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    color: #333;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.close-btn:hover {
-    color: #007bff;
-}
-
-h2 {
-    color: #007bff;
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.tab-button {
-    background-color: #f1f1f1;
-    color: #333;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    margin: 0 5px;
-    border-radius: 5px;
-}
-
-.tab-button.active {
-    background-color: #007bff;
-    color: white;
-}
-
-.tab-content {
-    padding: 20px 0;
-}
-
-.tab-panel {
-    display: none;
-}
-
-.tab-panel.hidden {
-    display: block;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table td {
-    padding: 8px;
-}
-
-table td strong {
-    color: #333;
-}
-
-
-</style>
-<h1>Liste des interventions</h1>
-<table class="document-table">
-    <thead>
-        <tr>
-            <th>Descriptif</th>
-            <th>Instrument</th>
-            <th>Date de début</th>
-            <th>Prix</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for i in iInterventions %}
-            <tr>
-                <td>
-                    <a href="#" class="intervention-name" 
-                       data-id="{{ i.id }}"
-                       data-dateDebut="{{ i.dateDebut|date('y:M:d') }}"
-                       data-dateFin="{{ i.dateFin|date('y:M:d') }}"
-                       data-descriptif="{{ i.descriptif }}"
-                       data-prix="{{ i.prix }}"
-                       data-quotite="{{ i.quotite }}">
-                        {{ i.descriptif }}
-                    </a>
-                </td>
-                <td>{{ i.instrument.typeInstrument.libelle }}</td>
-                <td>{{ i.dateDebut|date('y:M:d') }}</td>
-                <td>{{ i.prix }}</td>
-                <td>
-                    <a href="{{ path('intervention_modifier', {'id': i.id}) }}" class="btn btn-primary">
-                        Modifier
-                    </a>
-                    <form action="{{ path('intervention_supprimer', {'id': i.id}) }}" method="post" style="display:inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ i.id) }}">
-                        <button type="submit" class="btn btn-danger" 
-                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette intervention ?')">
-                            Supprimer
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">Aucune intervention n'a été trouvée.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<div id="interventionModal" class="modal">
-    <div class="modal-content">
-        <button class="close-btn">&times;</button>
-        <h2>Détails de l'intervention</h2>
-        <div class="tabs">
-            <button class="tab-button active" data-target="intervention">Intervention</button>
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-tools"></i>
+                Liste des interventions
+            </h1>
+            
+            <div class="actionsTitre">
+                <a href="{{ path('intervention_ajouter') }}" class="btnAjouter">
+                    <i class="fas fa-plus"></i>
+                    Ajouter une intervention
+                </a>
+            </div>
         </div>
-
-        <div class="tab-content">
-            <div class="tab-panel" id="intervention">
-                <table>
+        
+        <table class="tableauInterventions">
+            <thead>
+                <tr>
+                    <th>Descriptif</th>
+                    <th>Instrument</th>
+                    <th>Date de début</th>
+                    <th>Prix</th>
+                    <th class="colonneActions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in iInterventions %}
                     <tr>
-                        <td><strong>Date de début :</strong></td>
-                        <td id="modal-dateDebut"></td>
+                        <td>
+                            <a href="#" class="lienIntervention" 
+                               data-id="{{ i.id }}"
+                               data-dateDebut="{{ i.dateDebut|date('d/m/Y') }}"
+                               data-dateFin="{{ i.dateFin|date('d/m/Y') }}"
+                               data-descriptif="{{ i.descriptif }}"
+                               data-prix="{{ i.prix }}"
+                               data-quotite="{{ i.quotite }}">
+                                {{ i.descriptif|length > 50 ? i.descriptif|slice(0, 50) ~ '...' : i.descriptif }}
+                            </a>
+                        </td>
+                        <td>
+                            <span class="badgeType">{{ i.instrument.typeInstrument.libelle }}</span>
+                        </td>
+                        <td>
+                            <span class="badgeDate">{{ i.dateDebut|date('d/m/Y') }}</span>
+                        </td>
+                        <td>
+                            <span class="badgePrix">{{ i.prix }} €</span>
+                        </td>
+                        <td class="colonneActions">
+                            <div class="actionsIntervention">
+                                <a href="{{ path('intervention_consulter', {'id': i.id}) }}" class="btnAction btnModifier">
+                                    <i class="fas fa-eye"></i>
+                                    Consulter
+                                </a>
+                                
+                                <a href="{{ path('intervention_modifier', {'id': i.id}) }}" class="btnAction btnModifier">
+                                    <i class="fas fa-edit"></i>
+                                    Modifier
+                                </a>
+                                
+                                <form action="{{ path('intervention_supprimer', {'id': i.id}) }}" method="post" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ i.id) }}">
+                                    <button type="button" class="btnAction btnSupprimer" onclick="confirmerSuppression(this.form, {{ i.id }})">
+                                        <i class="fas fa-trash-alt"></i>
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="messageVide">
+                            <i class="fas fa-tools"></i>
+                            <p>Aucune intervention n'a été trouvée.</p>
+                            <a href="{{ path('intervention_ajouter') }}" class="btnAjouter" style="margin-top: 1rem;">
+                                <i class="fas fa-plus"></i>
+                                Ajouter une intervention
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="fondModal" id="modalIntervention">
+        <div class="modal">
+            <div class="enTeteModal">
+                <h2 class="titreModal">
+                    <i class="fas fa-info-circle"></i>
+                    Détails de l'intervention
+                </h2>
+                <button type="button" class="btnFermer" id="fermerModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="corpsModal">
+                <table class="tableauInfos">
+                    <tr>
+                        <td>Date de début</td>
+                        <td id="modalDateDebut"></td>
                     </tr>
                     <tr>
-                        <td><strong>Date de fin :</strong></td>
-                        <td id="modal-dateFin"></td>
+                        <td>Date de fin</td>
+                        <td id="modalDateFin"></td>
                     </tr>
                     <tr>
-                        <td><strong>Descriptif :</strong></td>
-                        <td id="modal-descriptif"></td>
+                        <td>Descriptif</td>
+                        <td id="modalDescriptif"></td>
                     </tr>
                     <tr>
-                        <td><strong>Prix :</strong></td>
-                        <td id="modal-prix"></td>
+                        <td>Prix</td>
+                        <td id="modalPrix"></td>
                     </tr>
                     <tr>
-                        <td><strong>Quotité :</strong></td>
-                        <td id="modal-quotite"></td>
+                        <td>Quotité</td>
+                        <td id="modalQuotite"></td>
                     </tr>
                 </table>
             </div>
+            
+            <div class="piedModal">
+                <a href="#" id="btnConsulterDetails" class="btnAction btnModifier">
+                    <i class="fas fa-external-link-alt"></i>
+                    Voir tous les détails
+                </a>
+            </div>
         </div>
     </div>
-</div>
+    
+    <div class="fondModal" id="modalConfirmation">
+        <div class="modal">
+            <div class="enTeteModal">
+                <h2 class="titreModal">
+                    <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+                    Confirmation de suppression
+                </h2>
+                <button type="button" class="btnFermer" id="fermerConfirmation">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="corpsModal">
+                <p>Êtes-vous sûr de vouloir supprimer cette intervention ?</p>
+                <p>Cette action ne peut pas être annulée.</p>
+            </div>
+            
+            <div class="piedModal">
+                <button type="button" class="btnAction btnModifier" id="annulerSuppression">
+                    <i class="fas fa-times"></i>
+                    Annuler
+                </button>
+                
+                <button type="button" class="btnAction btnSupprimer" id="confirmerSuppression">
+                    <i class="fas fa-trash-alt"></i>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-<script>
-    const modal = document.getElementById("interventionModal");
-    const closeModal = document.querySelector(".close-btn");
-
-    document.querySelectorAll(".intervention-name").forEach(link => {
-        link.addEventListener("click", function(event) {
-            event.preventDefault();
-
-            const interventionId = this.getAttribute("data-id");
-            const dateDebut = new Date(this.getAttribute("data-dateDebut"));
-            const dateFin = new Date(this.getAttribute("data-dateFin"));
-            const descriptif = this.getAttribute("data-descriptif");
-            const prix = this.getAttribute("data-prix");
-            const quotite = this.getAttribute("data-quotite");
-
-            document.getElementById("modal-dateDebut").innerText = dateDebut.toLocaleString();
-            document.getElementById("modal-dateFin").innerText = dateFin.toLocaleString();
-            document.getElementById("modal-descriptif").innerText = descriptif;
-            document.getElementById("modal-prix").innerText = prix;
-            document.getElementById("modal-quotite").innerText = quotite;
-
-            modal.style.display = "flex";
-        });
-    });
-
-    closeModal.addEventListener("click", function() {
-        modal.style.display = "none";
-    });
-
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    };
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const tabButtons = document.querySelectorAll(".tab-button");
-        const tabPanels = document.querySelectorAll(".tab-panel");
-
-        tabButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                tabButtons.forEach(btn => btn.classList.remove("active"));
-                tabPanels.forEach(panel => panel.classList.add("hidden"));
-
-                button.classList.add("active");
-                const target = button.getAttribute("data-target");
-                document.getElementById(target).classList.remove("hidden");
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalIntervention = document.getElementById('modalIntervention');
+            const fermerModal = document.getElementById('fermerModal');
+            const btnConsulterDetails = document.getElementById('btnConsulterDetails');
+            
+            const modalConfirmation = document.getElementById('modalConfirmation');
+            const fermerConfirmation = document.getElementById('fermerConfirmation');
+            const annulerSuppression = document.getElementById('annulerSuppression');
+            const confirmerSuppression = document.getElementById('confirmerSuppression');
+            
+            let formSuppression = null;
+            let interventionId = null;
+            
+             document.querySelectorAll('.lienIntervention').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                     interventionId = this.getAttribute('data-id');
+                    const dateDebut = this.getAttribute('data-dateDebut');
+                    const dateFin = this.getAttribute('data-dateFin');
+                    const descriptif = this.getAttribute('data-descriptif');
+                    const prix = this.getAttribute('data-prix');
+                    const quotite = this.getAttribute('data-quotite');
+                    
+                    document.getElementById('modalDateDebut').textContent = dateDebut;
+                    document.getElementById('modalDateFin').textContent = dateFin;
+                    document.getElementById('modalDescriptif').textContent = descriptif;
+                    document.getElementById('modalPrix').textContent = prix + ' €';
+                    document.getElementById('modalQuotite').textContent = quotite + '%';
+                    
+                    btnConsulterDetails.href = 'intervention_consulter'.replace('intervention_consulter', '/intervention/' + interventionId);
+                    
+                    modalIntervention.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+             fermerModal.addEventListener('click', function() {
+                modalIntervention.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+            
+            modalIntervention.addEventListener('click', function(e) {
+                if (e.target === modalIntervention) {
+                    modalIntervention.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            });
+            
+             window.confirmerSuppression = function(form, id) {
+                formSuppression = form;
+                modalConfirmation.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            };
+            
+            fermerConfirmation.addEventListener('click', fermerModalConfirmation);
+            annulerSuppression.addEventListener('click', fermerModalConfirmation);
+            
+            function fermerModalConfirmation() {
+                modalConfirmation.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+            
+            modalConfirmation.addEventListener('click', function(e) {
+                if (e.target === modalConfirmation) {
+                    fermerModalConfirmation();
+                }
+            });
+            
+            confirmerSuppression.addEventListener('click', function() {
+                if (formSuppression) {
+                    formSuppression.submit();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    modalIntervention.style.display = 'none';
+                    modalConfirmation.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
             });
         });
-
-        tabButtons[0].classList.add("active");
-        tabPanels[0].classList.remove("hidden");
-    });
-</script>
-</body>
-</html>
-
+    </script>
 {% endblock %}

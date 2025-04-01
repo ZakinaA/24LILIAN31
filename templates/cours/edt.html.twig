@@ -1,124 +1,250 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Emploi du temps - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .emploiTemps {
+            padding: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .conteneurEmploiTemps {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+        }
+        
+        .enTeteEmploiTemps {
+            display: grid;
+            grid-template-columns: 100px repeat(7, 1fr);
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+        }
+        
+        .celluleEnTete {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .celluleEnTete:last-child {
+            border-right: none;
+        }
+        
+        .corpsEmploiTemps {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .ligneEmploiTemps {
+            display: grid;
+            grid-template-columns: 100px repeat(7, 1fr);
+        }
+        
+        .celluleHeure {
+            padding: 0.8rem;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .celluleEmploiTemps {
+            padding: 0.8rem;
+            min-height: 80px;
+            border-right: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition);
+            position: relative;
+            vertical-align: top;
+        }
+        
+        .celluleEmploiTemps:last-child {
+            border-right: none;
+        }
+        
+        .ligneEmploiTemps:last-child .celluleEmploiTemps,
+        .ligneEmploiTemps:last-child .celluleHeure {
+            border-bottom: none;
+        }
+        
+        .ligneEmploiTemps:hover .celluleEmploiTemps {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        
+        .listeCours {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .cours {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background-color: var(--primary-transparent);
+            border-radius: var(--border-radius-sm);
+            border-left: 3px solid var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .cours:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            background-color: rgba(46, 204, 113, 0.2);
+        }
+        
+        .cours:last-child {
+            margin-bottom: 0;
+        }
+        
+        .aucunCours {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        
+        .filtreMois {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btnFiltre {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-light);
+            color: var(--text-light);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btnFiltre:hover, .btnFiltre.actif {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .actionRetour {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btnRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--card-bg);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 992px) {
+            .enTeteEmploiTemps, .ligneEmploiTemps {
+                grid-template-columns: 80px repeat(7, 1fr);
+            }
+            
+            .celluleEnTete, .celluleHeure, .celluleEmploiTemps {
+                padding: 0.6rem;
+                font-size: 0.75rem;
+            }
+            
+            .cours {
+                padding: 0.4rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .emploiTemps {
+                padding: 0.5rem;
+            }
+            
+            .conteneurEmploiTemps {
+                overflow-x: auto;
+            }
+            
+            .enTeteEmploiTemps, .ligneEmploiTemps {
+                min-width: 700px;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<style>
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-.page-title {
-    text-align: center;
-    color: white;
-    font-size: 24px;
-    margin: 20px 0;
-}
-
-.timetable-container {
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-    max-width: 90%;
-}
-
-.timetable-header {
-    display: grid;
-    grid-template-columns: 150px repeat(6, 1fr);
-    background-color: #4CAF50;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    padding: 10px;
-}
-
-.timetable-header-cell {
-    padding: 10px;
-    text-transform: uppercase;
-    font-size: 12px;
-}
-
-.timetable-body {
-    display: flex;
-    flex-direction: column;
-    border-radius: 30px;
-}
-
-.timetable-row {
-    display: grid;
-    grid-template-columns: 150px repeat(6, 1fr);
-    border-bottom: 1px solid #ddd;
-}
-
-.timetable-time-cell {
-    background-color: #181B22;
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 12px;
-}
-
-.timetable-cell {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    background-color: #181B22;
-    font-size: 12px;
-    transition: background-color 0.3s ease;
-}
-
-.timetable-row:hover .timetable-cell {
-    background-color: #313237;
-}
-
-.courses-list {
-    margin: 0;
-}
-
-.course-name {
-    margin: 5px 0;
-    font-size: 12px;
-    color: white;
-}
-
-.no-course {
-    color: #888;
-    font-size: 14px;
-}
-
-</style>
-    <h1 class="page-title">Emploi du temps des cours</h1>
-
-    <div class="timetable-container">
-        <div class="timetable-header">
-            <div class="timetable-header-cell"></div> 
-            {% for jour in jours %}
-                <div class="timetable-header-cell">{{ jour }}</div>
-            {% endfor %}
+    <div class="emploiTemps">
+        <h1 class="titrePage">Emploi du temps des cours</h1>
+        
+        <div class="conteneurEmploiTemps">
+            <div class="enTeteEmploiTemps">
+                <div class="celluleEnTete">Horaire</div>
+                {% for jour in jours %}
+                    <div class="celluleEnTete">{{ jour }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="corpsEmploiTemps">
+                {% for heure in heures %}
+                    <div class="ligneEmploiTemps">
+                        <div class="celluleHeure">{{ heure }}h</div>
+                        {% for jour in jours %}
+                            <div class="celluleEmploiTemps">
+                                {% set coursList = pCours[jour][heure] %}
+                                {% if coursList is not empty %}
+                                    <ul class="listeCours">
+                                        {% for cours in coursList %}
+                                            <li class="cours">{{ cours.libelle }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <div class="aucunCours">-</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
         
-        <div class="timetable-body">
-            {% for heure in heures %}
-                <div class="timetable-row">
-                    <div class="timetable-time-cell">{{ heure }}h</div>
-                    {% for jour in jours %}
-                        <div class="timetable-cell">
-                            {% set coursList = pCours[jour][heure] %}
-                            {% if coursList is not empty %}
-                                <div class="courses-list">
-                                    {% for cours in coursList %}
-                                        <p class="course-name">{{ cours.libelle }}</p>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <p class="no-course">-</p>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+        <div class="actionRetour">
+            <a href="{{ path('gestionnaireCoursLister') }}" class="btnRetour">
+                <i class="fas fa-arrow-left"></i>
+                Retour à la liste des cours
+            </a>
         </div>
     </div>
-
 {% endblock %}

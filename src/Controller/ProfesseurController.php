@@ -112,7 +112,7 @@ class ProfesseurController extends AbstractController
         return $this->render('professeur/consulter.html.twig', ['professeur' => $professeur]);
     }
 
-    return $this->render('professeur/ajouter.html.twig', ['form' => $form->createView()]);
+    return $this->render('professeur/modifier.html.twig', ['form' => $form->createView(), 'professeur' => $professeur,]);
 }
 
 

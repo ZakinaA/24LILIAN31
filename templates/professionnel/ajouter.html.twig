@@ -1,214 +1,440 @@
 {% extends 'base.html.twig' %}
 
-{% block content %}
-<link rel="stylesheet" href="{{ asset('styles.css') }}">
-<style>
-body, h1, h2, p, ul, li, a, img {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+{% block title %}Ajout d'un professionnel - Emusic{% endblock %}
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #121212;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.ajouter-title-primary {
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
-    color: green;
-    margin-bottom: 20px;
-}
-
-.ajouter-formulaire-ajout {
-    background-color: #181B22;
-    border-radius: 20px;
-    padding: 20px;
-    width: 800px;
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-}
-
-.ajouter-left-column,
-.ajouter-right-column {
-    flex: 1;
-}
-
-.ajouter-image-container {
-    width: 100%;
-    height: 200px;
-    border: 2px solid #444;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #232323;
-    margin-bottom: 15px;
-}
-
-.ajouter-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.ajouter-form-group {
-    margin-bottom: 15px;
-}
-
-.ajouter-form-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #ccc;
-}
-
-.ajouter-form-group input,
-.ajouter-form-group select,
-.ajouter-form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background-color: #232323;
-    color: white;
-}
-
-.ajouter-form-group input:focus,
-.ajouter-form-group select:focus,
-.ajouter-form-group textarea:focus {
-    border-color: green;
-    outline: none;
-    box-shadow: 0 0 8px green;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.ajouter-progress-container {
-    width: 100%;
-    background-color: #ddd;
-    border-radius: 20px;
-    margin-top: 20px;
-    height: 10px;
-    overflow: hidden;
-}
-
-.ajouter-progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: green;
-    transition: width 0.3s ease;
-}
-</style>
-
-<div class="ajouter-form-container">
-    <h1 class="ajouter-title-primary">Ajout d'un Professionnel</h1>
-    <div class="ajouter-formulaire-ajout">
-        <div class="ajouter-left-column">
-            {{ form_start(form) }}
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.nom) }}
-                {{ form_widget(form.nom) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.numRue) }}
-                {{ form_widget(form.numRue) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.rue) }}
-                {{ form_widget(form.rue) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.copos) }}
-                {{ form_widget(form.copos) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.ville) }}
-                {{ form_widget(form.ville) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.tel) }}
-                {{ form_widget(form.tel) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.mail) }}
-                {{ form_widget(form.mail) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.metiers) }}
-                {{ form_widget(form.metiers) }}
-            </div>
-
-        </div>
-
-        <div class="ajouter-right-column">
-            <div class="ajouter-image-container">
-                <img id="image-preview" src="{{ asset('placeholder-image.png') }}" alt="Prévisualisation">
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.cheminImage) }}
-                {{ form_widget(form.cheminImage) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_widget(form.enregistrer) }}
-            </div>
-        </div>
-
-        {{ form_end(form) }}
-    </div>
-
-    <div class="ajouter-progress-container">
-        <div class="ajouter-progress-bar"></div>
-    </div>
-</div>
-
-<script>
-    document.querySelector('input[type="file"]').addEventListener('change', event => {
-        const preview = document.getElementById('image-preview');
-        const file = event.target.files[0];
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            preview.src = reader.result;
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-    });
+        
+        .enTetePage {
+            margin-bottom: 2rem;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .sousTitrePage {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+        
+        .carteFormulaire {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .enTeteCarte {
+            background-color: var(--sidebar-bg);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .corpsCarte {
+            padding: 2rem;
+        }
+        
+        .grilleFormulaire {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .groupeChamp {
+            margin-bottom: 1.5rem;
+        }
+        
+        .groupeChamp label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .groupeChamp label i {
+            color: var(--primary-color);
+        }
+        
+        .groupeChamp input,
+        .groupeChamp select,
+        .groupeChamp textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .groupeChamp input:focus,
+        .groupeChamp select:focus,
+        .groupeChamp textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-transparent);
+            outline: none;
+        }
+        
+        .conteneurImage {
+            width: 100%;
+            height: 220px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            background-color: var(--sidebar-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .conteneurImage img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .conteneurImage img:hover {
+            transform: scale(1.03);
+        }
+        
+        .conteneurImage.vide:after {
+            content: 'Aucune image sélectionnée';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .btnEnregistrer {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btnEnregistrer:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .barreProgression {
+            height: 6px;
+            background-color: var(--sidebar-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1.5rem;
+        }
+        
+        .indicateurProgression {
+            height: 100%;
+            width: 0;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .lienRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            align-self: center;
+        }
+        
+        .lienRetour:hover {
+            color: var(--text-light);
+        }
+        
+        .infoPanel {
+            background-color: var(--primary-transparent);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .infoPanel p {
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .infoPanel i {
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .grilleFormulaire {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+            
+            .corpsCarte {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+{% endblock %}
 
-    const fields = document.querySelectorAll('.ajouter-form-group input, .ajouter-form-group select, .ajouter-form-group textarea');
-    const progressBar = document.querySelector('.ajouter-progress-bar'); 
+{% block content %}
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-user-tie"></i>
+                Ajout d'un professionnel
+            </h1>
+            <p class="sousTitrePage">Remplissez tous les champs pour enregistrer un nouveau professionnel</p>
+        </div>
+        
+        <div class="carteFormulaire">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-info-circle"></i>
+                    Informations du professionnel
+                </h2>
+            </div>
+            
+            <div class="corpsCarte">
+                <div class="infoPanel">
+                    <p><i class="fas fa-info-circle"></i> Tous les champs sont obligatoires pour l'ajout d'un professionnel.</p>
+                </div>
+                
+                {{ form_start(form) }}
+                
+                <div class="grilleFormulaire">
+                    <div>
+                        <div class="groupeChamp">
+                            <label for="{{ form.nom.vars.id }}">
+                                <i class="fas fa-user"></i>
+                                Nom
+                            </label>
+                            {{ form_widget(form.nom, {'attr': {'placeholder': 'Nom de l\'entreprise ou du professionnel'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.numRue.vars.id }}">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Numéro de rue
+                            </label>
+                            {{ form_widget(form.numRue, {'attr': {'placeholder': 'Numéro de rue'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.rue.vars.id }}">
+                                <i class="fas fa-road"></i>
+                                Rue
+                            </label>
+                            {{ form_widget(form.rue, {'attr': {'placeholder': 'Nom de la rue'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.copos.vars.id }}">
+                                <i class="fas fa-mail-bulk"></i>
+                                Code postal
+                            </label>
+                            {{ form_widget(form.copos, {'attr': {'placeholder': 'Code postal'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.ville.vars.id }}">
+                                <i class="fas fa-city"></i>
+                                Ville
+                            </label>
+                            {{ form_widget(form.ville, {'attr': {'placeholder': 'Ville'}}) }}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="groupeChamp">
+                            <label for="{{ form.tel.vars.id }}">
+                                <i class="fas fa-phone"></i>
+                                Téléphone
+                            </label>
+                            {{ form_widget(form.tel, {'attr': {'placeholder': 'Numéro de téléphone'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.mail.vars.id }}">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </label>
+                            {{ form_widget(form.mail, {'attr': {'placeholder': 'Adresse email'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.metiers.vars.id }}">
+                                <i class="fas fa-briefcase"></i>
+                                Métiers
+                            </label>
+                            {{ form_widget(form.metiers) }}
+                        </div>
+                        
+                        <div class="conteneurImage vide" id="preview-container">
+                            <img id="image-preview" src="{{ asset('placeholder-image.png') }}" alt="Prévisualisation">
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <label for="{{ form.cheminImage.vars.id }}">
+                                <i class="fas fa-image"></i>
+                                Image
+                            </label>
+                            {{ form_widget(form.cheminImage) }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="groupeChamp" style="margin-top: 1rem;">
+                    {{ form_widget(form.enregistrer, {'attr': {'class': 'btnEnregistrer'}}) }}
+                </div>
+                
+                {{ form_end(form) }}
+                
+                <div class="barreProgression">
+                    <div class="indicateurProgression" id="barre-progression"></div>
+                </div>
+            </div>
+        </div>
+        
+        <a href="{{ path('professionnel_lister') }}" class="lienRetour">
+            <i class="fas fa-arrow-left"></i>
+            Retour à la liste des professionnels
+        </a>
+    </div>
+{% endblock %}
 
-    fields.forEach(field => {
-        field.addEventListener('input', updateProgress);
-    });
-
-    function updateProgress() {
-        const filledFields = Array.from(fields).filter(field => field.value.trim() !== '');
-        const progress = (filledFields.length / fields.length) * 100;
-        progressBar.style.width = `${progress}%`;
-    }
-</script>
-
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputImage = document.querySelector('input[type="file"]');
+            const previewImage = document.getElementById('image-preview');
+            const previewContainer = document.getElementById('preview-container');
+            
+            if (inputImage) {
+                inputImage.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(event) {
+                            previewImage.src = event.target.result;
+                            previewContainer.classList.remove('vide');
+                        }
+                        
+                        reader.readAsDataURL(e.target.files[0]);
+                    } else {
+                        previewImage.src = '{{ asset('placeholder-image.png') }}';
+                        previewContainer.classList.add('vide');
+                    }
+                });
+            }
+            
+            const champs = document.querySelectorAll('input, select, textarea');
+            const barreProgression = document.getElementById('barre-progression');
+            
+            function miseAJourProgression() {
+                const champsRemplis = Array.from(champs).filter(champ => {
+                    if (champ.type === 'file' || champ.type === 'submit') return true;
+                    return champ.value.trim() !== '';
+                });
+                
+                const progres = (champsRemplis.length / champs.length) * 100;
+                barreProgression.style.width = `${progres}%`;
+            }
+            
+            champs.forEach(champ => {
+                champ.addEventListener('input', miseAJourProgression);
+            });
+            
+            miseAJourProgression();
+            
+            const btnEnregistrer = document.querySelector('.btnEnregistrer');
+            if (btnEnregistrer) {
+                btnEnregistrer.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+                
+                btnEnregistrer.addEventListener('mouseenter', function() {
+                    this.innerHTML = '<i class="fas fa-check"></i> Valider';
+                });
+                
+                btnEnregistrer.addEventListener('mouseleave', function() {
+                    this.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+                });
+            }
+        });
+    </script>
 {% endblock %}

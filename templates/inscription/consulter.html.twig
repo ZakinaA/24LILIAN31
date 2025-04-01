@@ -1,153 +1,455 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Détails de l'inscription - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .btnRetour {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .btnModifier {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btnModifier:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .carteInfos {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+        }
+        
+        .enTeteCarte {
+            background-color: var(--sidebar-bg);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .corpsCarte {
+            padding: 1.5rem;
+        }
+        
+        .eleveHeader {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .elevePhoto {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            box-shadow: var(--glow-primary);
+        }
+        
+        .eleveInfos {
+            flex-grow: 1;
+        }
+        
+        .eleveNom {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .eleveNom i {
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        
+        .eleveCours {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        
+        .eleveCours i {
+            color: var(--accent-color);
+        }
+        
+        .infoTable {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .infoTable tr {
+            transition: var(--transition);
+        }
+        
+        .infoTable tr:hover {
+            background-color: var(--card-hover);
+        }
+        
+        .infoTable th {
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            width: 40%;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .infoTable td {
+            padding: 1rem;
+            color: var(--text-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .infoTable tr:last-child th,
+        .infoTable tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .responsableHeader {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .responsablePhoto {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            box-shadow: var(--glow-accent);
+        }
+        
+        .responsableInfos {
+            flex-grow: 1;
+        }
+        
+        .responsableNom {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .responsableNom i {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+        
+        .responsableRole {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-primary {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+        }
+        
+        .eleveContact {
+            margin-top: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .eleveContactItem {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .eleveContactItem i {
+            color: var(--accent-color);
+        }
+        
+        .lienRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .lienRetour:hover {
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .actionsTitre {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+            
+            .eleveHeader {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: center;
+            }
+            
+            .elevePhoto {
+                margin: 0 auto 1rem;
+                width: 100px;
+                height: 100px;
+            }
+            
+            .responsableHeader {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: center;
+            }
+            
+            .responsablePhoto {
+                margin: 0 auto 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<style>
-    body {
-        font-family: 'Roboto', Arial, sans-serif;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 0;
-        margin-top: 250px;
-    }
-
-    h1 {
-        text-align: center;
-        color: white;
-        font-size: 2.5rem;
-        margin-bottom: 20px;
-    }
-
-    .inscription-container {
-        max-width: 800px;
-        margin: 30px auto;
-        background-color: #181B22;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-    }
-
-    .inscription-header {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 30px;
-    }
-
-    .profile-image {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #dee2e6;
-    }
-
-    .inscription-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .inscription-table th, .inscription-table td {
-        padding: 15px;
-        text-align: left;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    .inscription-table th {
-        color: white;
-        text-transform: uppercase;
-        font-size: 1rem;
-    }
-
-    .inscription-table td {
-        font-size: 1rem;
-        color: #495057;
-    }
-
-    .inscription-name-link {
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
-    }
-
-    .inscription-name-link:hover {
-        text-decoration: underline;
-    }
-
-    .action-btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #28a745;
-        color: white;
-        text-decoration: none;
-        font-size: 1rem;
-        font-weight: bold;
-        border-radius: 8px;
-        text-align: center;
-        transition: background-color 0.3s ease;
-        margin-top: 20px;
-        text-transform: uppercase;
-    }
-
-    .action-btn:hover {
-        background-color: #218838;
-    }
-
-    .responsable-header {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 2px solid #dee2e6;
-    }
-
-    .responsable-details {
-        color: #495057;
-    }
-
-    .responsable-details p {
-        margin: 5px 0;
-        color: #6c757d;
-    }
-</style>
-
-<main class="inscription-container">
-    <h1>Détails de l'Inscription</h1>
-
-    <div class="inscription-header">
-        {% if inscription.eleve.cheminImage %}
-            <img src="{{ asset('eleve/' ~ inscription.eleve.cheminImage) }}" alt="Image Élève" class="profile-image">
-        {% endif %}
-        <div>
-            <a href="{{ path('inscription_consulter', {'id': inscription.eleve.id}) }}" class="inscription-name-link">
-                {{ inscription.eleve.nom }} {{ inscription.eleve.prenom }}
-            </a>
-            <p style="color: #6c757d; margin: 5px 0;">Cours: {{ inscription.cours.libelle }}</p>
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-user-plus"></i>
+                Détails de l'inscription
+            </h1>
+            
+            <div class="actionsTitre">
+                <a href="{{ path('inscription_lister') }}" class="btnAction btnRetour">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+                
+                <a href="{{ path('inscription_modifier', {'id': inscription.id}) }}" class="btnAction btnModifier">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
+            </div>
         </div>
-    </div>
-
-    <table class="inscription-table">
-        <tr>
-            <th>Date d'Inscription</th>
-            <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
-        </tr>
-    </table>
-
-    <div class="responsable-header">
-        {% if inscription.eleve.responsable.cheminImage %}
-            <img src="{{ asset('responsable/' ~ inscription.eleve.responsable.cheminImage) }}" alt="Image Responsable" class="profile-image">
-        {% endif %}
-        <div class="responsable-details">
-            <a href="{{ path('eleveConsulter', {'id': inscription.eleve.responsable.id}) }}" class="inscription-name-link">
-                {{ inscription.eleve.responsable.nom }} {{ inscription.eleve.responsable.prenom }}
-            </a>
-            <p>Responsable de l'élève</p>
+        
+        <div class="carteInfos">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-info-circle"></i>
+                    Informations sur l'inscription
+                </h2>
+            </div>
+            
+            <div class="corpsCarte">
+                <div class="eleveHeader">
+                    {% if inscription.eleve.cheminImage %}
+                        <img src="{{ asset('eleve/' ~ inscription.eleve.cheminImage) }}" alt="Photo de l'élève" class="elevePhoto">
+                    {% else %}
+                        <div class="elevePhoto" style="background-color: var(--primary-transparent); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="font-size: 2rem; color: var(--primary-color);"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="eleveInfos">
+                        <div class="eleveNom">
+                            <i class="fas fa-user-graduate"></i>
+                            {{ inscription.eleve.nom }} {{ inscription.eleve.prenom }}
+                        </div>
+                        
+                        <div class="eleveCours">
+                            <i class="fas fa-book"></i>
+                            <span>Inscrit(e) au cours de <strong>{{ inscription.cours.libelle }}</strong></span>
+                        </div>
+                        
+                        <div class="eleveContact">
+                            {% if inscription.eleve.tel %}
+                                <div class="eleveContactItem">
+                                    <i class="fas fa-phone"></i>
+                                    {{ inscription.eleve.tel }}
+                                </div>
+                            {% endif %}
+                            
+                            {% if inscription.eleve.mail %}
+                                <div class="eleveContactItem">
+                                    <i class="fas fa-envelope"></i>
+                                    {{ inscription.eleve.mail }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <table class="infoTable">
+                    <tr>
+                        <th>Date d'inscription</th>
+                        <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Cours</th>
+                        <td>{{ inscription.cours.libelle }}</td>
+                    </tr>
+                    <tr>
+                        <th>Jour</th>
+                        <td>{{ inscription.cours.jour.libelle }}</td>
+                    </tr>
+                    <tr>
+                        <th>Horaires</th>
+                        <td>{{ inscription.cours.heureDebut|date('H:i') }} - {{ inscription.cours.heureFin|date('H:i') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Type de cours</th>
+                        <td>{{ inscription.cours.typeCours.libelle }}</td>
+                    </tr>
+                    <tr>
+                        <th>Type d'instrument</th>
+                        <td>{{ inscription.cours.typeInstrument.libelle }}</td>
+                    </tr>
+                    <tr>
+                        <th>Professeur</th>
+                        <td>{{ inscription.cours.professeur.nom }} {{ inscription.cours.professeur.prenom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Statut</th>
+                        <td>
+                            <span class="badge badge-primary">
+                                <i class="fas fa-check-circle"></i>
+                                Inscription active
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+                
+                <div class="responsableHeader">
+                    {% if inscription.eleve.responsable.cheminImage %}
+                        <img src="{{ asset('responsable/' ~ inscription.eleve.responsable.cheminImage) }}" alt="Photo du responsable" class="responsablePhoto">
+                    {% else %}
+                        <div class="responsablePhoto" style="background-color: var(--accent-transparent); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="font-size: 1.5rem; color: var(--accent-color);"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="responsableInfos">
+                        <div class="responsableNom">
+                            <i class="fas fa-user-tie"></i>
+                            {{ inscription.eleve.responsable.nom }} {{ inscription.eleve.responsable.prenom }}
+                        </div>
+                        
+                        <div class="responsableRole">Responsable légal de l'élève</div>
+                    </div>
+                </div>
+            </div>
         </div>
+        
+        <a href="{{ path('inscription_lister') }}" class="lienRetour">
+            <i class="fas fa-arrow-left"></i>
+            Retour à la liste des inscriptions
+        </a>
     </div>
-
-    <a href="{{ path('insc_coursModifier', {'id': inscription.id}) }}" class="action-btn">
-        Modifier l'Inscription
-    </a>
-</main>
-
 {% endblock %}
