@@ -1,186 +1,261 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Accessoire {{ accessoire.libelle }} - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .btnRetour {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .grilleAccessoire {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+        
+        .colonneGauche {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .conteneurImage {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+        
+        .imageAccessoire {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+            transition: var(--transition);
+        }
+        
+        .imageAccessoire:hover {
+            transform: scale(1.03);
+        }
+        
+        .badgeType {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .colonneDroite {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .carteInfos {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        
+        .enTeteCarte {
+            padding: 1.2rem 1.5rem;
+            background-color: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .corpsCarte {
+            padding: 1.5rem;
+        }
+        
+        .listeInfos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.2rem;
+        }
+        
+        .infoItem {
+            background-color: var(--sidebar-bg);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            border: 1px solid var(--border-light);
+        }
+        
+        .infoItem:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+            background-color: var(--card-hover);
+        }
+        
+        .infoLabel {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .infoValeur {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        
+        @media (max-width: 992px) {
+            .grilleAccessoire {
+                grid-template-columns: 1fr;
+            }
+            
+            .conteneurImage {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .actionsTitre {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .listeInfos {
+                grid-template-columns: 1fr;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<h1>Consulter l'accessoire {{ accessoire.libelle }}</h1>
-
-<div class="back-button">
-    <a href="{{ path('accessoireLister') }}" class="btn-back">
-        <i class="fas fa-arrow-left"></i> Retour à la liste
-    </a>
-</div>
-
-<div class="container">
-    <div class="left">
-    <div class="image-container">
-            <img src="{{'../../image/' ~ accessoire.CheminImage}}" alt="Accessoire Image">
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-puzzle-piece"></i>
+                Accessoire {{ accessoire.libelle }}
+            </h1>
+            
+            <div class="actionsTitre">
+                <a href="{{ path('accessoireLister') }}" class="btnAction btnRetour">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+                
+                <a href="{{ path('accessoireModifier', {'id': accessoire.id}) }}" class="btnAction btnModifier">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
+            </div>
         </div>
-    </div>
-</div>    
-            <br>
-            <div class="accessoire-info">
-                <h2 class="title"><i class="fas fa-keyboard"></i>&nbsp; Accessoire</h2>
-                <div class="info-item">
-                    <strong>libellé:</strong> {{ accessoire.libelle }}
+        
+        <div class="grilleAccessoire">
+            <div class="colonneGauche">
+                <div class="conteneurImage">
+                    <img src="{{ asset('accessoire/' ~ accessoire.cheminImage) }}" alt="{{ accessoire.libelle }}" class="imageAccessoire">
                 </div>
             </div>
-        
+            
+            <div class="colonneDroite">
+                <div class="carteInfos">
+                    <div class="enTeteCarte">
+                        <h2 class="titreCarte">
+                            <i class="fas fa-info-circle"></i>
+                            Informations de l'accessoire
+                        </h2>
+                    </div>
+                    
+                    <div class="corpsCarte">
+                        <div class="listeInfos">
+                            <div class="infoItem">
+                                <div class="infoLabel">Libellé</div>
+                                <div class="infoValeur">{{ accessoire.libelle }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-
-<script>
-    document.querySelectorAll('.accordion-header').forEach(item => {
-        item.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            content.style.display = content.style.display === 'block' ? 'none' : 'block';
-            this.classList.toggle('active');
-        });
-    });
-</script>
-
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #121212;
-        color: #ffffff;
-        margin: 0;
-        padding: 100px 0;
-    }
-
-    h1 {
-        font-size: 48px;
-        font-weight: bold;
-        text-align: center;
-        color: green;
-        margin-bottom: 30px;
-    }
-
-    .back-button {
-        margin-left: 20px;
-        margin-bottom: 20px;
-        width: 13%;
-    }
-
-    .btn-back {
-        font-size: 18px;
-        padding: 10px 20px;
-        background-color: #444;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-back:hover {
-        background-color: #333;
-    }
-
-    .container {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-        margin-top: 50px;
-    }
-
-    .left, .right {
-        padding: 20px;
-        border-radius: 8px;
-    }
-
-    .left {
-        width: 380px;
-        background-color: #1e2125;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .right {
-        width: 600px;
-        background-color: #181B22;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .image-container {
-        width: 100%;
-        height: 400px;
-        overflow: hidden;
-        border-radius: 15px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .image-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.4s ease;
-    }
-
-    .image-container img:hover {
-        transform: scale(1.1);
-    }
-
-    .accordion {
-        margin-top: 20px;
-    }
-
-    .accordion-item {
-        background-color: #232323;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .accordion-header {
-        padding: 15px;
-        font-size: 18px;
-        color: green;
-        background-color: #181B22;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .accordion-header:hover {
-        background-color: #2d3436;
-    }
-
-    .accordion-header.active {
-        background-color: #2d3436;
-    }
-
-    .accordion-content {
-        display: none;
-        padding: 15px;
-        background-color: #1e2125;
-        color: #bbb;
-    }
-
-    .accessoire-info .info-item {
-        background-color: #232323;
-        margin-bottom: 15px;
-        padding: 10px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .accessoire-info .info-item:hover {
-        background-color: #2d3436;
-        transform: scale(1.05);
-    }
-
-    .title {
-        font-size: 22px;
-        color: green;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-</style>
-
 {% endblock %}

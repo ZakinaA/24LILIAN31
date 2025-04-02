@@ -1,228 +1,435 @@
 {% extends 'base.html.twig' %}
 
-{% block content %}
-<link rel="stylesheet" href="{{ asset('styles.css') }}">
-<style>
-body, h1, h2, p, ul, li, a, img {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+{% block title %}Modifier un élève - Emusic{% endblock %}
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #121212;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.ajouter-title-primary {
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
-    color: green;
-    margin-bottom: 20px;
-}
-
-/* Conteneur du formulaire */
-.ajouter-formulaire-ajout {
-    background-color: #181B22;
-    border-radius: 20px;
-    padding: 20px;
-    width: 800px;
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-}
-
-.ajouter-left-column,
-.ajouter-right-column {
-    flex: 1;
-}
-
-.ajouter-image-container {
-    width: 100%;
-    height: 200px;
-    border: 2px solid #444;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #232323;
-    margin-bottom: 15px;
-}
-
-.ajouter-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.ajouter-form-group {
-    margin-bottom: 15px;
-}
-
-.ajouter-form-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #ccc;
-}
-
-.ajouter-form-group input,
-.ajouter-form-group select,
-.ajouter-form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background-color: #232323;
-    color: white;
-}
-
-.ajouter-form-group input:focus,
-.ajouter-form-group select:focus,
-.ajouter-form-group textarea:focus {
-    border-color: green;
-    outline: none;
-    box-shadow: 0 0 8px green;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.ajouter-progress-container {
-    width: 100%;
-    background-color: #ddd;
-    border-radius: 20px;
-    margin-top: 20px;
-    height: 10px;
-    overflow: hidden;
-}
-
-.ajouter-progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: green;
-    transition: width 0.3s ease;
-}
-</style>
-
-<div class="ajouter-form-container">
-    <h1 class="ajouter-title-primary">Ajouter un élève</h1>
-    <div class="ajouter-formulaire-ajout">
-        <div class="ajouter-left-column">
-            {{ form_start(form) }}
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.nom) }}
-                {{ form_widget(form.nom) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.prenom) }}
-                {{ form_widget(form.prenom) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.numRue) }}
-                {{ form_widget(form.numRue) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.rue) }}
-                {{ form_widget(form.rue) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.copos) }}
-                {{ form_widget(form.copos) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.ville) }}
-                {{ form_widget(form.ville) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.tel) }}
-                {{ form_widget(form.tel) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.mail) }}
-                {{ form_widget(form.mail) }}
-            </div>
-
-        </div>
-
-        <div class="ajouter-right-column">
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.responsable) }}
-                {{ form_widget(form.responsable) }}
-            </div>
-
-
-            <div class="ajouter-image-container">
-                <img id="image-preview" src="{{ asset('placeholder-image.png') }}" alt="Prévisualisation">
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.cheminImage) }}
-                {{ form_widget(form.cheminImage) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_widget(form.enregistrer) }}
-            </div>
-        </div>
-
-        {{ form_end(form) }}
-    </div>
-
-    <div class="ajouter-progress-container">
-        <div class="ajouter-progress-bar"></div>
-    </div>
-</div>
-
-<script>
-    document.querySelector('#eleve_cheminImage').addEventListener('change', function(event) {
-        const input = event.target;
-        const preview = document.getElementById('image-preview');
-
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-            };
-
-            reader.readAsDataURL(input.files[0]);
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
         }
-    });
+        
+        .enTetePage {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .carteFormulaire {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+        }
+        
+        .enTeteCarte {
+            background-color: var(--sidebar-bg);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .badge {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .corpsCarte {
+            padding: 2rem;
+        }
+        
+        .grilleFormulaire {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .groupeChamp {
+            margin-bottom: 1.5rem;
+        }
+        
+        .libellePiece {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        .libellePiece i {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .groupeChamp input,
+        .groupeChamp select,
+        .groupeChamp textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .groupeChamp input:focus,
+        .groupeChamp select:focus,
+        .groupeChamp textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-transparent);
+            outline: none;
+        }
+        
+        .conteneurImage {
+            width: 100%;
+            height: 220px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            background-color: var(--sidebar-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .conteneurImage img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .conteneurImage img:hover {
+            transform: scale(1.03);
+        }
+        
+        .btnEnregistrer {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .btnEnregistrer:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .barreProgression {
+            height: 6px;
+            background-color: var(--sidebar-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1.5rem;
+        }
+        
+        .indicateurProgression {
+            height: 100%;
+            width: 0;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .lienRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .lienRetour:hover {
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .grilleFormulaire {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+            
+            .corpsCarte {
+                padding: 1.5rem;
+            }
+            
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
 
+{% block content %}
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-user-edit"></i>
+                Modifier un élève
+            </h1>
+            
+            <div class="actionsTitre">
+                <a href="{{ path('gestionnaireListerEleve') }}" class="btnRetour">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
+        
+        <div class="carteFormulaire">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-user-graduate"></i>
+                    Informations de l'élève
+                </h2>
+                
+                <span class="badge">Modifié le {{ "now"|date("d/m/Y") }}</span>
+            </div>
+            
+            <div class="corpsCarte">
+                {{ form_start(form) }}
+                
+                <div class="grilleFormulaire">
+                    <div>
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-user"></i>
+                                {{ form_label(form.nom, 'Nom') }}
+                            </div>
+                            {{ form_widget(form.nom, {'attr': {'placeholder': 'Nom de famille'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-user"></i>
+                                {{ form_label(form.prenom, 'Prénom') }}
+                            </div>
+                            {{ form_widget(form.prenom, {'attr': {'placeholder': 'Prénom'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ form_label(form.numRue, 'Numéro de rue') }}
+                            </div>
+                            {{ form_widget(form.numRue, {'attr': {'placeholder': 'Ex: 12'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-road"></i>
+                                {{ form_label(form.rue, 'Rue') }}
+                            </div>
+                            {{ form_widget(form.rue, {'attr': {'placeholder': 'Nom de la rue'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-mail-bulk"></i>
+                                {{ form_label(form.copos, 'Code postal') }}
+                            </div>
+                            {{ form_widget(form.copos, {'attr': {'placeholder': 'Ex: 75000'}}) }}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-city"></i>
+                                {{ form_label(form.ville, 'Ville') }}
+                            </div>
+                            {{ form_widget(form.ville, {'attr': {'placeholder': 'Nom de la ville'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-phone"></i>
+                                {{ form_label(form.tel, 'Téléphone') }}
+                            </div>
+                            {{ form_widget(form.tel, {'attr': {'placeholder': 'Ex: 0601020304'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-envelope"></i>
+                                {{ form_label(form.mail, 'Email') }}
+                            </div>
+                            {{ form_widget(form.mail, {'attr': {'placeholder': 'Ex: prenom.nom@email.com'}}) }}
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-users"></i>
+                                {{ form_label(form.responsable, 'Responsable légal') }}
+                            </div>
+                            {{ form_widget(form.responsable) }}
+                        </div>
+                        
+                        <div class="conteneurImage">
+                            <img id="image-preview" src="{{ form.cheminImage is not empty ? asset('eleve/' ~ form.cheminImage.vars.value) : asset('placeholder-image.png') }}" alt="Photo de l'élève">
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-image"></i>
+                                {{ form_label(form.cheminImage, 'Photo de l\'élève') }}
+                            </div>
+                            {{ form_widget(form.cheminImage) }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="groupeChamp" style="margin-top: 1rem;">
+                    {{ form_widget(form.enregistrer, {'attr': {'class': 'btnEnregistrer'}}) }}
+                </div>
+                
+                {{ form_end(form) }}
+                
+                <div class="barreProgression">
+                    <div class="indicateurProgression" id="barre-progression"></div>
+                </div>
+            </div>
+        </div>
+        
+        <a href="{{ path('gestionnaireConsulterEleve', {'id': app.request.get('id')}) }}" class="lienRetour">
+            <i class="fas fa-eye"></i>
+            Voir les détails de l'élève
+        </a>
+    </div>
+{% endblock %}
 
-    
-const fields = document.querySelectorAll('.ajouter-form-group input, .ajouter-form-group select, .ajouter-form-group textarea');
-const progressBar = document.querySelector('.ajouter-progress-bar');
-
-fields.forEach(field => {
-    field.addEventListener('input', updateProgress);
-});
-
-function updateProgress() {
-    const filledFields = Array.from(fields).filter(field => field.value.trim() !== '');
-    const progress = (filledFields.length / fields.length) * 100;
-    progressBar.style.width = `${progress}%`;
-}
-
-
-</script>
-
-
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputImage = document.querySelector('input[type="file"]');
+            const previewImage = document.getElementById('image-preview');
+            
+            if (inputImage) {
+                inputImage.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(event) {
+                            previewImage.src = event.target.result;
+                        }
+                        
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+            }
+            
+            const champs = document.querySelectorAll('.groupeChamp input, .groupeChamp select, .groupeChamp textarea');
+            const barreProgression = document.getElementById('barre-progression');
+            
+            function miseAJourProgression() {
+                const champsRemplis = Array.from(champs).filter(champ => {
+                    if (champ.type === 'file') return true;
+                    return champ.value.trim() !== '';
+                });
+                
+                const progres = (champsRemplis.length / champs.length) * 100;
+                barreProgression.style.width = `${progres}%`;
+            }
+            
+            miseAJourProgression();
+            
+            champs.forEach(champ => {
+                champ.addEventListener('input', miseAJourProgression);
+            });
+            
+            const formulaire = document.querySelector('form');
+            
+            if (formulaire) {
+                formulaire.addEventListener('submit', function() {
+                    barreProgression.style.width = '100%';
+                });
+            }
+        });
+    </script>
 {% endblock %}

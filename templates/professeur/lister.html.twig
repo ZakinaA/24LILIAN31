@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Liste des professeurs - Emusic{% endblock %}
+
 {% block content %}
 <style>
     a {
@@ -10,6 +12,7 @@
         font-size: 40px;
         text-align: center;
         margin-bottom: 30px;
+        color: var(--text-light);
     }
 
     .professeur-grid {
@@ -23,49 +26,64 @@
     .professeur-item {
         text-align: center;
         color: white;
-        width: 200px;
+        width: 230px;
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
         margin-bottom: 40px;
-        background-color: #313237;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius-lg);
+        padding: 25px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-light);
     }
 
     .professeur-item:hover {
         transform: scale(1.05);
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow-md);
     }
 
     .professeur-photo {
-        width: 120px;
-        height: 120px;
+        width: 140px;
+        height: 140px;
         margin: 0 auto;
         border-radius: 50%;
         background-size: cover;
         background-position: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow-sm);
         cursor: pointer;
+        border: 3px solid var(--primary-color);
     }
 
     .professeur-item p {
-        margin-top: 15px;
+        margin-top: 20px;
         font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-light);
+    }
+
+    .professeur-domaine {
+        font-size: 0.9rem;
+        color: var(--primary-color);
+        margin-top: 5px;
+        margin-bottom: 15px;
     }
 
     .action-btn {
         display: block;
-        margin-top: 10px;
+        margin-top: 15px;
         text-decoration: none;
-        color: #fff;
+        color: var(--text-light);
         font-size: 1rem;
-        padding: 5px 10px;
-        border-radius: 5px;
+        padding: 8px 15px;
+        border-radius: var(--border-radius);
         text-align: center;
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-light);
+        transition: var(--transition);
     }
 
     .action-btn:hover {
-        background-color: #575757;
+        background-color: var(--card-hover);
+        transform: translateY(-2px);
     }
 
     .dropdown {
@@ -76,42 +94,31 @@
     .dropdown-content {
         display: none;
         position: absolute;
-        background-color: #313237;
+        background-color: var(--card-bg);
         min-width: 160px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        box-shadow: var(--shadow-md);
         z-index: 1;
-        border-radius: 5px;
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-light);
+        left: 50%;
+        transform: translateX(-50%);
     }
 
     .dropdown-content a {
-        color: white;
+        color: var(--text-light);
         padding: 12px 16px;
         text-decoration: none;
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .dropdown-content a:hover {
-        background-color: #575757;
+        background-color: var(--card-hover);
     }
 
     .dropdown:hover .dropdown-content {
         display: block;
-    }
-
-    /* Popup Styles */
-    .popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #181B22;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        z-index: 999;
-        border-radius: 10px;
-        max-width: 400px;
-        width: 100%;
     }
 
     .popup-overlay {
@@ -121,35 +128,168 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
         z-index: 998;
+    }
+
+    .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius-lg);
+        padding: 25px;
+        max-width: 450px;
+        width: 90%;
+        z-index: 999;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border-light);
     }
 
     .popup.open, .popup-overlay.open {
         display: block;
     }
 
+    .popup h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-light);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .popup h2 i {
+        color: var(--primary-color);
+    }
+
+    .popup table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    .popup table td {
+        padding: 5px;
+    }
+
+    .popup table td:first-child {
+        width: 120px;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .popup table td:last-child {
+        color: var(--text-light);
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        color: var(--text-light);
+        font-size: 1.2rem;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+
+    .close-btn:hover {
+        background-color: #e74c3c;
+        color: white;
+    }
+
     .add-btn {
         display: inline-block;
-        background-color: #4CAF50;
+        background-color: var(--primary-color);
         color: white;
         font-size: 1rem;
-        padding: 10px 20px;
-        border-radius: 5px;
+        padding: 12px 25px;
+        border-radius: var(--border-radius);
         text-decoration: none;
         margin-bottom: 30px;
-        transition: background-color 0.3s ease;
+        transition: var(--transition);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        max-width: 250px;
+        margin: 0 auto 40px;
+        box-shadow: var(--shadow-sm);
     }
 
     .add-btn:hover {
-        background-color: #45a049;
+        background-color: var(--primary-dark);
+        box-shadow: var(--glow-primary);
+        transform: translateY(-3px);
     }
 
+    .action-view {
+        color: var(--accent-light) !important;
+    }
 
+    .action-view:hover {
+        background-color: var(--accent-color) !important;
+        color: white !important;
+    }
+
+    .action-edit {
+        color: var(--primary-light) !important;
+    }
+
+    .action-edit:hover {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+    }
+
+    .action-delete {
+        color: #f9a795 !important;
+    }
+
+    .action-delete:hover {
+        background-color: #e74c3c !important;
+        color: white !important;
+    }
+
+    @media (max-width: 768px) {
+        .professeur-grid {
+            gap: 20px;
+        }
+        
+        .professeur-item {
+            width: 200px;
+            padding: 20px;
+        }
+        
+        .professeur-photo {
+            width: 120px;
+            height: 120px;
+        }
+    }
 </style>
 
 <h1>Liste des professeurs</h1>
-<a href="{{ path('professeurAjouter') }}" class="add-btn">Ajouter un professeur</a>
+<a href="{{ path('professeurAjouter') }}" class="add-btn">
+    <i class="fas fa-plus"></i>
+    Ajouter un professeur
+</a>
+
 <div class="professeur-grid">
     {% for p in pProfesseurs %}
     <div class="professeur-item">
@@ -164,19 +304,24 @@
             data-rue="{{ p.rue }}"
             data-copos="{{ p.copos }}"
             data-ville="{{ p.ville }}"
+            data-domaine="{{ p.domaineCompetence|default('Non spécifié') }}"
+            data-diplome="{{ p.diplome|default('Non spécifié') }}"
         ></div>
         <p>{{ p.nom }} {{ p.prenom }}</p>
+        <div class="professeur-domaine">{{ p.domaineCompetence|default('Professeur') }}</div>
 
         <div class="dropdown">
-            <a href="#" class="action-btn">Actions</a>
+            <a href="#" class="action-btn">
+                <i class="fas fa-ellipsis-v"></i> Actions
+            </a>
             <div class="dropdown-content">
-                <a href="{{ path('professeurConsulter', { 'id': p.id }) }}">
+                <a href="{{ path('professeurConsulter', { 'id': p.id }) }}" class="action-view">
                     <i class="fas fa-eye"></i> Consulter
                 </a>
-                <a href="{{ path('professeurModifier', { 'id': p.id }) }}" class="modify-btn" data-id="{{ p.id }}">
+                <a href="{{ path('professeurModifier', { 'id': p.id }) }}" class="action-edit">
                     <i class="fas fa-edit"></i> Modifier
                 </a>
-                <a href="{{ path('professeurSupprimer', { 'id': p.id }) }}" class="delete-btn" data-id="{{ p.id }}">
+                <a href="#" class="action-delete" onclick="event.preventDefault(); confirmerSuppression('{{ p.nom }} {{ p.prenom }}', {{ p.id }})">
                     <i class="fas fa-trash-alt"></i> Supprimer
                 </a>
             </div>
@@ -187,53 +332,98 @@
 
 <div class="popup-overlay"></div>
 <div class="popup">
-    <button class="close-btn">&times;</button>
-    <h2>Détails du professeur</h2>
+    <button class="close-btn"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-user"></i> <span id="popup-title">Détails du professeur</span></h2>
     <table>
         <tr><td>Nom :</td><td><span id="modal-nom"></span></td></tr>
         <tr><td>Prénom :</td><td><span id="modal-prenom"></span></td></tr>
         <tr><td>Téléphone :</td><td><span id="modal-tel"></span></td></tr>
         <tr><td>Email :</td><td><span id="modal-mail"></span></td></tr>
         <tr><td>Adresse :</td><td><span id="modal-adresse"></span></td></tr>
+        <tr><td>Domaine :</td><td><span id="modal-domaine"></span></td></tr>
+        <tr><td>Diplôme :</td><td><span id="modal-diplome"></span></td></tr>
     </table>
+</div>
+
+<div class="popup" id="confirmation-popup">
+    <button class="close-btn" id="close-confirm"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Confirmation</h2>
+    <p style="margin-bottom: 20px; color: var(--text-muted);">
+        Êtes-vous sûr de vouloir supprimer le professeur <strong id="prof-name"></strong> ?
+        Cette action est irréversible.
+    </p>
+    <div style="display: flex; justify-content: space-between; gap: 15px;">
+        <button id="cancel-delete" style="flex: 1; padding: 10px; background-color: var(--input-bg); border: 1px solid var(--border-light); color: var(--text-light); border-radius: var(--border-radius); cursor: pointer;">
+            Annuler
+        </button>
+        <a id="confirm-delete" href="#" style="flex: 1; padding: 10px; background-color: #e74c3c; color: white; border: none; border-radius: var(--border-radius); text-decoration: none; text-align: center;">
+            Supprimer
+        </a>
+    </div>
 </div>
 
 <script>
     document.querySelectorAll('.professeur-photo').forEach(photo => {
         photo.addEventListener('click', function() {
             const profId = this.dataset.id;
-
             const prof = document.querySelector(`[data-id="${profId}"]`);
 
+            document.getElementById('popup-title').textContent = `Détails de ${prof.dataset.prenom} ${prof.dataset.nom}`;
             document.getElementById('modal-nom').textContent = prof.dataset.nom;
             document.getElementById('modal-prenom').textContent = prof.dataset.prenom;
-            document.getElementById('modal-tel').textContent = prof.dataset.tel;
-            document.getElementById('modal-mail').textContent = prof.dataset.mail;
-            document.getElementById('modal-adresse').textContent = prof.dataset.numRue + ' ' + prof.dataset.rue + ', ' + prof.dataset.copos + ' ' + prof.dataset.ville;
+            document.getElementById('modal-tel').textContent = prof.dataset.tel || 'Non renseigné';
+            document.getElementById('modal-mail').textContent = prof.dataset.mail || 'Non renseigné';
+            document.getElementById('modal-adresse').textContent = `${prof.dataset.numRue} ${prof.dataset.rue}, ${prof.dataset.copos} ${prof.dataset.ville}`;
+            document.getElementById('modal-domaine').textContent = prof.dataset.domaine;
+            document.getElementById('modal-diplome').textContent = prof.dataset.diplome;
 
             document.querySelector('.popup').classList.add('open');
             document.querySelector('.popup-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
         });
     });
 
     document.querySelector('.close-btn').addEventListener('click', function() {
         document.querySelector('.popup').classList.remove('open');
         document.querySelector('.popup-overlay').classList.remove('open');
+        document.body.style.overflow = '';
     });
 
     document.querySelector('.popup-overlay').addEventListener('click', function() {
         document.querySelector('.popup').classList.remove('open');
+        document.querySelector('#confirmation-popup').classList.remove('open');
         document.querySelector('.popup-overlay').classList.remove('open');
+        document.body.style.overflow = '';
     });
 
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce professeur ?")) {
-                const profId = this.dataset.id;
-                window.location.href = '{{ path('professeurSupprimer', { 'id': '__ID__' }) }}'.replace('__ID__', profId);
-            }
-        });
+    function confirmerSuppression(nom, id) {
+        document.getElementById('prof-name').textContent = nom;
+        document.getElementById('confirm-delete').href = "{{ path('professeurSupprimer', {'id': 'ID_PLACEHOLDER'}) }}".replace('ID_PLACEHOLDER', id);
+        
+        document.getElementById('confirmation-popup').classList.add('open');
+        document.querySelector('.popup-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    document.getElementById('close-confirm').addEventListener('click', function() {
+        document.getElementById('confirmation-popup').classList.remove('open');
+        document.querySelector('.popup-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    });
+    
+    document.getElementById('cancel-delete').addEventListener('click', function() {
+        document.getElementById('confirmation-popup').classList.remove('open');
+        document.querySelector('.popup-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelector('.popup').classList.remove('open');
+            document.getElementById('confirmation-popup').classList.remove('open');
+            document.querySelector('.popup-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
     });
 </script>
 {% endblock %}

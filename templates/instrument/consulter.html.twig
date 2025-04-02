@@ -1,247 +1,489 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Instrument {{ instrument.numSerie }} - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .btnRetour {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .btnModifier {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .btnModifier:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .grilleInstrument {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+        
+        .colonneGauche {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .conteneurImage {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+        
+        .imageInstrument {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+            transition: var(--transition);
+        }
+        
+        .imageInstrument:hover {
+            transform: scale(1.03);
+        }
+        
+        .badgeType {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .colonneDroite {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .carteInfos {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        
+        .enTeteCarte {
+            padding: 1.2rem 1.5rem;
+            background-color: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .corpsCarte {
+            padding: 1.5rem;
+        }
+        
+        .listeInfos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.2rem;
+        }
+        
+        .infoItem {
+            background-color: var(--sidebar-bg);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            border: 1px solid var(--border-light);
+        }
+        
+        .infoItem:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+            background-color: var(--card-hover);
+        }
+        
+        .infoLabel {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .infoValeur {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        
+        .listeAccordeon {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .itemAccordeon {
+            background-color: var(--sidebar-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+        
+        .enteteAccordeon {
+            padding: 1rem 1.5rem;
+            background-color: var(--sidebar-bg);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .enteteAccordeon:hover {
+            background-color: var(--card-hover);
+        }
+        
+        .enteteAccordeon.actif {
+            background-color: var(--card-hover);
+        }
+        
+        .titreAccordeon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        .titreAccordeon i {
+            color: var(--primary-color);
+        }
+        
+        .iconeAccordeon {
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+        
+        .enteteAccordeon.actif .iconeAccordeon {
+            transform: rotate(180deg);
+        }
+        
+        .contenuAccordeon {
+            display: none;
+            padding: 1rem 1.5rem;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .contenuAccordeon.visible {
+            display: block;
+        }
+        
+        .listeElements {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .listeElements li {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .listeElements li:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .lienElement {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .lienElement:hover {
+            color: var(--accent-light);
+        }
+        
+        .messageVide {
+            color: var(--text-muted);
+            font-style: italic;
+            margin: 0;
+        }
+        
+        @media (max-width: 992px) {
+            .grilleInstrument {
+                grid-template-columns: 1fr;
+            }
+            
+            .conteneurImage {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .actionsTitre {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .listeInfos {
+                grid-template-columns: 1fr;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<h1>Consulter l'instrument {{ instrument.numSerie }}</h1>
-
-<!-- Bouton de retour en haut à gauche -->
-<div class="back-button">
-    <a href="{{ path('instrumentLister') }}" class="btn-back">
-        <i class="fas fa-arrow-left"></i> Retour à la liste
-    </a>
-</div>
-
-<div class="container">
-    <div class="left">
-        <div class="image-container">
-            <img src="{{'../../image/' ~ instrument.CheminImage}}" alt="Instrument Image">
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-guitar"></i>
+                Instrument {{ instrument.numSerie }}
+            </h1>
+            
+            <div class="actionsTitre">
+                <a href="{{ path('instrumentLister') }}" class="btnAction btnRetour">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+                
+                <a href="{{ path('instrumentModifier', {'id': instrument.id}) }}" class="btnAction btnModifier">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
+            </div>
         </div>
-    </div>
-    <div class="right">
-        <div class="container2">
-            <div class="accordion">
-                <div class="accordion-item">
-    <div class="accordion-header">
-        <i class="fas fa-wrench"></i>&nbsp; Intervention(s)
-    </div>
-    <div class="accordion-content">
-        {% if interventions is not empty %}
-            <ul>
-                {% for intervention in interventions %}
-                    <li>
-                        <a href="{{ path('intervention_consulter', {'id': intervention.id}) }}" target = "_blank" class="intervention-link">
-                            {{ intervention.descriptif }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Aucune intervention effectuée pour le moment.</p>
-        {% endif %}
-    </div>
-</div>
-
-                <div class="accordion-item">
-                    <div class="accordion-header">
-                        <i class="fas fa-hand-holding"></i>&nbsp; Prêt(s)
-                    </div>
-                    <div class="accordion-content">
-                        {% if prets is not empty %}
-                            <ul>
-                                {% for pret in prets %}
-                                    <li>
-                                        <a href="{{ path('pret_consulter', {'id': pret.id}) }}" target = "_blank" class="pret-link">
-                                            {{ pret.dateDebut|date('d/m/Y') }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <p>Aucun prêt trouvé.</p>
-                        {% endif %}
-                    </div>
+        
+        <div class="grilleInstrument">
+            <div class="colonneGauche">
+                <div class="conteneurImage">
+                    <img src="{{ asset('image/' ~ instrument.CheminImage) }}" alt="{{ instrument.typeInstrument.libelle }}" class="imageInstrument">
+                    <div class="badgeType">{{ instrument.typeInstrument.libelle }}</div>
                 </div>
             </div>
             
-            <br>
-            <div class="instrument-info">
-                <h2 class="title"><i class="fas fa-keyboard"></i>&nbsp; Instrument</h2>
-                <div class="info-item">
-                    <strong>Numéro de série :</strong> {{ instrument.numSerie }}
+            <div class="colonneDroite">
+                <div class="carteInfos">
+                    <div class="enTeteCarte">
+                        <h2 class="titreCarte">
+                            <i class="fas fa-info-circle"></i>
+                            Informations de l'instrument
+                        </h2>
+                    </div>
+                    
+                    <div class="corpsCarte">
+                        <div class="listeInfos">
+                            <div class="infoItem">
+                                <div class="infoLabel">Numéro de série</div>
+                                <div class="infoValeur">{{ instrument.numSerie }}</div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Date d'achat</div>
+                                <div class="infoValeur">{{ instrument.dateAchat|date('d/m/Y') }}</div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Prix d'achat</div>
+                                <div class="infoValeur">{{ instrument.prixAchat }} €</div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Utilisation</div>
+                                <div class="infoValeur">{{ instrument.utilisation }}</div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Couleur</div>
+                                <div class="infoValeur">{{ instrument.couleur }}</div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Type d'instrument</div>
+                                <div class="infoValeur">{{ instrument.typeInstrument.libelle }}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <strong>Date d'achat :</strong> {{ instrument.dateAchat|date('d/m/Y') }}
-                </div>
-                <div class="info-item">
-                    <strong>Prix d'achat :</strong> {{ instrument.prixAchat }} €
-                </div>
-                <div class="info-item">
-                    <strong>Utilisation :</strong> {{ instrument.utilisation }}
-                </div>
-                <div class="info-item">
-                    <strong>Couleur :</strong> {{ instrument.couleur }}
-                </div>
-                <div class="info-item">
-                    <strong>Type instrument :</strong> {{ instrument.typeInstrument.libelle }}
+                
+                <div class="carteInfos">
+                    <div class="enTeteCarte">
+                        <h2 class="titreCarte">
+                            <i class="fas fa-history"></i>
+                            Historique
+                        </h2>
+                    </div>
+                    
+                    <div class="corpsCarte">
+                        <div class="listeAccordeon">
+                            <div class="itemAccordeon">
+                                <div class="enteteAccordeon" data-target="interventions">
+                                    <div class="titreAccordeon">
+                                        <i class="fas fa-wrench"></i>
+                                        Interventions
+                                    </div>
+                                    <i class="fas fa-chevron-down iconeAccordeon"></i>
+                                </div>
+                                
+                                <div class="contenuAccordeon" id="interventions">
+                                    {% if interventions is not empty %}
+                                        <ul class="listeElements">
+                                            {% for intervention in interventions %}
+                                                <li>
+                                                    <a href="{{ path('intervention_consulter', {'id': intervention.id}) }}" class="lienElement" target="_blank">
+                                                        <i class="fas fa-tools"></i>
+                                                        {{ intervention.descriptif }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="messageVide">Aucune intervention effectuée pour le moment.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="itemAccordeon">
+                                <div class="enteteAccordeon" data-target="prets">
+                                    <div class="titreAccordeon">
+                                        <i class="fas fa-hand-holding"></i>
+                                        Prêts
+                                    </div>
+                                    <i class="fas fa-chevron-down iconeAccordeon"></i>
+                                </div>
+                                
+                                <div class="contenuAccordeon" id="prets">
+                                    {% if prets is not empty %}
+                                        <ul class="listeElements">
+                                            {% for pret in prets %}
+                                                <li>
+                                                    <a href="{{ path('pret_consulter', {'id': pret.id}) }}" class="lienElement" target="_blank">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                        Prêt du {{ pret.dateDebut|date('d/m/Y') }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="messageVide">Aucun prêt trouvé.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        
         </div>
     </div>
-</div>
+{% endblock %}
 
-<script>
-    document.querySelectorAll('.accordion-header').forEach(item => {
-        item.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            content.style.display = content.style.display === 'block' ? 'none' : 'block';
-            this.classList.toggle('active');
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+           
+            document.querySelectorAll('.enteteAccordeon').forEach(header => {
+                header.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const content = document.getElementById(targetId);
+                    
+                    this.classList.toggle('actif');
+                    
+                    content.classList.toggle('visible');
+                });
+            });
+            
+            document.querySelector('.enteteAccordeon').classList.add('actif');
+            document.querySelector('.contenuAccordeon').classList.add('visible');
         });
-    });
-</script>
-
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #121212;
-        color: #ffffff;
-        margin: 0;
-        padding: 100px 0;
-    }
-
-    h1 {
-        font-size: 48px;
-        font-weight: bold;
-        text-align: center;
-        color: green;
-        margin-bottom: 30px;
-    }
-
-    .back-button {
-        margin-left: 20px;
-        margin-bottom: 20px;
-        width: 13%;
-    }
-
-    .btn-back {
-        font-size: 18px;
-        padding: 10px 20px;
-        background-color: #444;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-back:hover {
-        background-color: #333;
-    }
-
-    .container {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-        margin-top: 50px;
-    }
-
-    .left, .right {
-        padding: 20px;
-        border-radius: 8px;
-    }
-
-    .left {
-        width: 380px;
-        background-color: #1e2125;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .right {
-        width: 600px;
-        background-color: #181B22;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .image-container {
-        width: 100%;
-        height: 400px;
-        overflow: hidden;
-        border-radius: 15px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .image-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.4s ease;
-    }
-
-    .image-container img:hover {
-        transform: scale(1.1);
-    }
-
-    .accordion {
-        margin-top: 20px;
-    }
-
-    .accordion-item {
-        background-color: #232323;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .accordion-header {
-        padding: 15px;
-        font-size: 18px;
-        color: green;
-        background-color: #181B22;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .accordion-header:hover {
-        background-color: #2d3436;
-    }
-
-    .accordion-header.active {
-        background-color: #2d3436;
-    }
-
-    .accordion-content {
-        display: none;
-        padding: 15px;
-        background-color: #1e2125;
-        color: #bbb;
-    }
-
-    .instrument-info .info-item {
-        background-color: #232323;
-        margin-bottom: 15px;
-        padding: 10px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .instrument-info .info-item:hover {
-        background-color: #2d3436;
-        transform: scale(1.05);
-    }
-
-    .title {
-        font-size: 22px;
-        color: green;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-</style>
-
+    </script>
 {% endblock %}

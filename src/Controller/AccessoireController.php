@@ -55,47 +55,49 @@ class AccessoireController extends AbstractController
         return $this->render('accessoire/lister.html.twig', [
         'pAccessoires' => $accessoires,]);	
     }
-
     #[Route('/gestionnaire/accessoire/modifier/{id}', name: 'accessoireModifier')] 
     public function modifierAccessoire(Request $request, ManagerRegistry $doctrine, int $id): Response
-{
-    $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
-
-    if (!$accessoire) {
-        throw $this->createNotFoundException('Aucun accessoire trouvé avec l\'ID ' . $id);
-    }
-
-    $form = $this->createForm(AccessoireModifierType::class, $accessoire);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        $imageFile = $form->get('cheminImage')->getData();
-
-        if ($imageFile) {
-            $newFilename = uniqid().'.'.$imageFile->guessExtension();
-
-            try {
-                $imageFile->move(
-                    $this->getParameter('accessoire_images_directory'),
-                    $newFilename
-                );
-            } catch (FileException $e) {
-            }
-
-            $accessoire->setCheminImage($newFilename);
+    {
+        $accessoire = $doctrine->getRepository(Accessoire::class)->find($id);
+    
+        if (!$accessoire) {
+            throw $this->createNotFoundException('Aucun accessoire trouvé avec l\'ID ' . $id);
         }
-
-        $entityManager = $doctrine->getManager();
-        $entityManager->flush();
-
-        return $this->redirectToRoute('accessoireLister');
+    
+        $form = $this->createForm(AccessoireModifierType::class, $accessoire);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('cheminImage')->getData();
+    
+            if ($imageFile) {
+                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+    
+                try {
+                    $imageFile->move(
+                        $this->getParameter('accessoire_images_directory'),
+                        $newFilename
+                    );
+                    
+                    // Mettre à jour le chemin de l'image seulement si un nouveau fichier est téléchargé
+                    $accessoire->setCheminImage($newFilename);
+                } catch (FileException $e) {
+                    // Gérer l'exception si quelque chose se passe pendant le téléchargement
+                    $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image');
+                }
+            }
+    
+            $entityManager = $doctrine->getManager();
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('accessoireLister');
+        }
+    
+        return $this->render('accessoire/modifier.html.twig', [
+            'form' => $form->createView(),
+            'accessoire' => $accessoire,
+        ]);
     }
-
-    return $this->render('accessoire/modifier.html.twig', [
-        'form' => $form->createView(),
-        'accessoire' => $accessoire,
-    ]);
-}
 
     #[Route('/gestionnaire/accessoire/ajouter', name: 'accessoireAjouter')]
     public function ajouterAccessoire(ManagerRegistry $doctrine, Request $request)

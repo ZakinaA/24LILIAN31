@@ -1,182 +1,342 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des élèves et montants{% endblock %}
+{% block title %}Liste des élèves et montants - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .enTetePage {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .sousTitrePage {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .responsableInfo {
+            background-color: var(--primary-transparent);
+            border-radius: var(--border-radius);
+            padding: 0.7rem 1.2rem;
+            margin: 1rem auto;
+            max-width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .responsableInfo i {
+            color: var(--primary-color);
+        }
+        
+        .responsableInfo span {
+            font-weight: 500;
+            color: var(--primary-light);
+        }
+        
+        .tableauMontants {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+        }
+        
+        .tableauMontants th {
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            font-weight: 600;
+            text-align: left;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .tableauMontants td {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-muted);
+            vertical-align: top;
+        }
+        
+        .tableauMontants tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tableauMontants tr:hover td {
+            background-color: var(--card-hover);
+        }
+        
+        .tableauMontants ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .tableauMontants li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tableauMontants li:not(:last-child) {
+            border-bottom: 1px dashed var(--border-light);
+        }
+        
+        .tableauMontants li i {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+        
+        .eleveMontant {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .eleveAvatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: var(--primary-transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .eleveAvatar i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+        
+        .eleveNom {
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        .montantCell {
+            font-weight: 600;
+            color: var(--primary-light);
+            text-align: right;
+        }
+        
+        .montantTotal {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+        
+        .montantTotal::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+        
+        .montantTotal h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        .montantTotal h2 i {
+            color: var(--primary-color);
+        }
+        
+        .montantTotal .montantGlobal {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        
+        .barreProgression {
+            height: 8px;
+            background-color: var(--sidebar-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1.5rem auto 0;
+            max-width: 70%;
+        }
+        
+        .indicateurProgression {
+            height: 100%;
+            width: 100%;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            animation: progressBar 2s ease-in-out;
+        }
+        
+        @keyframes progressBar {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        .boutonRetour {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .btnRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .conteneurPage {
+                padding: 1rem;
+            }
+            
+            .titrePage {
+                font-size: 1.5rem;
+            }
+            
+            .tableauMontants th,
+            .tableauMontants td {
+                padding: 1rem;
+            }
+            
+            .tableauMontants th:nth-child(2),
+            .tableauMontants td:nth-child(2) {
+                display: none;
+            }
+            
+            .montantTotal h2 {
+                font-size: 1.2rem;
+            }
+            
+            .montantTotal .montantGlobal {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-<main class="eleves-main">
-    <div class="eleves-container">
-        <header class="eleves-header">
-            <h1>Liste des élèves et montants à payer</h1>
-            <p>Responsable : {{ responsable.nom }} {{ responsable.prenom }}</p>
-        </header>
-
-        <section class="eleves-section">
-            <table class="eleves-table">
-                <thead>
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-file-invoice-dollar"></i>
+                Liste des élèves et montants à payer
+            </h1>
+            
+            <div class="responsableInfo">
+                <i class="fas fa-user-tie"></i>
+                Responsable : <span>{{ responsable.nom }} {{ responsable.prenom }}</span>
+            </div>
+        </div>
+        
+        <table class="tableauMontants">
+            <thead>
+                <tr>
+                    <th>Élève(s)</th>
+                    <th>Cours</th>
+                    <th style="text-align: right;">Montant(s)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for eleveData in montantsParEleve %}
                     <tr>
-                        <th>Élève(s)</th>
-                        <th>Cours</th>
-                        <th>Montant(s)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for eleveData in montantsParEleve %}
-                    <tr>
-                        <td>{{ eleveData.eleve.nom }} {{ eleveData.eleve.prenom }}</td>
+                        <td>
+                            <div class="eleveMontant">
+                                <div class="eleveAvatar">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <span class="eleveNom">{{ eleveData.eleve.nom }} {{ eleveData.eleve.prenom }}</span>
+                            </div>
+                        </td>
                         <td>
                             <ul>
                                 {% for montant in eleveData.montants %}
-                                    <li>{{ montant.cours }} : {{ montant.montant }} €</li>
+                                    <li>
+                                        <i class="fas fa-book"></i>
+                                        {{ montant.cours }} : <strong>{{ montant.montant }} €</strong>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         </td>
-                        <td>{{ eleveData.totalMontant }} €</td>
+                        <td class="montantCell">{{ eleveData.totalMontant }} €</td>
                     </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-       
-            <div class="eleves-total">
-                <hr><br>
-                <h2>Total à payer pour tous les élèves : {{ totalGlobal }} €</h2>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="montantTotal">
+            <h2>
+                <i class="fas fa-calculator"></i>
+                Récapitulatif
+            </h2>
+            <div>Total à payer pour tous les élèves :</div>
+            <div class="montantGlobal">{{ totalGlobal }} €</div>
+            
+            <div class="barreProgression">
+                <div class="indicateurProgression"></div>
             </div>
-
-            <div class="eleves-return">
-                <a href="{{ path('inscription_lister') }}" class="btn retour-btn">
-                    Retour à la liste des inscriptions
-                </a>
-            </div>
-        </section>
+        </div>
+        
+        <div class="boutonRetour">
+            <a href="{{ path('inscription_lister') }}" class="btnRetour">
+                <i class="fas fa-arrow-left"></i>
+                Retour à la liste des inscriptions
+            </a>
+        </div>
     </div>
-</main>
-
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
-}
-
-.eleves-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: 0 20px;
-}
-
-.eleves-container {
-    width: 100%;
-    max-width: 1100px; 
-    background-color: #181B22;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.eleves-header {
-    background-color: #181B22;
-    color: green;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.eleves-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-}
-
-.eleves-header p {
-    font-size: 1.2rem;
-}
-
-.eleves-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.eleves-table th,
-.eleves-table td {
-    padding: 15px;
-    text-align: left;
-    font-size: 1.1rem;
-}
-
-.eleves-table th {
-    background-color: green;
-    color: white;
-}
-
-.eleves-table tr:hover {
-    background-color: #313237;
-}
-
-.eleves-table ul {
-    padding-left: 20px;
-    list-style-type: none;
-}
-
-.eleves-table ul li {
-    font-size: 1rem;
-    color: white;
-}
-
-.eleves-total {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 1.5rem;
-    color: white;
-}
-
-.eleves-total hr {
-    border: 1px solid green;
-    margin-top: 10px;
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.eleves-return {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.eleves-return .btn {
-    background-color: green;
-    color: white;
-    padding: 12px 25px;
-    text-decoration: none;
-    font-size: 1.1rem;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.eleves-return .btn:hover {
-    background-color: #004d99;
-}
-
-@media (max-width: 768px) {
-    .eleves-header h1 {
-        font-size: 2rem;
-    }
-
-    .eleves-table th, .eleves-table td {
-        padding: 10px;
-        font-size: 1rem;
-    }
-
-    .eleves-total {
-        font-size: 1.2rem;
-    }
-
-    .eleves-return .btn {
-        font-size: 1rem;
-        padding: 10px 20px;
-    }
-}
-</style>
-
 {% endblock %}

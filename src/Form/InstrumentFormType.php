@@ -32,8 +32,14 @@ class InstrumentFormType extends AbstractType
             ])
             ->add('modele', EntityType::class, [
                 'class' => Modele::class,
-'choice_label' => 'id',
-'multiple' => true,
+                'choice_label' => 'nom',
+                'multiple' => true,
+                'expanded' => false,
+                'label' => 'Modèle(s)',
+                'attr' => [
+                    'class' => 'form-control select2-multiple',
+                    'data-placeholder' => 'Sélectionnez un ou plusieurs modèles'
+                ]
             ])
             ->add('enregistrer', SubmitType::class, array('label' => 'nouveau'))
         ;

@@ -87,7 +87,7 @@ public function listerInstrument(ManagerRegistry $doctrine, Request $request)
 }
 
 #[Route('/gestionnaire/instrument/modifier/{id}', name: 'instrumentModifier')]  
-    public function modifierInstrument(ManagerRegistry $doctrine, $id, Request $request)
+public function modifierInstrument(ManagerRegistry $doctrine, $id, Request $request)
 {
     $instrument = $doctrine->getRepository(Instrument::class)->find($id);
 
@@ -99,11 +99,9 @@ public function listerInstrument(ManagerRegistry $doctrine, Request $request)
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-
         $imageFile = $form->get('cheminImage')->getData();
 
         if ($imageFile) {
-
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
             $slugger = new AsciiSlugger();
             $safeFilename = $slugger->slug($originalFilename)->toString();
@@ -125,10 +123,13 @@ public function listerInstrument(ManagerRegistry $doctrine, Request $request)
         $entityManager->persist($instrument);
         $entityManager->flush();
 
-        return $this->render('instrument/modifier.html.twig', ['instrument' => $instrument]);
+        return $this->redirectToRoute('instrumentConsulter', ['id' => $instrument->getId()]);
     }
 
-    return $this->render('instrument/modifier.html.twig', ['form' => $form->createView()]);
+    return $this->render('instrument/modifier.html.twig', [
+        'instrument' => $instrument,
+        'form' => $form->createView()
+    ]);
 }
 
 

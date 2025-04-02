@@ -1,450 +1,1234 @@
 {% extends 'base.html.twig' %}
 
-{% block content %}
-<main class="cours-main">
-    <header class="cours-header">
-        <h1>Liste des Cours</h1>
-    </header>
+{% block title %}Liste des cours - Emusic{% endblock %}
 
-    <section class="cours-container-filtre">
-        <button class="cours-btn-filtre-toggle">
-            <img src="https://example.com/path/to/filter-icon.png" alt="Filtrer" class="cours-icône-filtre">
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .cours-main {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-            Filtrer
-        </button>
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
         
-        <div class="cours-dropdown-filtre">
-            <form method="get" action="{{ path('gestionnaireCoursLister') }}">
-                <label for="cours-typeCours">Type de Cours:</label>
-                <select name="typeCours" id="cours-typeCours">
-                    <option value="">Choisir...</option>
-                    {% for typeCours in typeCours %}
-                        <option value="{{ typeCours.id }}">{{ typeCours.libelle }}</option>
-                    {% endfor %}
-                </select><br>
-                
-                <label for="cours-typeInstrument">Type d'Instrument:</label>
-                <select name="typeInstrument" id="cours-typeInstrument">
-                    <option value="">Choisir...</option>
-                    {% for typeInstrument in typeInstruments %}
-                        <option value="{{ typeInstrument.id }}">{{ typeInstrument.libelle }}</option>
-                    {% endfor %}
-                </select><br>
-                
-                <button type="submit" class="cours-btn-filtre">Appliquer les filtres</button>
-            </form>
+        .page-title i {
+            color: var(--primary-color);
+        }
+
+        .page-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cours-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 1rem;
+            border: 1px solid var(--border-light);
+        }
+
+        .cours-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .cours-search-container {
+            position: relative;
+            flex-grow: 1;
+            max-width: 350px;
+        }
+
+        .cours-search-input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            padding: 0.8rem 1rem 0.8rem 2.8rem;
+            color: var(--text-light);
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .cours-search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-transparent);
+            outline: none;
+        }
+
+        .cours-search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .cours-filter-dropdown {
+            position: relative;
+        }
+
+        .cours-filter-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            padding: 0.8rem 1rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .cours-filter-button:hover {
+            background-color: var(--card-hover);
+        }
+        
+        .cours-filter-button.active {
+            background-color: var(--primary-transparent);
+            border-color: var(--primary-color);
+            color: var(--primary-light);
+        }
+
+        .cours-filter-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            width: 300px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            z-index: 100;
+        }
+
+        .cours-filter-content.show {
+            display: block;
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .filter-arrow {
+            position: absolute;
+            top: -8px;
+            right: 20px;
+            width: 16px;
+            height: 16px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-light);
+            border-left: 1px solid var(--border-light);
+            transform: rotate(45deg);
+        }
+
+        .cours-filter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-group label i {
+            color: var(--primary-color);
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .filter-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-transparent);
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Boutons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--accent-dark);
+            box-shadow: var(--glow-accent);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-sm {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .cours-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .cours-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .cours-table th {
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .cours-table td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-muted);
+        }
+
+        .cours-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .cours-table tr:hover td {
+            background-color: var(--card-hover);
+        }
+
+        .cours-nom {
+            font-weight: 500;
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .cours-nom i {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .cours-nom:hover {
+            color: var(--primary-color);
+        }
+
+        .cours-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .btn-edit {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: var(--accent-dark);
+            box-shadow: var(--glow-accent);
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .cours-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .pagination-info {
+            display: flex;
+            align-items: center;
+            margin: 0 1rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .timetable-link-section {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .timetable-link-section p {
+            color: var(--text-muted);
+            max-width: 600px;
+        }
+
+       .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            animation: modalFadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--sidebar-bg);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .modal-title i {
+            color: var(--primary-color);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: var(--input-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .modal-table tr:not(:last-child) {
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .modal-table td {
+            padding: 1rem 1.2rem;
+        }
+
+        .modal-table td:first-child {
+            font-weight: 600;
+            color: var(--primary-color);
+            width: 40%;
+        }
+
+        .modal-table td:last-child {
+            color: var(--text-light);
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .empty-state {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 4rem 2rem;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            opacity: 0.6;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .empty-desc {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            max-width: 500px;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-primary {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+        }
+        
+        .badge-secondary {
+            background-color: rgba(52, 152, 219, 0.15);
+            color: var(--accent-light);
+        }
+        
+        .jour-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            gap: 0.4rem;
+        }
+        
+        .jour-badge i {
+            color: var(--accent-color);
+        }
+        
+        .active-filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .clear-filters {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+        
+        .clear-filters:hover {
+            color: var(--text-light);
+            background-color: var(--card-hover);
+        }
+
+        .active-filters {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .cours-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .cours-search-container {
+                max-width: none;
+                width: 100%;
+            }
+            
+            .cours-filters {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .page-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .cours-filter-content {
+                width: 100%;
+                right: 0;
+                left: 0;
+                position: fixed;
+                bottom: 0;
+                top: auto;
+                border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            
+            .filter-arrow {
+                display: none;
+            }
+            
+            .cours-main {
+                padding: 1rem;
+            }
+            
+            .cours-table th:nth-child(2), 
+            .cours-table td:nth-child(2) {
+                display: none;
+            }
+            
+            .modal {
+                width: 95%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .cours-table th:nth-child(3), 
+            .cours-table td:nth-child(3) {
+                display: none;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <main class="cours-main">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-book"></i>
+                Liste des cours
+            </h1>
+            <div class="page-actions">
+                <a href="{{ path('gestionnaireCoursAjouter') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Ajouter un cours
+                </a>
+                <a href="{{ path('edt-cours') }}" class="btn btn-outline">
+                    <i class="fas fa-calendar-alt"></i>
+                    Emploi du temps
+                </a>
+            </div>
         </div>
-    </section>
-
-    <section class="cours-container-recherche">
-        <form method="GET" action="{{ path('gestionnaireCoursLister') }}">
-            <input type="text" name="search" id="cours-recherche" placeholder="Rechercher un cours..." class="cours-input-recherche">
-            <button type="submit" class="cours-btn-recherche">Rechercher</button>
-        </form>
-    </section>
-
-    <div class="cours-total">
-        <a href="{{ path('gestionnaireCoursAjouter')}}" target="_blank" class="cours-btn-ajouter">Ajouter un Cours</a>
-    </div>
-
-    <section class="cours-container-liste">
-        <table class="cours-tableau">
-            <thead>
-                <tr>
-                    <th>Nom du Cours</th>
-                    <th>Jour</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for e in pCours %}
+        
+        <div class="cours-toolbar">
+            <div class="cours-search-container">
+                <i class="fas fa-search cours-search-icon"></i>
+                <input type="text" id="cours-recherche" class="cours-search-input" placeholder="Rechercher un cours...">
+            </div>
+            
+            <div class="cours-filters">
+                <div class="cours-filter-dropdown">
+                    <button type="button" class="cours-filter-button" id="filter-toggle">
+                        <i class="fas fa-filter"></i>
+                        Filtres
+                        <span id="filter-count" class="badge badge-primary" style="display: none;">0</span>
+                    </button>
+                    <div class="cours-filter-content" id="filter-content">
+                        <div class="filter-arrow"></div>
+                        <form id="filter-form" class="cours-filter-form">
+                            <div class="filter-group">
+                                <label for="filter-typeCours">
+                                    <i class="fas fa-list-alt"></i>
+                                    Type de cours
+                                </label>
+                                <select name="typeCours" id="filter-typeCours">
+                                    <option value="">Tous les types</option>
+                                    {% for typeCours in typeCours %}
+                                        <option value="{{ typeCours.id }}" {{ app.request.query.get('typeCours') == typeCours.id ? 'selected' : '' }}>
+                                            {{ typeCours.libelle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="filter-typeInstrument">
+                                    <i class="fas fa-guitar"></i>
+                                    Type d'instrument
+                                </label>
+                                <select name="typeInstrument" id="filter-typeInstrument">
+                                    <option value="">Tous les instruments</option>
+                                    {% for typeInstrument in typeInstruments %}
+                                        <option value="{{ typeInstrument.id }}" {{ app.request.query.get('typeInstrument') == typeInstrument.id ? 'selected' : '' }}>
+                                            {{ typeInstrument.libelle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="filter-actions">
+                                <button type="button" id="reset-filters" class="btn btn-outline btn-sm" style="flex: 1;">
+                                    <i class="fas fa-times"></i>
+                                    Réinitialiser
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-sm" style="flex: 2;">
+                                    <i class="fas fa-check"></i>
+                                    Appliquer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="active-filters-container" class="active-filters" style="display: none;">
+            <span>Filtres actifs :</span>
+            <div id="active-filters"></div>
+            <button type="button" id="clear-all-filters" class="clear-filters">
+                <i class="fas fa-times"></i> Effacer tous les filtres
+            </button>
+        </div>
+        
+        <div class="cours-container">
+            <table class="cours-table" id="cours-table">
+                <thead>
                     <tr>
-                        <td>
-                            <a href="#" class="cours-nom"
-                                data-id="{{ e.id }}"
-                                data-libelle="{{ e.libelle }}"
-                                data-jour="{{ e.jour.libelle }}"
-                                data-heureDebut="{{ e.heureDebut|date('H:i') }}"
-                                data-heureFin="{{ e.heureFin|date('H:i') }}"
-                                data-typeCours="{{ e.typeCours.libelle }}"
-                                data-typeInstrument="{{ e.typeInstrument.libelle }}">
-                                {{ e.libelle }}
-                            </a>
-                        </td>
-                        <td>{{ e.jour.libelle }}</td>
-                        <td>
-                            <a href="{{ path('gestionnaireCoursModifier', {'id': e.id}) }}" target="_blank" class="cours-btn-modifier"><i class="fas fa-edit"></i></a>
-                            <a href="javascript:void(0)" class="cours-btn-supprimer" onclick="confirmDelete({{ e.id }})"><i class="fas fa-trash"></i></a>
-                        </td>
+                        <th>Nom du cours</th>
+                        <th>Jour</th>
+                        <th>Type</th>
+                        <th style="width: 120px; text-align: center;">Actions</th>
                     </tr>
-                {% else %}
+                </thead>
+                <tbody>
+                    {% for e in pCours %}
+                        <tr class="cours-row" 
+                            data-nom="{{ e.libelle|lower }}" 
+                            data-type-cours="{{ e.typeCours.id }}" 
+                            data-type-instrument="{{ e.typeInstrument.id }}">
+                            <td>
+                                <a href="#" class="cours-nom" data-cours-id="{{ e.id }}">
+                                    <i class="fas fa-book"></i>
+                                    {{ e.libelle }}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="jour-badge">
+                                    <i class="fas fa-calendar-day"></i>
+                                    {{ e.jour.libelle }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-secondary">
+                                    {{ e.typeCours.libelle }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="cours-actions">
+                                    <a href="{{ path('gestionnaireCoursModifier', {'id': e.id}) }}" class="btn btn-icon btn-edit" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-icon btn-delete" onclick="confirmDelete({{ e.id }})" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="empty-state" id="empty-state" style="display: none;">
+            <div class="empty-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h3 class="empty-title">Aucun cours trouvé</h3>
+            <p class="empty-desc">Aucun cours ne correspond à vos critères de recherche.</p>
+            <div>
+                <button class="btn btn-outline" id="reset-search">
+                    <i class="fas fa-undo"></i>
+                    Réinitialiser la recherche
+                </button>
+                <a href="{{ path('gestionnaireCoursAjouter') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Ajouter un cours
+                </a>
+            </div>
+        </div>
+        
+        <div class="cours-pagination">
+            <button type="button" class="btn btn-outline btn-icon" id="prev-page">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="pagination-info">
+                Page <span id="current-page">1</span> sur <span id="total-pages">1</span>
+            </div>
+            <button type="button" class="btn btn-outline btn-icon" id="next-page">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        {% if pCours is empty %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3 class="empty-title">Aucun cours disponible</h3>
+                <p class="empty-desc">Vous n'avez pas encore créé de cours. Commencez par ajouter votre premier cours.</p>
+                <a href="{{ path('gestionnaireCoursAjouter') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Ajouter un cours
+                </a>
+            </div>
+        {% endif %}
+        
+        {% if pCours is not empty %}
+            <div class="timetable-link-section">
+                <p>Consultez l'emploi du temps complet des cours pour avoir une vision globale de toute la semaine.</p>
+                <a href="{{ path('edt-cours') }}" class="btn btn-primary">
+                    <i class="fas fa-calendar-alt"></i>
+                    Voir l'emploi du temps
+                </a>
+            </div>
+        {% endif %}
+    </main>
+
+    <div class="modal-backdrop" id="cours-modal-backdrop">
+        <div class="modal" id="cours-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-book"></i>
+                    <span id="modal-title">Détails du cours</span>
+                </h3>
+                <button type="button" class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="modal-table">
                     <tr>
-                        <td colspan="4">Aucun cours trouvé.</td>
+                        <td>Nom du cours</td>
+                        <td id="modal-libelle"></td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </section>
-
-    <div class="cours-pagination">
-        <button class="cours-btn-prev"><i class="fas fa-arrow-left"></i></button>
-        <button class="cours-btn-next"><i class="fas fa-arrow-right"></i></button>
+                    <tr>
+                        <td>Jour</td>
+                        <td id="modal-jour"></td>
+                    </tr>
+                    <tr>
+                        <td>Horaires</td>
+                        <td id="modal-horaires"></td>
+                    </tr>
+                    <tr>
+                        <td>Type de cours</td>
+                        <td id="modal-typeCours"></td>
+                    </tr>
+                    <tr>
+                        <td>Instrument</td>
+                        <td id="modal-typeInstrument"></td>
+                    </tr>
+                    <tr>
+                        <td>Âge minimum</td>
+                        <td id="modal-ageMini"></td>
+                    </tr>
+                    <tr>
+                        <td>Professeur</td>
+                        <td id="modal-professeur"></td>
+                    </tr>
+                </table>
+                
+                <div class="modal-actions">
+                    <a href="#" id="modal-edit-link" class="btn btn-secondary">
+                        <i class="fas fa-edit"></i>
+                        Modifier
+                    </a>
+                    <button type="button" class="btn btn-primary" id="modal-close-btn">
+                        <i class="fas fa-check"></i>
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-</main>
+{% endblock %}
 
-<div id="coursModal" class="cours-modal">
-    <div class="cours-modal-content">
-        <span class="cours-close-btn">&times;</span>
-        <h2>Informations du Cours</h2>
-        <table class="cours-modal-table">
-            <tr><td>Libellé:</td><td id="cours-modal-libelle"></td></tr>
-            <tr><td>Jour:</td><td id="cours-modal-jour"></td></tr>
-            <tr><td>Heure de début:</td><td id="cours-modal-heureDebut"></td></tr>
-            <tr><td>Heure de fin:</td><td id="cours-modal-heureFin"></td></tr>
-            <tr><td>Type de Cours:</td><td id="cours-modal-typeCours"></td></tr>
-            <tr><td>Type d'Instrument:</td><td id="cours-modal-typeInstrument"></td></tr>
-        </table>
-    </div>
-</div>
-<div class="timetable-link-section">
-        <p>Consulter les cours sous forme d'emploi du temps :</p>
-        <a href="{{ path('edt-cours') }} " class="cours-btn-timetable-view">Voir l'Emploi du Temps</a>
-    </div>
-<script>
-document.querySelectorAll('.cours-nom').forEach(course => {
-    course.addEventListener('click', function(event) {
-        event.preventDefault();
-
-        const modal = document.getElementById('coursModal');
-        document.getElementById('cours-modal-libelle').textContent = event.target.getAttribute('data-libelle');
-        document.getElementById('cours-modal-jour').textContent = event.target.getAttribute('data-jour');
-        document.getElementById('cours-modal-heureDebut').textContent = event.target.getAttribute('data-heureDebut');
-        document.getElementById('cours-modal-heureFin').textContent = event.target.getAttribute('data-heureFin');
-        document.getElementById('cours-modal-typeCours').textContent = event.target.getAttribute('data-typeCours');
-        document.getElementById('cours-modal-typeInstrument').textContent = event.target.getAttribute('data-typeInstrument');
-
-        modal.style.display = 'block';
-    });
-});
-
-document.querySelector('.cours-close-btn').addEventListener('click', function() {
-    document.getElementById('coursModal').style.display = 'none';
-});
-
-window.addEventListener('click', function(event) {
-    const modal = document.getElementById('coursModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-});
-
-function confirmDelete(courseId) {
-    const confirmDelete = confirm("Êtes-vous sûr de vouloir supprimer ce cours ?");
-    if (confirmDelete) {
-        window.location.href = `http://172.20.177.77/lilian31/public/cours/supprimer/${courseId}`;
-    }
-}
-
-document.querySelector('.cours-btn-filtre-toggle').addEventListener('click', function() {
-    var dropdown = document.querySelector('.cours-dropdown-filtre');
-    dropdown.classList.toggle('show');
-});
-
-document.getElementById('cours-recherche').addEventListener('input', function() {
-    const query = this.value.toLowerCase();
-    const rows = document.querySelectorAll('.cours-tableau tbody tr');
-
-    rows.forEach(row => {
-        const courseName = row.querySelector('.cours-nom').textContent.toLowerCase();
-        if (courseName.includes(query)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-});
-
-let currentPage = 1;
-const rowsPerPage = 6;
-
-const rowsToDisplay = document.querySelectorAll('.cours-tableau tbody tr');
-const totalPages = Math.ceil(rowsToDisplay.length / rowsPerPage);
-
-function showPage(page) {
-    const startIndex = (page - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-
-    rowsToDisplay.forEach((row, index) => {
-        if (index >= startIndex && index < endIndex) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-}
-
-document.querySelector('.cours-btn-next').addEventListener('click', function() {
-    if (currentPage < totalPages) {
-        currentPage++;
-        showPage(currentPage);
-    }
-});
-
-document.querySelector('.cours-btn-prev').addEventListener('click', function() {
-    if (currentPage > 1) {
-        currentPage--;
-        showPage(currentPage);
-    }
-});
-
-showPage(currentPage);</script>
-
-<style>
-.cours-btn-ajouter {
-    display: block;
-    background-color: #181B22;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-size: 1rem;
-    cursor: pointer;
-    width: max-content; 
-}
-
-
-
-.cours-container-liste {
-    margin-top: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    font-size: 20px;
-}
-
-.cours-tableau {
-    width: 80%; 
-    max-width: 1200px; 
-    margin: 0 auto; 
-    border-collapse: collapse;
-    border: 2px solid #181B22;
-    background-color: #181B22; 
-    border-radius: 10px;
-    overflow: hidden; 
-}
-
-.cours-container-recherche {
-    position: absolute;
-    top: 20px; 
-    margin-top:50px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 10;
-    margin-top: 75px;
-}
-
-.cours-input-recherche {
-    padding: 10px;
-    font-size: 1rem;
-    border-radius: 15px;
-    border: 1px solid #181B22;
-    width: 250px;
-    background-color: #181B22;
-}
-
-.cours-input-recherche:hover{
-    background-color: #313237;
-}
-
-.cours-btn-recherche {
-    padding: 10px 20px;
-    background-color: #181B22;
-    color: white;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.cours-btn-recherche:hover {
-    background-color: #313237;
-}
-
-.cours-pagination {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.cours-pagination button {
-    padding: 10px;
-    background-color: #181B22;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 1.5rem;
-    transition: background-color 0.3s;
-}
-
-.cours-pagination button:hover {
-    background-color: #313237;
-}
-
-.cours-tableau th, .cours-tableau td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.cours-tableau th {
-    background-color: #181B22;
-    color: white;
-    font-weight: bold;
-}
-
-.cours-tableau td {
-    background-color: #181B22;
-}
-
-.cours-btn-filtre-toggle {
-    display: flex;
-    align-items: center;
-    background-color: #181B22;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-size: 1rem;
-    cursor: pointer;
-    position: absolute;
-    top: 70px; 
-    right: 20px;
-    transition: 0.3s;
-    z-index: 100;
-    margin-top: 75px;
-}
-
-.cours-btn-filtre-toggle:hover {
-    background-color: #313237;
-}
-
-.cours-icône-filtre {
-    margin-right: 10px;
-    width: 20px;
-    height: 20px;
-}
-
-.cours-dropdown-filtre {
-    display: none;
-    position: absolute;
-    top: 190px; 
-    right: 20px;
-    background-color: #181B22;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    z-index: 10;
-}
-
-.cours-dropdown-filtre.show {
-    display: block;
-}
-
-.cours-dropdown-filtre form {
-    display: flex;
-    flex-direction: column;
-}
-
-.cours-dropdown-filtre label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.cours-dropdown-filtre select {
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #313237 ;
-    border-radius: 4px;
-    background-color: #181B22;
-    color: white;
-}
-
-.cours-dropdown-filtre .cours-btn-filtre {
-    background-color: #181B22;
-    color: white;
-    padding: 10px 20px;
-    border: 1px solid #313237;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.cours-dropdown-filtre .cours-btn-filtre:hover {
-    background-color: #313237;
-}
-
-.cours-modal-table {
-    width: 100%;
-    margin-top: 20px;
-}
-
-.cours-modal-table td {
-    padding: 8px;
-}
-
-.cours-modal-image {
-    max-width: 100%;
-    height: auto;
-    margin-top: 20px;
-}
-
-.cours-pagination button {
-    margin: 5px;
-}
-
-a {
-    text-decoration: none;
-    color: #D0D2D1;
-}
-
-.cours-modal {
-    display: none; 
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); 
-    padding-top: 60px;
-}
-
-.cours-modal-content {
-    background-color: #181B22;
-    margin: 0;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 10px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); 
-}
-
-.cours-close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.cours-close-btn:hover,
-.cours-close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-</style>
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('cours-recherche');
+            const tableRows = document.querySelectorAll('.cours-row');
+            const coursTable = document.getElementById('cours-table');
+            const emptyState = document.getElementById('empty-state');
+            const filterToggle = document.getElementById('filter-toggle');
+            const filterContent = document.getElementById('filter-content');
+            const filterForm = document.getElementById('filter-form');
+            const resetFiltersBtn = document.getElementById('reset-filters');
+            const resetSearchBtn = document.getElementById('reset-search');
+            const clearAllFiltersBtn = document.getElementById('clear-all-filters');
+            const filterCount = document.getElementById('filter-count');
+            const activeFiltersContainer = document.getElementById('active-filters-container');
+            const activeFilters = document.getElementById('active-filters');
+            
+             const prevPageBtn = document.getElementById('prev-page');
+            const nextPageBtn = document.getElementById('next-page');
+            const currentPageSpan = document.getElementById('current-page');
+            const totalPagesSpan = document.getElementById('total-pages');
+            
+            const modalBackdrop = document.getElementById('cours-modal-backdrop');
+            const modal = document.getElementById('cours-modal');
+            const modalClose = document.getElementById('modal-close');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const modalEditLink = document.getElementById('modal-edit-link');
+            
+            const rowsPerPage = 10;
+            let currentPage = 1;
+            let filteredRows = [...tableRows];
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const typeCoursParam = urlParams.get('typeCours');
+            const typeInstrumentParam = urlParams.get('typeInstrument');
+            
+            function filterRows() {
+                const searchQuery = searchInput.value.toLowerCase().trim();
+                const typeCoursFilter = document.getElementById('filter-typeCours').value;
+                const typeInstrumentFilter = document.getElementById('filter-typeInstrument').value;
+                
+                let hasActiveFilters = false;
+                filteredRows = [...tableRows];
+                
+                if (searchQuery) {
+                    filteredRows = filteredRows.filter(row => {
+                        const nomCours = row.getAttribute('data-nom') || '';
+                        return nomCours.includes(searchQuery);
+                    });
+                }
+                
+                if (typeCoursFilter) {
+                    filteredRows = filteredRows.filter(row => {
+                        return row.getAttribute('data-type-cours') === typeCoursFilter;
+                    });
+                    hasActiveFilters = true;
+                }
+                
+                if (typeInstrumentFilter) {
+                    filteredRows = filteredRows.filter(row => {
+                        return row.getAttribute('data-type-instrument') === typeInstrumentFilter;
+                    });
+                    hasActiveFilters = true;
+                }
+                
+                tableRows.forEach(row => {
+                    row.style.display = 'none';
+                });
+                
+                updateFilterCount(typeCoursFilter, typeInstrumentFilter);
+                updateActiveFilters(typeCoursFilter, typeInstrumentFilter);
+                
+            if (filteredRows.length === 0) {
+                    coursTable.parentElement.style.display = 'none';
+                    emptyState.style.display = 'flex';
+                    document.querySelector('.cours-pagination').style.display = 'none';
+                } else {
+                    coursTable.parentElement.style.display = '';
+                    emptyState.style.display = 'none';
+                    document.querySelector('.cours-pagination').style.display = 'flex';
+                    
+                    currentPage = 1;
+                    showPage(currentPage);
+                    updatePaginationInfo();
+                }
+                
+                if (hasActiveFilters) {
+                    filterToggle.classList.add('active');
+                } else {
+                    filterToggle.classList.remove('active');
+                }
+            }
+            
+            function showPage(page) {
+                const startIndex = (page - 1) * rowsPerPage;
+                const endIndex = startIndex + rowsPerPage;
+                
+                filteredRows.forEach((row, index) => {
+                    if (index >= startIndex && index < endIndex) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+            
+            function updatePaginationInfo() {
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage) || 1;
+                
+                currentPageSpan.textContent = Math.min(currentPage, totalPages);
+                totalPagesSpan.textContent = totalPages;
+                
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages;
+                
+                prevPageBtn.style.opacity = currentPage === 1 ? '0.5' : '1';
+                nextPageBtn.style.opacity = currentPage === totalPages ? '0.5' : '1';
+            }
+            
+            function updateFilterCount(typeCoursFilter, typeInstrumentFilter) {
+                let count = 0;
+                if (typeCoursFilter) count++;
+                if (typeInstrumentFilter) count++;
+                
+                if (count > 0) {
+                    filterCount.textContent = count;
+                    filterCount.style.display = 'inline-flex';
+                } else {
+                    filterCount.style.display = 'none';
+                }
+            }
+            
+            function updateActiveFilters(typeCoursFilter, typeInstrumentFilter) {
+                activeFilters.innerHTML = '';
+                let hasActiveFilters = false;
+                
+                if (typeCoursFilter) {
+                    const typeCoursSelect = document.getElementById('filter-typeCours');
+                    const typeCoursText = typeCoursSelect.options[typeCoursSelect.selectedIndex].text;
+                    
+                    const filterTag = document.createElement('div');
+                    filterTag.className = 'active-filter-tag';
+                    filterTag.innerHTML = `<i class="fas fa-list-alt"></i> ${typeCoursText} <button type="button" class="tag-remove" data-filter="typeCours"><i class="fas fa-times"></i></button>`;
+                    activeFilters.appendChild(filterTag);
+                    hasActiveFilters = true;
+                }
+                
+                if (typeInstrumentFilter) {
+                    const typeInstrumentSelect = document.getElementById('filter-typeInstrument');
+                    const typeInstrumentText = typeInstrumentSelect.options[typeInstrumentSelect.selectedIndex].text;
+                    
+                    const filterTag = document.createElement('div');
+                    filterTag.className = 'active-filter-tag';
+                    filterTag.innerHTML = `<i class="fas fa-guitar"></i> ${typeInstrumentText} <button type="button" class="tag-remove" data-filter="typeInstrument"><i class="fas fa-times"></i></button>`;
+                    activeFilters.appendChild(filterTag);
+                    hasActiveFilters = true;
+                }
+                
+                if (hasActiveFilters) {
+                    activeFiltersContainer.style.display = 'flex';
+                } else {
+                    activeFiltersContainer.style.display = 'none';
+                }
+               
+                document.querySelectorAll('.tag-remove').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const filterName = this.getAttribute('data-filter');
+                        document.getElementById('filter-' + filterName).value = '';
+                        filterRows();
+                    });
+                });
+            }
+            
+           function showCoursDetails(coursId) {
+                 const url = `/lilian31/public/api/cours/${coursId}`;
+                
+                const row = document.querySelector(`.cours-row a[data-cours-id="${coursId}"]`).closest('tr');
+                
+                if (row) {
+                    const libelle = row.querySelector('.cours-nom').textContent.trim();
+                    const jour = row.querySelector('.jour-badge').textContent.trim();
+                    const typeCours = row.querySelector('.badge-secondary').textContent.trim();
+                    
+                    document.getElementById('modal-title').textContent = 'Détails du cours';
+                    document.getElementById('modal-libelle').textContent = libelle;
+                    document.getElementById('modal-jour').textContent = jour;
+                    document.getElementById('modal-typeCours').textContent = typeCours;
+                    
+                    document.getElementById('modal-horaires').textContent = 'Non disponible';
+                    document.getElementById('modal-typeInstrument').textContent = 'Non disponible';
+                    document.getElementById('modal-ageMini').textContent = 'Non disponible';
+                    document.getElementById('modal-professeur').textContent = 'Non disponible';
+                    
+                    modalEditLink.href = `/lilian31/public/gestionnaire/cours/modifier/${coursId}`;
+                    
+                    modalBackdrop.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            function closeModal() {
+                modalBackdrop.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+            
+            function resetFilters() {
+                document.getElementById('filter-typeCours').value = '';
+                document.getElementById('filter-typeInstrument').value = '';
+                filterContent.classList.remove('show');
+                filterRows();
+            }
+            
+            searchInput.addEventListener('input', filterRows);
+            
+            resetSearchBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                filterRows();
+            });
+            
+            filterToggle.addEventListener('click', function() {
+                filterContent.classList.toggle('show');
+            });
+            
+            document.addEventListener('click', function(event) {
+                if (!filterToggle.contains(event.target) && !filterContent.contains(event.target)) {
+                    filterContent.classList.remove('show');
+                }
+            });
+            
+            filterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                filterRows();
+                filterContent.classList.remove('show');
+            });
+            
+            resetFiltersBtn.addEventListener('click', resetFilters);
+            
+            clearAllFiltersBtn.addEventListener('click', resetFilters);
+            
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                    updatePaginationInfo();
+                }
+            });
+            
+            nextPageBtn.addEventListener('click', function() {
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                    updatePaginationInfo();
+                }
+            });
+            
+            document.querySelectorAll('.cours-nom').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const coursId = this.getAttribute('data-cours-id');
+                    showCoursDetails(coursId);
+                });
+            });
+            
+            modalClose.addEventListener('click', closeModal);
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalBackdrop.addEventListener('click', function(e) {
+                if (e.target === modalBackdrop) {
+                    closeModal();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    filterContent.classList.remove('show');
+                }
+            });
+            
+            window.confirmDelete = function(coursId) {
+                if (confirm('Êtes-vous sûr de vouloir supprimer ce cours ?')) {
+                    window.location.href = `/lilian31/public/gestionnaire/cours/supprimer/${coursId}`;
+                }
+            };
+            
+            filterRows();
+            showPage(currentPage);
+            updatePaginationInfo();
+            
+            if (typeCoursParam || typeInstrumentParam) {
+                if (typeCoursParam) document.getElementById('filter-typeCours').value = typeCoursParam;
+                if (typeInstrumentParam) document.getElementById('filter-typeInstrument').value = typeInstrumentParam;
+                filterRows();
+            }
+        });
+    </script>
 {% endblock %}

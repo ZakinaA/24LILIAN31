@@ -99,6 +99,7 @@ class ResponsableController extends AbstractController
 
         return $this->render('responsable/modifier.html.twig', [
             'form' => $form->createView(),
+            'responsable' => $responsable,
         ]);
     }
 

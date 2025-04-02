@@ -1,24 +1,368 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Détail de l'intervention - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .btnRetour {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .btnModifier {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .btnModifier:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .carteIntervention {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+        }
+        
+        .enTeteCarte {
+            background-color: var(--sidebar-bg);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .corpsCarte {
+            padding: 2rem;
+        }
+        
+        .grilleInfo {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .sectionInfo {
+            margin-bottom: 2rem;
+        }
+        
+        .titreSection {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .titreSection i {
+            color: var(--primary-color);
+        }
+        
+        .listeInfos {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .infoItem {
+            background-color: var(--sidebar-bg);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            border: 1px solid var(--border-light);
+        }
+        
+        .infoItem:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+            background-color: var(--card-hover);
+        }
+        
+        .infoLabel {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .infoValeur {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        
+        .infoDescriptif {
+            padding: 1.5rem;
+            background-color: var(--sidebar-bg);
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            border: 1px solid var(--border-light);
+        }
+        
+        .descriptifTitre {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .descriptifContenu {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        
+        .badgeStatut {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        
+        .badgeTermine {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+        
+        .badgeEnCours {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+        
+        @media (max-width: 768px) {
+            .grilleInfo {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .corpsCarte {
+                padding: 1.5rem;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Page d'une intervention </title>
-    </head>
-    <body>       
-        <h5>PAGE D'UNE INTERVENTION D'UN PROFESSIONNEL</h5>
-        <p>
-            <table>
-            <tr><td>DateDebut :</td><td>{{ intervention.dateDebut|date('d/m/Y') }}</td></tr>
-                <tr><td>DateFin : </td><td>{{ intervention.dateFin|date('d/m/Y')  }}</td></tr>
-                <tr><td>Descriptif : </td><td>{{ intervention.descriptif }}</td></tr>
-                <tr><td>Prix : </td><td>{{ intervention.prix }}</td></tr>
-                <tr><td>Quotite : </td><td>{{ intervention.quotite }}</td></tr>
-
-            </table>
-        </p>
-       </body>
-</html>
-
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-tools"></i>
+                Détail de l'intervention
+            </h1>
+            
+            <div class="actionsTitre">
+                <a href="javascript:history.back()" class="btnAction btnRetour">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour
+                </a>
+                
+                {% if is_granted('ROLE_GESTIONNAIRE') %}
+                    <a href="{{ path('intervention_modifier', {'id': intervention.id}) }}" class="btnAction btnModifier">
+                        <i class="fas fa-edit"></i>
+                        Modifier
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="carteIntervention">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-info-circle"></i>
+                    Informations de l'intervention
+                </h2>
+            </div>
+            
+            <div class="corpsCarte">
+                <div class="grilleInfo">
+                    <div class="sectionInfo">
+                        <h3 class="titreSection">
+                            <i class="fas fa-calendar-alt"></i>
+                            Dates et délais
+                        </h3>
+                        
+                        <div class="listeInfos">
+                            <div class="infoItem">
+                                <div class="infoLabel">Date de début</div>
+                                <div class="infoValeur">{{ intervention.dateDebut|date('d/m/Y') }}</div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Date de fin</div>
+                                <div class="infoValeur">{{ intervention.dateFin|date('d/m/Y') }}</div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Durée</div>
+                                <div class="infoValeur">
+                                    {% set difference = date(intervention.dateFin).diff(date(intervention.dateDebut)) %}
+                                    {% set days = difference.days %}
+                                    {{ days }} jour{% if days > 1 %}s{% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Statut</div>
+                                <div class="infoValeur">
+                                    {% set now = "now"|date("Y-m-d") %}
+                                    {% set end = intervention.dateFin|date("Y-m-d") %}
+                                    
+                                    {% if now > end %}
+                                        <span class="badgeStatut badgeTermine">Terminée</span>
+                                    {% else %}
+                                        <span class="badgeStatut badgeEnCours">En cours</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sectionInfo">
+                        <h3 class="titreSection">
+                            <i class="fas fa-money-bill-wave"></i>
+                            Informations financières
+                        </h3>
+                        
+                        <div class="listeInfos">
+                            <div class="infoItem">
+                                <div class="infoLabel">Prix</div>
+                                <div class="infoValeur">{{ intervention.prix }} €</div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Quotité</div>
+                                <div class="infoValeur">{{ intervention.quotite }}%</div>
+                            </div>
+                            
+                            <div class="infoItem">
+                                <div class="infoLabel">Montant à payer</div>
+                                <div class="infoValeur">
+                                    {% set quotite_number = intervention.quotite|number_format %}
+                                    {% set montant = (intervention.prix * quotite_number / 100)|round(2) %}
+                                    {{ montant }} €
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="infoDescriptif">
+                    <div class="descriptifTitre">
+                        <i class="fas fa-clipboard-list"></i>
+                        Description de l'intervention
+                    </div>
+                    <div class="descriptifContenu">
+                        {{ intervention.descriptif|nl2br }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="carteIntervention">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-user-tie"></i>
+                    Professionnel en charge
+                </h2>
+            </div>
+            
+            <div class="corpsCarte">
+                <div class="infoItem">
+                    <div class="infoLabel">Nom du professionnel</div>
+                    <div class="infoValeur">
+                        {% if intervention.professionnel is defined and intervention.professionnel %}
+                            {{ intervention.professionnel.nom }} {{ intervention.professionnel.prenom }}
+                        {% else %}
+                            Non assigné
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

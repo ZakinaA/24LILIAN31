@@ -1,36 +1,280 @@
-{# templates/tarif/lister.html.twig #}
-
 {% extends 'base.html.twig' %}
 
-{% block title %}Lister les tarifs{% endblock %}
+{% block title %}Liste des tarifs - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .btnPrimaire {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .btnPrimaire:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .conteneurCarte {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        
+        .enTeteCarte {
+            padding: 1.2rem 1.5rem;
+            background-color: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .conteneurTableau {
+            overflow-x: auto;
+        }
+        
+        .tableau {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .tableau th {
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.9rem;
+        }
+        
+        .tableau td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        
+        .tableau tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tableau tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        
+        .montant {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        .typeCours {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .quotient {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent-light);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .celluleActions {
+            width: 120px;
+            text-align: right;
+        }
+        
+        .btnAction.btnInfos {
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent-light);
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btnAction.btnInfos:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .etatVide {
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .iconeVide {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        
+        .titreVide {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .descriptionVide {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .actionsTitre {
+                width: 100%;
+            }
+            
+            .btnAction {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .tableau th, .tableau td {
+                padding: 0.8rem 1rem;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    <h1>Liste des tarifs</h1>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Montant</th>
-                <th>Type de cours</th>
-                <th>Quotient familial</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for tarif in tarifs %}
-                <tr>
-                    <td>{{ tarif.montant }} €</td>
-                    <td>{{ tarif.typeCours.libelle }}</td> 
-                    <td>{{ tarif.quotientFamilial.libelle }}</td> 
-                    <td>
-                        <a href="{{ path('tarif_consulter', {'id': tarif.id}) }}">Consulter</a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="4">Aucun tarif trouvé.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">Liste des tarifs</h1>
+            <div class="actionsTitre">
+                <a href="{{ path('tarif_lister') }}" class="btnAction btnPrimaire">
+                    <i class="fas fa-sync-alt"></i>
+                    Actualiser
+                </a>
+            </div>
+        </div>
+        
+        <div class="conteneurCarte">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">Grille tarifaire</h2>
+                <span class="badgeElementNombre">{{ tarifs|length }} tarifs</span>
+            </div>
+            
+            <div class="conteneurTableau">
+                <table class="tableau">
+                    <thead>
+                        <tr>
+                            <th>Montant</th>
+                            <th>Type de cours</th>
+                            <th>Quotient familial</th>
+                            <th class="celluleActions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tarif in tarifs %}
+                            <tr>
+                                <td class="montant">{{ tarif.montant }} €</td>
+                                <td><span class="typeCours">{{ tarif.typeCours.libelle }}</span></td>
+                                <td><span class="quotient">{{ tarif.quotientFamilial.libelle }}</span></td>
+                                <td class="celluleActions">
+                                    <a href="{{ path('tarif_consulter', {'id': tarif.id}) }}" class="btnAction btnInfos" title="Consulter">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">
+                                    <div class="etatVide">
+                                        <div class="iconeVide">
+                                            <i class="fas fa-tags"></i>
+                                        </div>
+                                        <h3 class="titreVide">Aucun tarif trouvé</h3>
+                                        <p class="descriptionVide">Aucun tarif n'a été configuré dans le système pour le moment.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="informationContextuelle" style="margin-top: 2rem; padding: 1.5rem; background-color: var(--primary-transparent); border-radius: var(--border-radius); border-left: 4px solid var(--primary-color);">
+            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                <i class="fas fa-info-circle" style="font-size: 1.5rem; color: var(--primary-color);"></i>
+                <div>
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; color: var(--text-light);">À propos des tarifs</h3>
+                    <p style="margin: 0; color: var(--text-muted);">Les tarifs sont déterminés en fonction du type de cours et du quotient familial. Pour toute question concernant la grille tarifaire, veuillez contacter l'administration.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

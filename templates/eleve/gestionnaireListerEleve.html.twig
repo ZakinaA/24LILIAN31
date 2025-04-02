@@ -2,148 +2,355 @@
 
 {% block content %}
 <style>
-    a {
-        text-decoration: none;
+    /* Variables pour cohérence visuelle */
+    :root {
+        --primary-color: #2ecc71;
+        --primary-dark: #27ae60;
+        --primary-light: #a3f9c5;
+        --accent-color: #3498db;
+        --dark-bg: #0A0D14;
+        --card-bg: #181B22;
+        --card-hover: #232830;
+        --card-border: #2C3E50;
+        --text-light: #ffffff;
+        --text-muted: #94a3b8;
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        --transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        --border-radius: 16px;
     }
 
+    /* Style général */
     h1 {
-        font-size: 40px;
+        font-size: 2.5rem;
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 2rem;
+        color: var(--text-light);
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 1rem;
     }
 
+    h1:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--primary-color);
+        border-radius: 2px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+
+    /* Grille d'élèves */
     .eleve-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 40px;
-        justify-content: center;
-        margin-top: 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
     }
 
     .eleve-item {
-        text-align: center;
-        color: white;
-        width: 200px;
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-        margin-bottom: 40px;
-        background-color: #313237;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 1;
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: visible; 
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 1.5rem;
+        transform: translateY(0);
     }
 
     .eleve-item:hover {
-        transform: scale(1.05);
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+        transform: translateY(-10px);
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+        background-color: var(--card-hover);
     }
 
     .eleve-photo {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto;
+        width: 140px;
+        height: 140px;
         border-radius: 50%;
         background-size: cover;
         background-position: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        border: 4px solid var(--primary-color);
+        box-shadow: 0 8px 16px rgba(46, 204, 113, 0.3);
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
         cursor: pointer;
+        position: relative;
+        z-index: 1;
+    }
+
+    .eleve-item:hover .eleve-photo {
+        transform: scale(1.05);
+        box-shadow: 0 12px 20px rgba(46, 204, 113, 0.4);
+    }
+
+    .eleve-photo:before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        z-index: -1;
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .eleve-item:hover .eleve-photo:before {
+        opacity: 0.7;
     }
 
     .eleve-item p {
-        margin-top: 15px;
-        font-size: 1.2rem;
-    }
-
-    .info-btn, .delete-btn, .action-btn {
-        display: block;
-        margin-top: 10px;
-        text-decoration: none;
-        color: #fff;
-        font-size: 1rem;
-        padding: 5px 10px;
-        border-radius: 5px;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-light);
+        margin: 0.5rem 0 1.2rem;
         text-align: center;
     }
 
-    .info-btn:hover, .delete-btn:hover, .action-btn:hover {
-        background-color: #313237;
+    .dropdown-container {
+    position: relative;
+    width: 80%;
+    z-index: 10; /* Assurez-vous qu'il est bien au-dessus */
+}
+
+.action-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50px;
+    padding: 0.7rem 1.5rem;
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.action-btn i {
+    margin-right: 8px;
+}
+
+.action-btn:hover {
+    background-color: var(--primary-dark);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin-top: 5px;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    z-index: 999; 
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown-container:hover .dropdown-menu,
+.dropdown-container:focus-within .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: var(--transition);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu a:hover {
+    background-color: var(--card-hover);
+}
+
+.dropdown-menu i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+    .ajoutEleve {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
     }
 
-
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #313237;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-        border-radius: 5px;
-    }
-
-    .dropdown-content a {
+    .ajoutEleve button {
+        background-color: var(--primary-color);
         color: white;
-        padding: 12px 16px;
+        border: none;
+        border-radius: 50px;
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: var(--transition);
+        box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+    }
+
+    .ajoutEleve button:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+    }
+
+    .ajoutEleve a {
+        display: flex;
+        align-items: center;
+        color: white;
         text-decoration: none;
-        display: block;
     }
 
-    .dropdown-content a:hover {
-        background-color: #575757;
+    .ajoutEleve i {
+        margin-right: 8px;
+        font-size: 1.1rem;
     }
 
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-
-    .popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #181B22;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        z-index: 999;
-        border-radius: 10px;
-        max-width: 400px;
-        width: 100%;
-    }
-
+    /* Modal */
     .popup-overlay {
-        display: none;
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 998;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        background: var(--card-bg);
+        width: 90%;
+        max-width: 500px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        z-index: 1000;
+        padding: 0;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
     }
 
     .popup.open, .popup-overlay.open {
-        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .popup.open {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .popup .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        color: var(--text-light);
+        font-size: 18px;
+        cursor: pointer;
+        transition: var(--transition);
+        z-index: 10;
+    }
+
+    .popup .close-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+    }
+
+    .popup h2 {
+        background: var(--primary-color);
+        color: white;
+        padding: 1.5rem;
+        margin: 0;
+        font-size: 1.5rem;
+        text-align: center;
     }
 
     .tabs {
-        margin-bottom: 10px;
+        display: flex;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .tab-button {
-        padding: 10px;
-        margin-right: 10px;
+        flex: 1;
+        padding: 1rem;
+        background: transparent;
+        border: none;
+        color: var(--text-light);
+        font-weight: 500;
         cursor: pointer;
-        background-color: #f1f1f1;
-        border: 1px solid #ddd;
+        transition: var(--transition);
+        position: relative;
     }
 
     .tab-button.active {
-        background-color: #181B22;
-        color: white;
+        color: var(--primary-color);
+    }
+
+    .tab-button.active:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: var(--primary-color);
+    }
+
+    .tab-content {
+        padding: 1.5rem;
     }
 
     .tab-panel {
@@ -154,120 +361,124 @@
         display: block;
     }
 
-.action-btn {
-    display: inline-block;
-    padding: 10px;
-    background-color: green;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 4px;
-}
+    .tab-panel table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-.dropdown {
-    position: relative;
-    display: inline-block; 
-}
+    .tab-panel table tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #313237;
-    min-width: 160px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    border-radius: 5px;
-    flex-direction: column;  
-    padding: 0; 
-}
+    .tab-panel table tr:last-child {
+        border-bottom: none;
+    }
 
-.dropdown-content a {
-    color: white;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    border-bottom: 1px solid #444; 
-}
+    .tab-panel table td {
+        padding: 1rem 0.5rem;
+    }
 
-.dropdown-content a:hover {
-    background-color: #575757;
-}
+    .tab-panel table td:first-child {
+        width: 35%;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
 
-.dropdown:hover .dropdown-content {
-    display: block;
-}
+    /* Animation d'entrée */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-.dropdown-content i {
-    margin-right: 10px; 
-}
+    .animate-in {
+        animation: fadeInUp 0.5s ease forwards;
+    }
 
-.ajoutElevee button{
-    border-radius: 30px;
-    height: 35px;
-    background-color: green;
-}
+    /* Responsive */
+    @media (max-width: 768px) {
+        .eleve-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+    }
 
-.ajoutElevee button:hover{
-    background-color: #313237;
-}
-.ajoutElevee a{
-    text-decoration: none;
-    color: white;
-}
-
+    @media (max-width: 480px) {
+        .eleve-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .popup {
+            width: 95%;
+        }
+    }
 </style>
 
-<h1>Liste des élèves</h1>
-<div class="ajoutElevee">
-<button><a href="{{ path('gestionnaireAjouterEleve') }}" target="_blank" class="btn-ajouter">Ajouter un élève</a></button>
-</div>
-<div class="eleve-grid">
-    {% for e in eEleves %}
-    <div class="eleve-item">
-        <div class="eleve-photo" 
-            style="background-image: url('{{ asset('eleve/' ~ e.cheminImage) }}');"
-            data-id="{{ e.id }}"
-            data-nom="{{ e.nom }}"
-            data-prenom="{{ e.prenom }}"
-            data-tel="{{ e.tel }}"
-            data-mail="{{ e.mail }}"
-            data-numRue="{{ e.numRue }}"
-            data-rue="{{ e.rue }}"
-            data-copos="{{ e.copos }}"
-            data-ville="{{ e.ville }}"
-        ></div>
-        <p>{{ e.nom }} {{ e.prenom }}</p>
-
-       <div class="dropdown" style="position: relative;">
-    <a href="#" class="action-btn">Actions</a>
-    <div class="dropdown-content">
-        <a href="{{ path('gestionnaireConsulterEleve', { 'id': e.id }) }}">
-            <i class="fas fa-eye"></i> Consulter
-        </a>
-        <a href="{{ path('gestionnaireModifierEleve', { 'id': e.id }) }}" class="modify-btn" data-id="{{ e.id }}">
-            <i class="fas fa-edit"></i> Modifier
-        </a>
-
-        <a href="{{ path('gestionnaireSupprimerEleve', { 'id': e.id }) }}" class="delete-btn" data-id="{{ e.id }}">
-            <i class="fas fa-trash-alt"></i> Supprimer
-        </a>
+<div class="container">
+    <h1>Liste des élèves</h1>
+    
+    <div class="ajoutEleve">
+        <button>
+            <a href="{{ path('gestionnaireAjouterEleve') }}">
+                <i class="fas fa-user-plus"></i> Ajouter un élève
+            </a>
+        </button>
     </div>
-</div>
+    
+    <div class="eleve-grid">
+        {% for e in eEleves %}
+            <div class="eleve-item animate-in" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                <div class="eleve-photo" 
+                    style="background-image: url('{{ asset('eleve/' ~ e.cheminImage) }}');"
+                    data-id="{{ e.id }}"
+                    data-nom="{{ e.nom }}"
+                    data-prenom="{{ e.prenom }}"
+                    data-tel="{{ e.tel }}"
+                    data-mail="{{ e.mail }}"
+                    data-numRue="{{ e.numRue }}"
+                    data-rue="{{ e.rue }}"
+                    data-copos="{{ e.copos }}"
+                    data-ville="{{ e.ville }}">
+                </div>
+                <p>{{ e.nom }} {{ e.prenom }}</p>
 
+                <div class="dropdown-container">
+                    <button class="action-btn">
+                        <i class="fas fa-ellipsis-h"></i> Actions
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="{{ path('gestionnaireConsulterEleve', { 'id': e.id }) }}">
+                            <i class="fas fa-eye"></i> Consulter
+                        </a>
+                        <a href="{{ path('gestionnaireModifierEleve', { 'id': e.id }) }}" class="modify-btn" data-id="{{ e.id }}">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        <a href="{{ path('gestionnaireSupprimerEleve', { 'id': e.id }) }}" class="delete-btn" data-id="{{ e.id }}">
+                            <i class="fas fa-trash-alt"></i> Supprimer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-message">
+                <i class="fas fa-user-slash"></i>
+                <p>Aucun élève trouvé.</p>
+            </div>
+        {% endfor %}
     </div>
-{% endfor %}
-
-
 </div>
 
 <div class="popup-overlay"></div>
 <div class="popup">
     <button class="close-btn">&times;</button>
     <h2>Détails de l'élève</h2>
+    
     <div class="tabs">
-        <button class="tab-button active" data-target="eleve">Élève</button>
+        <button class="tab-button active" data-target="eleve">Informations</button>
     </div>
 
     <div class="tab-content">
@@ -284,12 +495,21 @@
 </div>
 
 <script>
+    // Animation des éléments
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.animate-in').forEach((item, index) => {
+            item.style.opacity = '0';
+            setTimeout(() => {
+                item.style.opacity = '1';
+            }, index * 100);
+        });
+    });
 
+    // Ouverture du modal au clic sur la photo
     document.querySelectorAll('.eleve-photo').forEach(photo => {
         photo.addEventListener('click', function() {
             const eleveId = this.dataset.id;
-
-            const eleve = document.querySelector(`[data-id="${eleveId}"]`);
+            const eleve = document.querySelector(`.eleve-photo[data-id="${eleveId}"]`);
 
             document.getElementById('modal-nom').textContent = eleve.dataset.nom;
             document.getElementById('modal-prenom').textContent = eleve.dataset.prenom;
@@ -302,6 +522,7 @@
         });
     });
 
+    // Fermeture du modal
     document.querySelector('.close-btn').addEventListener('click', function() {
         document.querySelector('.popup').classList.remove('open');
         document.querySelector('.popup-overlay').classList.remove('open');
@@ -312,32 +533,44 @@
         document.querySelector('.popup-overlay').classList.remove('open');
     });
 
-        document.querySelectorAll('.modify-btn').forEach(button => {
-    button.addEventListener('click', function(event) {
-        event.preventDefault();
-        const eleveId = this.dataset.id; 
-        if (eleveId) {
-            window.location.href = `{{ path('gestionnaireModifierEleve', { 'id': '__ID__' }) }}`.replace('__ID__', eleveId);
-        } else {
-            alert('ID de l\'élève manquant');
-        }
+    // Confirmation avant suppression
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const eleveId = this.dataset.id;
+            
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet élève ?')) {
+                if (eleveId) {
+                    window.location.href = `{{ path('gestionnaireSupprimerEleve', { 'id': '__ID__' }) }}`.replace('__ID__', eleveId);
+                } else {
+                    alert('L\'ID de l\'élève est manquant.');
+                }
+            }
         });
     });
+document.querySelectorAll('.dropdown-container').forEach(container => {
+    let timeout;
 
+    container.addEventListener('mouseenter', () => {
+        clearTimeout(timeout);
+        container.querySelector('.dropdown-menu').style.opacity = '1';
+        container.querySelector('.dropdown-menu').style.visibility = 'visible';
+    });
 
-
-
-    document.querySelectorAll('.delete-btn').forEach(button => {
-    button.addEventListener('click', function(event) {
-        event.preventDefault();
-        const eleveId = this.dataset.id;
-        if (eleveId) {
-            window.location.href = `{{ path('gestionnaireSupprimerEleve', { 'id': '__ID__' }) }}`.replace('__ID__', eleveId);
-        } else {
-            alert('L\'ID de l\'élève est manquant.');
-        }
+    container.addEventListener('mouseleave', () => {
+        timeout = setTimeout(() => {
+            container.querySelector('.dropdown-menu').style.opacity = '0';
+            container.querySelector('.dropdown-menu').style.visibility = 'hidden';
+        }, 200); // Délai pour éviter la disparition instantanée
     });
 });
 
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") {
+            document.querySelector('.popup').classList.remove('open');
+            document.querySelector('.popup-overlay').classList.remove('open');
+        }
+    });
 </script>
 {% endblock %}

@@ -1,12 +1,379 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter une intervention{% endblock %}
+{% block title %}Ajouter une intervention - Emusic{% endblock %}
 
-{% block body %}
-    <h1>Ajouter une nouvelle intervention</h1>
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnRetour {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .carteFormulaire {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+        }
+        
+        .enTeteCarte {
+            background-color: var(--sidebar-bg);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .corpsCarte {
+            padding: 2rem;
+        }
+        
+        .grilleFormulaire {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .groupeChamp {
+            margin-bottom: 1.5rem;
+        }
+        
+        .groupeChamp label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .groupeChamp input,
+        .groupeChamp select,
+        .groupeChamp textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        
+        .groupeChamp input:focus,
+        .groupeChamp select:focus,
+        .groupeChamp textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-transparent);
+            outline: none;
+        }
+        
+        .groupeChamp textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .libellePiece {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .libellePiece i {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .btnEnregistrer {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .btnEnregistrer:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .texteAide {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+        
+        .messageTips {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--primary-transparent);
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .messageTips .titreMessage {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .messageTips .contenuMessage {
+            color: var(--text-muted);
+        }
+        
+        @media (max-width: 768px) {
+            .grilleFormulaire {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .corpsCarte {
+                padding: 1.5rem;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button type="submit" class="btn btn-success">Valider</button>
-    {{ form_end(form) }}
+{% block content %}
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-plus-circle"></i>
+                Ajouter une intervention
+            </h1>
+            
+            <div class="actionsTitre">
+                <a href="{{ path('intervention_lister') }}" class="btnRetour">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
+        
+        <div class="carteFormulaire">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-tools"></i>
+                    Nouvelle intervention
+                </h2>
+            </div>
+            
+            <div class="corpsCarte">
+                {{ form_start(form) }}
+                
+                <div class="grilleFormulaire">
+                    <div>
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-calendar-plus"></i>
+                                {{ form_label(form.dateDebut, 'Date de début') }}
+                            </div>
+                            {{ form_widget(form.dateDebut) }}
+                            <p class="texteAide">Date de début de l'intervention</p>
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-calendar-check"></i>
+                                {{ form_label(form.dateFin, 'Date de fin') }}
+                            </div>
+                            {{ form_widget(form.dateFin) }}
+                            <p class="texteAide">Date prévue de fin d'intervention</p>
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-tag"></i>
+                                {{ form_label(form.prix, 'Prix') }}
+                            </div>
+                            {{ form_widget(form.prix, {'attr': {'placeholder': 'Prix en euros'}}) }}
+                            <p class="texteAide">Coût total de l'intervention</p>
+                        </div>
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-percentage"></i>
+                                {{ form_label(form.quotite, 'Quotité') }}
+                            </div>
+                            {{ form_widget(form.quotite, {'attr': {'placeholder': 'Pourcentage (nombre)'}}) }}
+                            <p class="texteAide">Pourcentage du prix pris en charge</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-guitar"></i>
+                                {{ form_label(form.instrument, 'Instrument') }}
+                            </div>
+                            {{ form_widget(form.instrument) }}
+                            <p class="texteAide">Instrument concerné par l'intervention</p>
+                        </div>
+                        
+                        {% if form.professionnel is defined %}
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-user-tie"></i>
+                                {{ form_label(form.professionnel, 'Professionnel') }}
+                            </div>
+                            {{ form_widget(form.professionnel) }}
+                            <p class="texteAide">Professionnel réalisant l'intervention</p>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="groupeChamp">
+                            <div class="libellePiece">
+                                <i class="fas fa-align-left"></i>
+                                {{ form_label(form.descriptif, 'Description') }}
+                            </div>
+                            {{ form_widget(form.descriptif, {'attr': {'placeholder': 'Décrivez l\'intervention en détail'}}) }}
+                            <p class="texteAide">Description détaillée des travaux à effectuer</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="messageTips">
+                    <div class="titreMessage">
+                        <i class="fas fa-lightbulb"></i>
+                        Conseils
+                    </div>
+                    <div class="contenuMessage">
+                        <ul>
+                            <li>Vérifiez que l'instrument sélectionné est bien disponible pour les dates prévues.</li>
+                            <li>La quotité doit être exprimée en nombre (ex: 50 pour 50%).</li>
+                            <li>Une description précise aidera à suivre l'évolution de l'intervention.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="groupeChamp" style="margin-top: 1.5rem;">
+                    <button type="submit" class="btnEnregistrer">
+                        <i class="fas fa-save"></i>
+                        Enregistrer l'intervention
+                    </button>
+                </div>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calcul automatique de la durée
+            const dateDebutInput = document.querySelector('input[name$="[dateDebut]"]');
+            const dateFinInput = document.querySelector('input[name$="[dateFin]"]');
+            
+            // Validation du formulaire
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                if (!dateDebutInput.value || !dateFinInput.value) {
+                    e.preventDefault();
+                    alert('Veuillez remplir les dates de début et de fin.');
+                    return;
+                }
+                
+                const debut = new Date(dateDebutInput.value);
+                const fin = new Date(dateFinInput.value);
+                
+                if (fin < debut) {
+                    e.preventDefault();
+                    alert('La date de fin ne peut pas être antérieure à la date de début.');
+                }
+            });
+            
+            // Définir la date d'aujourd'hui comme date de début par défaut si vide
+            if (!dateDebutInput.value) {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                dateDebutInput.value = `${year}-${month}-${day}`;
+            }
+        });
+    </script>
 {% endblock %}

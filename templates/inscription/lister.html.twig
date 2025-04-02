@@ -1,204 +1,550 @@
 {% extends 'base.html.twig' %}
 
-{% block content %}
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f9f9f9;
-        margin: 0;
-        padding: 0;
-    }
+{% block title %}Liste des inscriptions - Emusic{% endblock %}
 
-    h1 {
-        text-align: center;
-        color: green;
-        padding-top: 20px;
-    }
-
-    .inscription-bouton-ajout {
-        background-color: green;
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 5px;
-        display: inline-block;
-        margin: 20px auto;
-        font-size: 16px;
-        text-align: center;
-    }
-    a{text-decoration: none;}
-
-    .inscription-bouton-ajout:hover {
-        background-color: #218838;
-    }
-
-    .inscription-tableau {
-        width: 90%;
-        margin: 20px auto;
-        border-collapse: collapse;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .inscription-tableau th, .inscription-tableau td {
-        padding: 12px 15px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .inscription-tableau th {
-        background-color: #181B22;
-        color: white;
-    }
-
-    .inscription-tableau tr:hover {
-        background-color: green;
-    }
-
-    .inscription-bouton-action {
-        background-color: #181B22;
-        color: white;
-        padding: 6px 12px;
-        text-decoration: none;
-        border-radius: 5px;
-        display: inline-block;
-        font-size: 14px;
-    }
-
-    .inscription-bouton-action:hover {
-        background-color: #313237;
-    }
-
-    .inscription-modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .inscription-modal-content {
-        background-color: #181B22;
-        margin: 10% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 80%;
-        max-width: 500px;
-    }
-
-    .inscription-modal-fermer {
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
-        float: right;
-    }
-
-    .inscription-modal-fermer:hover,
-    .inscription-modal-fermer:focus {
-        color: black;
-        cursor: pointer;
-    }
-
-</style>
-
-<main class="inscription-main">
-    <a href="{{ path('inscription_ajouter') }}" class="inscription-bouton-ajout">Ajouter une inscription</a>
-
-    <h1>Liste des Inscriptions</h1>
-
-    {% if inscriptions is empty %}
-        <p>Aucune inscription trouvée.</p>
-    {% else %}
-        <table class="inscription-tableau">
-            <thead>
-                <tr>
-                    <th>Nom de l'Élève</th>
-                    <th>Date d'Inscription</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-           <tbody>
-    {% for inscription in inscriptions %}
-        <tr>
-            <td>
-                <a href="#" class="inscription-nom"
-                   data-id="{{ inscription.id }}"
-                   data-eleve="{{ inscription.eleve ? inscription.eleve.nom : 'Nom non disponible' }}" 
-                   data-elevee="{{ inscription.eleve ? inscription.eleve.prenom : 'Prenom non disponible' }}" 
-                   data-cours="{{ inscription.eleve ? inscription.eleve.prenom : 'Prenom non disponible' }}" 
-                   data-date="{{ inscription.dateInscription|date('d/m/Y') }}">
-                    {{ inscription.eleve ? inscription.eleve.nom : 'Nom non disponible' }}
-                </a>
-            </td>
-            <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
-            <td>
-                <a href="{{ path('inscription_consulter', {'id': inscription.id}) }}" class="inscription-bouton-action">Voir Détails</a>
-                
-                <a href="{{ path('inscription_modifier', {'id': inscription.id}) }}" class="inscription-bouton-action">Modifier</a>
-
-                <form action="{{ path('inscription_supprimer', {'id': inscription.id}) }}" method="post" style="display:inline;">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ inscription.id) }}">
-                    <button type="submit" class="inscription-bouton-action" onclick="return confirmDelete();"><i class="fas fa-trash"></i></button>
-                </form>
-            </td>
-        </tr>
-    {% endfor %}
-</tbody>
-
-        </table>
-    {% endif %}
-</main>
-
-<div id="inscriptionModal" class="inscription-modal">
-    <div class="inscription-modal-content">
-        <span class="inscription-modal-fermer">&times;</span>
-        <h2>Détails de l'Inscription</h2>
-        <table>
-            <tr><td>Nom de l'Élève : </td><td id="inscription-modal-eleve"></td></tr>
-            <tr><td>Prénom de l'Élève : </td><td id="inscription-modal-elevee"></td></tr>
-            <tr><td>Cours de l'Élève : </td><td id="inscription-modal-cours"></td></tr>
-            <tr><td>Date d'Inscription : </td><td id="inscription-modal-date"></td></tr>
-        </table>
-    </div>
-</div>
-
-<script>
-    const modal = document.getElementById("inscriptionModal");
-    const closeModal = document.querySelector(".inscription-modal-fermer");
-
-    document.querySelectorAll(".inscription-nom").forEach(link => {
-        link.addEventListener("click", function(event) {
-            event.preventDefault();
-
-            const eleveNom = this.getAttribute("data-eleve");
-            const elevePrenom = this.getAttribute("data-elevee");
-            const elevePrenom = this.getAttribute("data-cours");
-            const dateInscription = this.getAttribute("data-date");
-
-            document.getElementById("inscription-modal-eleve").innerText = eleveNom;
-            document.getElementById("inscription-modal-elevee").innerText = elevePrenom;
-            document.getElementById("inscription-modal-cours").innerText = eleveCours;
-            document.getElementById("inscription-modal-date").innerText = dateInscription;
-
-            modal.style.display = "block";
-        });
-    });
-
-    closeModal.addEventListener("click", function() {
-        modal.style.display = "none";
-    });
-
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
         }
-    };
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAjouter {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+        }
+        
+        .btnAjouter:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .tableauInscriptions {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        
+        .tableauInscriptions th {
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            font-weight: 600;
+            text-align: left;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .tableauInscriptions td {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-muted);
+        }
+        
+        .tableauInscriptions tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tableauInscriptions tr:hover td {
+            background-color: var(--card-hover);
+        }
+        
+        .nomEleve {
+            font-weight: 500;
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .nomEleve i {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+        
+        .nomEleve:hover {
+            color: var(--primary-color);
+        }
+        
+        .actionsInscription {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            text-decoration: none;
+            background-color: var(--input-bg);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btnConsulter {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent-light);
+        }
+        
+        .btnConsulter:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--glow-accent);
+        }
+        
+        .btnModifier {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+        }
+        
+        .btnModifier:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--glow-primary);
+        }
+        
+        .btnSupprimer {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btnSupprimer:hover {
+            background-color: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .messageVide {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 3rem 2rem;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .iconeVide {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            opacity: 0.6;
+        }
+        
+        .titreVide {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        .descriptionVide {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            max-width: 500px;
+        }
+        
+        .modalBackdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            animation: modalFadeIn 0.3s ease-out forwards;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modalHeader {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--sidebar-bg);
+        }
+        
+        .modalTitre {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .modalTitre i {
+            color: var(--primary-color);
+        }
+        
+        .modalFermer {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .modalFermer:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+        
+        .modalBody {
+            padding: 1.5rem;
+        }
+        
+        .modalTable {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: var(--input-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .modalTable tr:not(:last-child) {
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .modalTable td {
+            padding: 1rem 1.2rem;
+        }
+        
+        .modalTable td:first-child {
+            font-weight: 600;
+            color: var(--primary-color);
+            width: 40%;
+        }
+        
+        .modalTable td:last-child {
+            color: var(--text-light);
+        }
+        
+        .modalActions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .formSupprimer {
+            display: inline;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-primary {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+        }
+        
+        .badge-secondary {
+            background-color: rgba(52, 152, 219, 0.15);
+            color: var(--accent-light);
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .actionsTitre {
+                width: 100%;
+            }
+            
+            .tableauInscriptions th:nth-child(2),
+            .tableauInscriptions td:nth-child(2) {
+                display: none;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+            
+            .modal {
+                width: 95%;
+            }
+        }
+    </style>
+{% endblock %}
 
-    function confirmDelete() {
-        return confirm("Êtes-vous sûr de vouloir supprimer cette inscription ?");
-    }
-</script>
+{% block content %}
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-user-plus"></i>
+                Liste des inscriptions
+            </h1>
+            
+            <div class="actionsTitre">
+                <a href="{{ path('inscription_ajouter') }}" class="btnAjouter">
+                    <i class="fas fa-plus"></i>
+                    Ajouter une inscription
+                </a>
+            </div>
+        </div>
+        
+        {% if inscriptions is empty %}
+            <div class="messageVide">
+                <div class="iconeVide">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h3 class="titreVide">Aucune inscription trouvée</h3>
+                <p class="descriptionVide">Aucune inscription n'a été créée pour le moment. Commencez par ajouter une nouvelle inscription.</p>
+                <a href="{{ path('inscription_ajouter') }}" class="btnAjouter">
+                    <i class="fas fa-plus"></i>
+                    Ajouter une inscription
+                </a>
+            </div>
+        {% else %}
+            <table class="tableauInscriptions">
+                <thead>
+                    <tr>
+                        <th>Élève</th>
+                        <th>Date d'inscription</th>
+                        <th>Cours</th>
+                        <th style="width: 150px; text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inscription in inscriptions %}
+                        <tr>
+                            <td>
+                                <a href="#" class="nomEleve" 
+                                   data-id="{{ inscription.id }}"
+                                   data-eleve="{{ inscription.eleve ? inscription.eleve.nom : 'Non disponible' }}"
+                                   data-prenom="{{ inscription.eleve ? inscription.eleve.prenom : 'Non disponible' }}"
+                                   data-cours="{{ inscription.cours ? inscription.cours.libelle : 'Non disponible' }}"
+                                   data-date="{{ inscription.dateInscription|date('d/m/Y') }}">
+                                    <i class="fas fa-user-graduate"></i>
+                                    {{ inscription.eleve ? inscription.eleve.nom ~ ' ' ~ inscription.eleve.prenom : 'Élève non disponible' }}
+                                </a>
+                            </td>
+                            <td>{{ inscription.dateInscription|date('d/m/Y') }}</td>
+                            <td>
+                                <span class="badge badge-secondary">
+                                    {{ inscription.cours ? inscription.cours.libelle : 'Cours non disponible' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actionsInscription">
+                                    <a href="{{ path('inscription_consulter', {'id': inscription.id}) }}" class="btnAction btnConsulter" title="Consulter">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    
+                                    <a href="{{ path('inscription_modifier', {'id': inscription.id}) }}" class="btnAction btnModifier" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    
+                                    <form action="{{ path('inscription_supprimer', {'id': inscription.id}) }}" method="post" class="formSupprimer">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ inscription.id) }}">
+                                        <button type="submit" class="btnAction btnSupprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette inscription ?');" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
 
+    <div class="modalBackdrop" id="modalBackdrop">
+        <div class="modal" id="detailsModal">
+            <div class="modalHeader">
+                <h3 class="modalTitre">
+                    <i class="fas fa-info-circle"></i>
+                    Détails de l'inscription
+                </h3>
+                <button type="button" class="modalFermer" id="modalFermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modalBody">
+                <table class="modalTable">
+                    <tr>
+                        <td>Nom de l'élève</td>
+                        <td id="modalEleve"></td>
+                    </tr>
+                    <tr>
+                        <td>Prénom de l'élève</td>
+                        <td id="modalPrenom"></td>
+                    </tr>
+                    <tr>
+                        <td>Cours</td>
+                        <td id="modalCours"></td>
+                    </tr>
+                    <tr>
+                        <td>Date d'inscription</td>
+                        <td id="modalDate"></td>
+                    </tr>
+                </table>
+                
+                <div class="modalActions">
+                    <a href="#" id="modalConsulterBtn" class="btnAjouter" style="background-color: var(--accent-color);">
+                        <i class="fas fa-eye"></i>
+                        Voir les détails
+                    </a>
+                    <button type="button" class="btnAjouter" id="modalFermerBtn">
+                        <i class="fas fa-check"></i>
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const liens = document.querySelectorAll('.nomEleve');
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            const modalFermer = document.getElementById('modalFermer');
+            const modalFermerBtn = document.getElementById('modalFermerBtn');
+            const modalConsulterBtn = document.getElementById('modalConsulterBtn');
+            
+            liens.forEach(function(lien) {
+                lien.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const id = this.getAttribute('data-id');
+                    const eleve = this.getAttribute('data-eleve');
+                    const prenom = this.getAttribute('data-prenom');
+                    const cours = this.getAttribute('data-cours');
+                    const date = this.getAttribute('data-date');
+                    
+                    document.getElementById('modalEleve').textContent = eleve;
+                    document.getElementById('modalPrenom').textContent = prenom;
+                    document.getElementById('modalCours').textContent = cours;
+                    document.getElementById('modalDate').textContent = date;
+                    
+                    modalConsulterBtn.href = `/lilian31/public/inscription/consulter/${id}`;
+                    
+                    modalBackdrop.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            function fermerModal() {
+                modalBackdrop.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+            
+            modalFermer.addEventListener('click', fermerModal);
+            modalFermerBtn.addEventListener('click', fermerModal);
+            modalBackdrop.addEventListener('click', function(e) {
+                if (e.target === modalBackdrop) {
+                    fermerModal();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    fermerModal();
+                }
+            });
+        });
+    </script>
 {% endblock %}

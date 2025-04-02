@@ -1,217 +1,373 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Liste des élèves - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+        
+        .titrePage:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        .grilleEleves {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .carteEleve {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            border: 1px solid var(--border-light);
+        }
+        
+        .carteEleve:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            background-color: var(--card-hover);
+        }
+        
+        .photoEleve {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 4px solid var(--primary-color);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+        
+        .carteEleve:hover .photoEleve {
+            transform: scale(1.05);
+            box-shadow: var(--glow-primary);
+        }
+        
+        .nomEleve {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+            text-align: center;
+            color: var(--text-light);
+        }
+        
+        .btnInfo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            border: none;
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+        
+        .btnInfo:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-2px);
+        }
+        
+        .fondModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 998;
+            backdrop-filter: blur(5px);
+            transition: var(--transition);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            overflow: visible;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 999;
+            width: 90%;
+            max-width: 500px;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+        
+        .titreModal {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .modal.ouvert, .fondModal.ouvert {
+            display: block;
+        }
+        
+        .btnFermer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .btnFermer:hover {
+            color: var(--text-light);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .contenuModal {
+            background-color: var(--sidebar-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+        
+        .tableauInfo {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .tableauInfo td {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .tableauInfo tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tableauInfo td:first-child {
+            font-weight: 600;
+            color: var(--primary-color);
+            width: 35%;
+        }
+        
+        .messageVide {
+            text-align: center;
+            padding: 3rem 2rem;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            color: var(--text-muted);
+            margin-top: 2rem;
+            border: 1px solid var(--border-light);
+        }
+        
+        .iconeVide {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        
+        .texteVide {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        @keyframes apparition {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .carteEleve {
+            animation: apparition 0.5s ease forwards;
+        }
+        
+        @media (max-width: 768px) {
+            .grilleEleves {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .grilleEleves {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            
+            .photoEleve {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .nomEleve {
+                font-size: 0.9rem;
+            }
+            
+            .titrePage {
+                font-size: 1.6rem;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<style>
-    a {
-        text-decoration: none;
-    }
+    <div class="conteneurPage">
+        <h1 class="titrePage">Liste des élèves</h1>
 
-    h1 {
-        font-size: 40px;
-    }
-
-    .eleve-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 40px;
-        margin-top: 40px;
-    }
-
-    .eleve-item {
-        text-align: center;
-        color: white;
-        width: 200px;
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-        margin-bottom: 40px;
-    }
-
-    .eleve-item:hover {
-        transform: scale(1.05);
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
-        background-color: #313237;
-        border-radius: 10px;
-    }
-
-    .eleve-photo {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto;
-        border-radius: 50%;
-        background-size: cover;
-        background-position: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    .eleve-item p {
-        margin-top: 15px;
-        font-size: 1.2rem;
-    }
-
-    .info-btn {
-        display: block;
-        margin-top: 10px;
-        text-decoration: none;
-        color: #fff;
-        font-size: 1rem;
-        background-color: green;
-        padding: 5px 10px;
-        border-radius: 5px;
-        text-align: center;
-    }
-
-    .info-btn:hover {
-        background-color: #313237;
-    }
-
-    .delete-btn {
-        display: block;
-        margin-top: 10px;
-        text-decoration: none;
-        color: #fff;
-        font-size: 1.2rem;
-        background-color: red;
-        padding: 5px 10px;
-        border-radius: 5px;
-        text-align: center;
-    }
-
-    .delete-btn:hover {
-        background-color: #b23131;
-    }
-
-    .delete-btn i {
-        margin-right: 5px;
-    }
-
-    .popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #181B22;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        z-index: 999;
-    }
-
-    .popup-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 998;
-    }
-
-    .popup.open, .popup-overlay.open {
-        display: block;
-    }
-
-    .tabs {
-        margin-bottom: 10px;
-    }
-
-    .tab-button {
-        padding: 10px;
-        margin-right: 10px;
-        cursor: pointer;
-        background-color: #f1f1f1;
-        border: 1px solid #ddd;
-    }
-
-    .tab-button.active {
-        background-color: #181B22;
-        color: white;
-    }
-
-    .tab-panel {
-        display: none;
-    }
-
-    .tab-panel.active {
-        display: block;
-    }
-</style>
-
-<h1>Liste des élèves</h1>
-
-<div class="eleve-grid">
-    {% for e in eEleves %}
-        <div class="eleve-item">
-            <a href="{{ path('gestionnaireConsulterEleve', { 'id': e.id }) }}">
-                <div class="eleve-photo" style="background-image: url('{{ asset('eleve/' ~ e.cheminImage) }}');"></div>
-            </a>
-            <p>{{ e.nom }} {{ e.prenom }}</p>
-            <a href="#" class="info-btn" data-id="{{ e.id }}"
-               data-nom="{{ e.nom }}"
-               data-prenom="{{ e.prenom }}"
-               data-tel="{{ e.tel }}"
-               data-mail="{{ e.mail }}"
-               data-numRue="{{ e.numRue }}"
-               data-rue="{{ e.rue }}"
-               data-copos="{{ e.copos }}"
-               data-ville="{{ e.ville }}">
-                + d'infos
-            </a>
-            
-            
+        <div class="grilleEleves">
+            {% for e in eEleves %}
+                <div class="carteEleve" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                    <div class="photoEleve" style="background-image: url('{{ asset('eleve/' ~ e.cheminImage) }}');"></div>
+                    <p class="nomEleve">{{ e.nom }} {{ e.prenom }}</p>
+                    <button class="btnInfo" data-id="{{ e.id }}"
+                        data-nom="{{ e.nom }}"
+                        data-prenom="{{ e.prenom }}"
+                        data-tel="{{ e.tel }}"
+                        data-mail="{{ e.mail }}"
+                        data-numRue="{{ e.numRue }}"
+                        data-rue="{{ e.rue }}"
+                        data-copos="{{ e.copos }}"
+                        data-ville="{{ e.ville }}">
+                        <i class="fas fa-info-circle"></i> Voir détails
+                    </button>
+                </div>
+            {% else %}
+                <div class="messageVide">
+                    <div class="iconeVide">
+                        <i class="fas fa-user-slash"></i>
+                    </div>
+                    <h3 class="texteVide">Aucun élève trouvé</h3>
+                    <p>Il n'y a actuellement aucun élève à afficher.</p>
+                </div>
+            {% endfor %}
         </div>
-    {% else %}
-        <p>Aucun élève trouvé.</p>
-    {% endfor %}
-</div>
-
-<div class="popup-overlay"></div>
-<div class="popup">
-    <button class="close-btn">&times;</button>
-    <h2>Détails de l'élève</h2>
-    <div class="tabs">
-        <button class="tab-button active" data-target="eleve">Élève</button>
     </div>
 
-    <div class="tab-content">
-        <div class="tab-panel active" id="eleve">
-            <table>
-                <tr><td>Nom :</td><td><span id="modal-nom"></span></td></tr>
-                <tr><td>Prénom :</td><td><span id="modal-prenom"></span></td></tr>
-                <tr><td>Téléphone :</td><td><span id="modal-tel"></span></td></tr>
-                <tr><td>Email :</td><td><span id="modal-mail"></span></td></tr>
-                <tr><td>Adresse :</td><td><span id="modal-adresse"></span></td></tr>
+    <div class="fondModal"></div>
+    <div class="modal">
+        <button class="btnFermer"><i class="fas fa-times"></i></button>
+        <h2 class="titreModal">Détails de l'élève</h2>
+        
+        <div class="contenuModal">
+            <table class="tableauInfo">
+                <tr><td>Nom :</td><td><span id="modalNom"></span></td></tr>
+                <tr><td>Prénom :</td><td><span id="modalPrenom"></span></td></tr>
+                <tr><td>Téléphone :</td><td><span id="modalTel"></span></td></tr>
+                <tr><td>Email :</td><td><span id="modalMail"></span></td></tr>
+                <tr><td>Adresse :</td><td><span id="modalAdresse"></span></td></tr>
             </table>
         </div>
     </div>
-</div>
+{% endblock %}
 
-<script>
-    document.querySelectorAll('.info-btn').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            document.getElementById('modal-nom').textContent = this.dataset.nom;
-            document.getElementById('modal-prenom').textContent = this.dataset.prenom;
-            document.getElementById('modal-tel').textContent = this.dataset.tel;
-            document.getElementById('modal-mail').textContent = this.dataset.mail;
-            document.getElementById('modal-adresse').textContent = this.dataset.numRue + ' ' + this.dataset.rue + ', ' + this.dataset.copos + ' ' + this.dataset.ville;
-
-            document.querySelector('.popup').classList.add('open');
-            document.querySelector('.popup-overlay').classList.add('open');
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion du modal d'information
+            document.querySelectorAll('.btnInfo').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remplir les données du modal
+                    document.getElementById('modalNom').textContent = this.dataset.nom;
+                    document.getElementById('modalPrenom').textContent = this.dataset.prenom;
+                    document.getElementById('modalTel').textContent = this.dataset.tel;
+                    document.getElementById('modalMail').textContent = this.dataset.mail;
+                    document.getElementById('modalAdresse').textContent = 
+                        this.dataset.numRue + ' ' + this.dataset.rue + ', ' + 
+                        this.dataset.copos + ' ' + this.dataset.ville;
+                    
+                    // Afficher le modal
+                    document.querySelector('.modal').classList.add('ouvert');
+                    document.querySelector('.fondModal').classList.add('ouvert');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            // Fermer le modal
+            document.querySelector('.btnFermer').addEventListener('click', fermerModal);
+            document.querySelector('.fondModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        setTimeout(fermerModal, 200);
+    }
+});
+            
+            function fermerModal() {
+                document.querySelector('.modal').classList.remove('ouvert');
+                document.querySelector('.fondModal').classList.remove('ouvert');
+                document.body.style.overflow = '';
+            }
+            
+            // Animation d'entrée pour chaque carte
+            document.querySelectorAll('.carteEleve').forEach((item, index) => {
+                item.style.opacity = '0';
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Fermer le modal avec la touche Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    fermerModal();
+                }
+            });
         });
-    });
-
-    document.querySelector('.close-btn').addEventListener('click', function() {
-        document.querySelector('.popup').classList.remove('open');
-        document.querySelector('.popup-overlay').classList.remove('open');
-    });
-
-    document.querySelector('.popup-overlay').addEventListener('click', function() {
-        document.querySelector('.popup').classList.remove('open');
-        document.querySelector('.popup-overlay').classList.remove('open');
-    });
-
-
-
-</script>
+    </script>
 {% endblock %}

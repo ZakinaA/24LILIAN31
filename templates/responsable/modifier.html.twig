@@ -1,221 +1,401 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Modification d'un responsable - Emusic{% endblock %}
+
 {% block content %}
-<link rel="stylesheet" href="{{ asset('styles.css') }}">
 <style>
-body, h1, h2, p, ul, li, a, img {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    body, h1, h2, p, ul, li, a, img {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #121212;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+    .modifier-title-primary {
+        font-size: 36px;
+        font-weight: bold;
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
 
-.ajouter-title-primary {
-    font-size: 36px;
-    font-weight: bold;
-    text-align: center;
-    color: green;
-    margin-bottom: 20px;
-}
+    .modifier-formulaire-modif {
+        background-color: var(--card-bg);
+        border-radius: 20px;
+        padding: 20px;
+        width: 800px;
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+        margin: 0 auto;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-light);
+    }
 
-.ajouter-formulaire-ajout {
-    background-color: #181B22;
-    border-radius: 20px;
-    padding: 20px;
-    width: 800px;
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-}
+    .modifier-left-column,
+    .modifier-right-column {
+        flex: 1;
+    }
 
-.ajouter-left-column,
-.ajouter-right-column {
-    flex: 1;
-}
+    .modifier-image-container {
+        width: 100%;
+        height: 200px;
+        border: 2px solid var(--border-light);
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--sidebar-bg);
+        margin-bottom: 15px;
+    }
 
-.ajouter-image-container {
-    width: 100%;
-    height: 200px;
-    border: 2px solid #444;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #232323;
-    margin-bottom: 15px;
-}
+    .modifier-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-.ajouter-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    .modifier-form-group {
+        margin-bottom: 15px;
+    }
 
-.ajouter-form-group {
-    margin-bottom: 15px;
-}
+    .modifier-form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: var(--text-light);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-.ajouter-form-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #ccc;
-}
+    .modifier-form-group label i {
+        color: var(--primary-color);
+    }
 
-.ajouter-form-group input,
-.ajouter-form-group select,
-.ajouter-form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background-color: #232323;
-    color: white;
-}
+    .modifier-form-group input,
+    .modifier-form-group select,
+    .modifier-form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid var(--border-light);
+        background-color: var(--input-bg);
+        color: var(--text-light);
+    }
 
-.ajouter-form-group input:focus,
-.ajouter-form-group select:focus,
-.ajouter-form-group textarea:focus {
-    border-color: green;
-    outline: none;
-    box-shadow: 0 0 8px green;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
+    .modifier-form-group input:focus,
+    .modifier-form-group select:focus,
+    .modifier-form-group textarea:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 8px var(--primary-transparent);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
 
-.ajouter-progress-container {
-    width: 100%;
-    background-color: #ddd;
-    border-radius: 20px;
-    margin-top: 20px;
-    height: 10px;
-    overflow: hidden;
-}
+    .modifier-form-group button {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 1rem;
+    }
 
-.ajouter-progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: green;
-    transition: width 0.3s ease;
-}
+    .modifier-form-group button:hover {
+        background-color: var(--primary-dark);
+        box-shadow: var(--glow-primary);
+        transform: translateY(-2px);
+    }
+
+    .modifier-progress-container {
+        width: 100%;
+        max-width: 800px;
+        background-color: var(--sidebar-bg);
+        border-radius: 20px;
+        margin: 20px auto 0;
+        height: 10px;
+        overflow: hidden;
+    }
+
+    .modifier-progress-bar {
+        width: 0%;
+        height: 100%;
+        background-color: var(--primary-color);
+        transition: width 0.3s ease;
+    }
+
+    .modifier-info-panel {
+        background-color: var(--primary-transparent);
+        border-radius: var(--border-radius);
+        padding: 15px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .modifier-info-panel i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+
+    .modifier-info-panel p {
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .modifier-retour {
+        display: block;
+        width: fit-content;
+        margin: 20px auto 0;
+        color: var(--text-muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: var(--transition);
+        font-size: 0.9rem;
+    }
+
+    .modifier-retour:hover {
+        color: var(--text-light);
+        transform: translateX(-5px);
+    }
+
+    .modifier-identite {
+        background-color: var(--accent-transparent);
+        border-radius: var(--border-radius);
+        padding: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .modifier-identite-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .modifier-identite-photo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-color);
+    }
+
+    .modifier-identite-nom {
+        font-weight: 600;
+        color: var(--text-light);
+    }
+
+    .modifier-identite-date {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 840px) {
+        .modifier-formulaire-modif {
+            width: 95%;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .modifier-progress-container {
+            width: 95%;
+        }
+    }
 </style>
 
-<div class="ajouter-form-container">
-    <h1 class="ajouter-title-primary">Ajouter un Responsable</h1>
-    <div class="ajouter-formulaire-ajout">
-        <div class="ajouter-left-column">
+<div class="modifier-form-container">
+    <h1 class="modifier-title-primary">Modifier un Responsable</h1>
+    <div class="modifier-formulaire-modif">
+        <div class="modifier-left-column">
+            <div class="modifier-info-panel">
+                <i class="fas fa-info-circle"></i>
+                <p>Modifiez les informations du responsable ci-dessous</p>
+            </div>
+
+            <div class="modifier-identite">
+                <div class="modifier-identite-info">
+                    <img src="{{ asset('responsable/' ~ responsable.cheminImage) }}" alt="{{ responsable.nom }}" class="modifier-identite-photo">
+                    <div>
+                        <div class="modifier-identite-nom">{{ responsable.nom }} {{ responsable.prenom }}</div>
+                        <div class="modifier-identite-date">Modifié le {{ "now"|date("d/m/Y") }}</div>
+                    </div>
+                </div>
+            </div>
+
             {{ form_start(form) }}
 
-            <div class="ajouter-form-group">
-                {{ form_label(form.nom) }}
-                {{ form_widget(form.nom) }}
+            <div class="modifier-form-group">
+                <label for="{{ form.nom.vars.id }}">
+                    <i class="fas fa-user"></i>
+                    Nom
+                </label>
+                {{ form_widget(form.nom, {'attr': {'placeholder': 'Nom de famille'}}) }}
             </div>
 
-            <div class="ajouter-form-group">
-                {{ form_label(form.prenom) }}
-                {{ form_widget(form.prenom) }}
+            <div class="modifier-form-group">
+                <label for="{{ form.prenom.vars.id }}">
+                    <i class="fas fa-user"></i>
+                    Prénom
+                </label>
+                {{ form_widget(form.prenom, {'attr': {'placeholder': 'Prénom'}}) }}
             </div>
 
-            <div class="ajouter-form-group">
-                {{ form_label(form.numRue) }}
-                {{ form_widget(form.numRue) }}
+            <div class="modifier-form-group">
+                <label for="{{ form.numRue.vars.id }}">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Numéro de rue
+                </label>
+                {{ form_widget(form.numRue, {'attr': {'placeholder': 'Numéro de rue'}}) }}
             </div>
 
-            <div class="ajouter-form-group">
-                {{ form_label(form.rue) }}
-                {{ form_widget(form.rue) }}
+            <div class="modifier-form-group">
+                <label for="{{ form.rue.vars.id }}">
+                    <i class="fas fa-road"></i>
+                    Rue
+                </label>
+                {{ form_widget(form.rue, {'attr': {'placeholder': 'Nom de la rue'}}) }}
             </div>
 
-            <div class="ajouter-form-group">
-                {{ form_label(form.copos) }}
-                {{ form_widget(form.copos) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.ville) }}
-                {{ form_widget(form.ville) }}
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_label(form.tel) }}
-                {{ form_widget(form.tel) }}
+            <div class="modifier-form-group">
+                <label for="{{ form.copos.vars.id }}">
+                    <i class="fas fa-mail-bulk"></i>
+                    Code postal
+                </label>
+                {{ form_widget(form.copos, {'attr': {'placeholder': 'Code postal'}}) }}
             </div>
 
         </div>
 
-        <div class="ajouter-right-column">
+        <div class="modifier-right-column">
+            <div class="modifier-form-group">
+                <label for="{{ form.ville.vars.id }}">
+                    <i class="fas fa-city"></i>
+                    Ville
+                </label>
+                {{ form_widget(form.ville, {'attr': {'placeholder': 'Ville'}}) }}
+            </div>
             
-            <div class="ajouter-form-group">
-                {{ form_label(form.quotientFamilial) }}
-                {{ form_widget(form.quotientFamilial) }}
+            <div class="modifier-form-group">
+                <label for="{{ form.tel.vars.id }}">
+                    <i class="fas fa-phone"></i>
+                    Téléphone
+                </label>
+                {{ form_widget(form.tel, {'attr': {'placeholder': 'Numéro de téléphone'}}) }}
+            </div>
+            
+            <div class="modifier-form-group">
+                <label for="{{ form.quotientFamilial.vars.id }}">
+                    <i class="fas fa-calculator"></i>
+                    Quotient familial
+                </label>
+                {{ form_widget(form.quotientFamilial, {'attr': {'placeholder': 'Quotient familial'}}) }}
             </div>
 
-            <div class="ajouter-form-group">
-                {{ form_label(form.compte) }}
+            <div class="modifier-form-group">
+                <label for="{{ form.compte.vars.id }}">
+                    <i class="fas fa-user-tag"></i>
+                    Compte
+                </label>
                 {{ form_widget(form.compte) }}
             </div>
 
-            <div class="ajouter-form-group">
-                {{ form_label(form.cheminImage) }}
+            <div class="modifier-image-container">
+                <img id="image-preview" src="{{ asset('responsable/' ~ responsable.cheminImage) }}" alt="Prévisualisation">
+            </div>
+
+            <div class="modifier-form-group">
+                <label for="{{ form.cheminImage.vars.id }}">
+                    <i class="fas fa-image"></i>
+                    Image
+                </label>
                 {{ form_widget(form.cheminImage) }}
             </div>
 
-            <div class="ajouter-image-container">
-                <img id="image-preview" src="{{ asset('placeholder-image.png') }}" alt="Prévisualisation">
-            </div>
-
-            <div class="ajouter-form-group">
-                {{ form_widget(form.enregistrer) }}
+            <div class="modifier-form-group">
+                {{ form_widget(form.enregistrer, {'attr': {'id': 'btn-enregistrer'}}) }}
             </div>
         </div>
 
         {{ form_end(form) }}
     </div>
 
-    <div class="ajouter-progress-container">
-        <div class="ajouter-progress-bar"></div>
+    <div class="modifier-progress-container">
+        <div class="modifier-progress-bar" id="progress-bar"></div>
     </div>
+
+    <a href="{{ path('gestionnaireListerResponsable') }}" class="modifier-retour">
+        <i class="fas fa-arrow-left"></i>
+        Retour à la liste des responsables
+    </a>
 </div>
 
 <script>
-    document.querySelector('#responsable_cheminImage').addEventListener('change', function(event) {
-        const input = event.target;
-        const preview = document.getElementById('image-preview');
-
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-            };
-
-            reader.readAsDataURL(input.files[0]);
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputImage = document.querySelector('input[type="file"]');
+        const previewImage = document.getElementById('image-preview');
+        
+        if (inputImage) {
+            inputImage.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        previewImage.src = event.target.result;
+                    }
+                    
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+        }
+        
+        const fields = document.querySelectorAll('.modifier-form-group input, .modifier-form-group select');
+        const progressBar = document.getElementById('progress-bar');
+        
+        function updateProgress() {
+            const filledFields = Array.from(fields).filter(field => {
+                if (field.type === 'file' || field.type === 'submit') return true;
+                return field.value.trim() !== '';
+            });
+            
+            const progress = (filledFields.length / fields.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+        
+        updateProgress();
+        
+        fields.forEach(field => {
+            field.addEventListener('input', updateProgress);
+        });
+        
+        const btnEnregistrer = document.getElementById('btn-enregistrer');
+        if (btnEnregistrer) {
+            btnEnregistrer.innerHTML = '<i class="fas fa-save"></i> Enregistrer les modifications';
+            
+            btnEnregistrer.addEventListener('mouseenter', function() {
+                this.innerHTML = '<i class="fas fa-check"></i> Valider les changements';
+            });
+            
+            btnEnregistrer.addEventListener('mouseleave', function() {
+                this.innerHTML = '<i class="fas fa-save"></i> Enregistrer les modifications';
+            });
         }
     });
-
-    const fields = document.querySelectorAll('.ajouter-form-group input, .ajouter-form-group select, .ajouter-form-group textarea');
-    const progressBar = document.querySelector('.ajouter-progress-bar');
-
-    fields.forEach(field => {
-        field.addEventListener('input', updateProgress);
-    });
-
-    function updateProgress() {
-        const filledFields = Array.from(fields).filter(field => field.value.trim() !== '');
-        const progress = (filledFields.length / fields.length) * 100;
-        progressBar.style.width = `${progress}%`;
-    }
 </script>
-
 {% endblock %}

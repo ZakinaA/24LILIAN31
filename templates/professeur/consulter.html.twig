@@ -1,188 +1,517 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Emploi du temps de {{ professeur.nom }}{% endblock %}
+{% block title %}Emploi du temps de {{ professeur.nom }} - Emusic{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .conteneurPage {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .enTetePage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .titrePage {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .titrePage i {
+            color: var(--primary-color);
+        }
+        
+        .actionsTitre {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btnAction {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .btnRetour {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btnRetour:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-2px);
+        }
+        
+        .cartePlanning {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+        }
+        
+        .enTeteCarte {
+            background-color: var(--sidebar-bg);
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .titreCarte {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreCarte i {
+            color: var(--primary-color);
+        }
+        
+        .infoProfesseur {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: var(--primary-transparent);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
+        }
+        
+        .infoProfesseur i {
+            color: var(--primary-color);
+        }
+        
+        .infoProfesseur span {
+            font-weight: 500;
+            color: var(--primary-light);
+        }
+        
+        .corpsCarte {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+        
+        .tableauPlanning {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .tableauPlanning th {
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            font-weight: 600;
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-light);
+            white-space: nowrap;
+        }
+        
+        .tableauPlanning th:first-child {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .tableauPlanning td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-muted);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .tableauPlanning tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tableauPlanning td:first-child {
+            font-weight: 600;
+            color: var(--primary-color);
+            background-color: rgba(46, 204, 113, 0.05);
+            border-right: 1px solid var(--border-light);
+        }
+        
+        .tableauPlanning td:hover:not(:first-child) {
+            background-color: var(--card-hover);
+            transform: scale(1.02);
+        }
+        
+        .celluleCours {
+            position: relative;
+            transition: var(--transition);
+        }
+        
+        .celluleCours.active {
+            background-color: var(--primary-transparent);
+            color: var(--primary-light);
+            font-weight: 500;
+        }
+        
+        .modalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .modalOverlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-bounce);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+        }
+        
+        .modal.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .titreModal {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .titreModal i {
+            color: var(--primary-color);
+        }
+        
+        .contenuModal {
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+        }
+        
+        .btnFermer {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-light);
+            color: var(--text-light);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btnFermer:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+        
+        .infoItem {
+            display: flex;
+            padding: 0.8rem;
+            background-color: var(--sidebar-bg);
+            border-radius: var(--border-radius);
+            margin-bottom: 0.8rem;
+            border: 1px solid var(--border-light);
+        }
+        
+        .infoLabel {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 120px;
+        }
+        
+        .infoValeur {
+            color: var(--text-light);
+            flex-grow: 1;
+        }
+        
+        .messageVide {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        
+        .infoCard {
+            background-color: var(--primary-transparent);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .infoCard i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+        
+        .legendeGrille {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        
+        .legendeItem {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .legendeCouleur {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        .legendeActif {
+            background-color: var(--primary-transparent);
+        }
+        
+        .legendeVide {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-light);
+        }
+        
+        @media (max-width: 992px) {
+            .tableauPlanning th,
+            .tableauPlanning td {
+                padding: 0.8rem 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .enTetePage {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .conteneurPage {
+                padding: 1rem;
+            }
+            
+            .actionsTitre {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        color: #333;
-        margin: 0;
-        padding: 20px;
-    }
+    <div class="conteneurPage">
+        <div class="enTetePage">
+            <h1 class="titrePage">
+                <i class="fas fa-calendar-alt"></i>
+                Emploi du temps
+            </h1>
+            
+            <div class="actionsTitre">
+                <a href="{{ path('professeurLister') }}" class="btnAction btnRetour">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
+        
+        <div class="cartePlanning">
+            <div class="enTeteCarte">
+                <h2 class="titreCarte">
+                    <i class="fas fa-clock"></i>
+                    Planning hebdomadaire
+                </h2>
+                
+                <div class="infoProfesseur">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>{{ professeur.nom }} {{ professeur.prenom }}</span>
+                </div>
+            </div>
+            
+            <div class="corpsCarte">
+                <div class="infoCard">
+                    <i class="fas fa-info-circle"></i>
+                    <div>Cliquez sur un cours pour afficher plus de détails.</div>
+                </div>
+                
+                <table class="tableauPlanning">
+                    <thead>
+                        <tr>
+                            <th>Heures</th>
+                            {% for jour in jours %}
+                                <th>{{ jour }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for heure in heures %}
+                            <tr>
+                                <td>{{ heure }}h00</td>
+                                {% for jour in jours %}
+                                    <td 
+                                        data-cours="{{ planning[jour][heure]|default('') }}" 
+                                        class="celluleCours {{ planning[jour][heure] is defined and planning[jour][heure] ? 'active' : '' }}"
+                                        onclick="afficherDetails(this)"
+                                    >
+                                        {% if planning[jour][heure] %}
+                                            <strong>{{ planning[jour][heure] }}</strong>
+                                        {% else %}
+                                            <span>-</span>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <div class="legendeGrille">
+                    <div class="legendeItem">
+                        <div class="legendeCouleur legendeActif"></div>
+                        <span>Cours programmé</span>
+                    </div>
+                    <div class="legendeItem">
+                        <div class="legendeCouleur legendeVide"></div>
+                        <span>Pas de cours</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Détails du cours -->
+    <div class="modalOverlay" id="modalOverlay"></div>
+    <div class="modal" id="modalCours">
+        <button class="btnFermer" id="btnFermer">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <h2 class="titreModal">
+            <i class="fas fa-book"></i>
+            Détails du cours
+        </h2>
+        
+        <div id="contenuCours" class="contenuModal">
+            <div class="infoItem">
+                <div class="infoLabel">Cours:</div>
+                <div class="infoValeur" id="nomCours">-</div>
+            </div>
+            
+            <div class="infoItem">
+                <div class="infoLabel">Jour:</div>
+                <div class="infoValeur" id="jourCours">-</div>
+            </div>
+            
+            <div class="infoItem">
+                <div class="infoLabel">Horaire:</div>
+                <div class="infoValeur" id="horaireCours">-</div>
+            </div>
+            
+            <div class="infoItem">
+                <div class="infoLabel">Type:</div>
+                <div class="infoValeur" id="typeCours">-</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-    h1 {
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 20px;
-        color: green;
-    }
-
-    .planning {
-        margin: 0 auto;
-        max-width: 80%;
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        background: #181B22;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    table thead {
-        background-color: #4CAF50;
-        color: white;
-        text-transform: uppercase;
-    }
-
-    table th,
-    table td {
-        padding: 15px;
-        text-align: center;
-        border: 1px solid #ddd;
-    }
-
-    table th {
-        font-size: 1rem;
-    }
-
-    table td {
-        font-size: 0.9rem;
-        color: white;
-    }
-
-    table td:hover {
-        background-color: #313237;
-        cursor: pointer;
-    }
-
-    .popup-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 1000;
-    }
-
-    .popup-overlay.open {
-        display: block;
-    }
-
-    .popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #fff;
-        padding: 20px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        z-index: 1001;
-        width: 400px;
-        border-radius: 8px;
-        text-align: center;
-    }
-
-    .popup.open {
-        display: block;
-    }
-
-    .popup h2 {
-        margin: 0 0 15px;
-        font-size: 1.5rem;
-        color: #444;
-    }
-
-    .popup p {
-        margin: 10px 0;
-        font-size: 1rem;
-        color: #666;
-    }
-
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 1.5rem;
-        color: #aaa;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    .close-btn:hover {
-        color: #444;
-    }
-</style>
-
-<h1>Emploi du temps de {{ professeur.nom }}</h1>
-
-<div class="planning">
-    <table>
-        <thead>
-            <tr>
-                <th>Heures</th>
-                {% for jour in jours %}
-                    <th>{{ jour }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for heure in heures %}
-                <tr>
-                    <td><strong>{{ heure }}h</strong></td>
-                    {% for jour in jours %}
-                        <td data-cours="{{ planning[jour][heure]|default('') }}" class="cours-cell">
-                            {% if planning[jour][heure] %}
-                                <strong>{{ planning[jour][heure] }}</strong>
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<div class="popup-overlay"></div>
-<div class="popup">
-    <button class="close-btn">&times;</button>
-    <h2>Détails du cours</h2>
-    <p id="popup-content">Aucun cours sélectionné</p>
-</div>
-
-<script>
-    document.querySelectorAll('td[data-cours]').forEach(cell => {
-        cell.addEventListener('click', function () {
-            const cours = this.dataset.cours;
-
-            if (cours) {
-                document.getElementById('popup-content').textContent = cours;
-                document.querySelector('.popup-overlay').classList.add('open');
-                document.querySelector('.popup').classList.add('open');
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function afficherDetails(cellule) {
+            const cours = cellule.getAttribute('data-cours');
+            const jour = cellule.closest('tr').cells[0].textContent;
+            const indexColonne = cellule.cellIndex;
+            const jourSemaine = document.querySelector('table th:nth-child(' + indexColonne + ')').textContent;
+            
+            if (cours && cours.trim() !== '') {
+                // Dans un cas réel, vous pourriez extraire ces informations 
+                // à partir d'un objet JSON plus complexe
+                document.getElementById('nomCours').textContent = cours;
+                document.getElementById('jourCours').textContent = jourSemaine;
+                document.getElementById('horaireCours').textContent = jour;
+                document.getElementById('typeCours').textContent = 'Information non disponible';
+                
+                // Afficher la modal
+                document.getElementById('modalOverlay').classList.add('visible');
+                document.getElementById('modalCours').classList.add('visible');
+            }
+        }
+        
+        // Fermer la modal
+        document.getElementById('btnFermer').addEventListener('click', function() {
+            document.getElementById('modalOverlay').classList.remove('visible');
+            document.getElementById('modalCours').classList.remove('visible');
+        });
+        
+        document.getElementById('modalOverlay').addEventListener('click', function() {
+            document.getElementById('modalOverlay').classList.remove('visible');
+            document.getElementById('modalCours').classList.remove('visible');
+        });
+        
+        // Fermer avec la touche Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('modalOverlay').classList.remove('visible');
+                document.getElementById('modalCours').classList.remove('visible');
             }
         });
-    });
-
-    document.querySelector('.close-btn').addEventListener('click', () => {
-        document.querySelector('.popup-overlay').classList.remove('open');
-        document.querySelector('.popup').classList.remove('open');
-    });
-
-    document.querySelector('.popup-overlay').addEventListener('click', () => {
-        document.querySelector('.popup-overlay').classList.remove('open');
-        document.querySelector('.popup').classList.remove('open');
-    });
-</script>
-
+    </script>
 {% endblock %}
